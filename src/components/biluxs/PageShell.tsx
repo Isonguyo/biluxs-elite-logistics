@@ -19,7 +19,7 @@ export function PageShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function PageHero({ eyebrow, title, subtitle }: { eyebrow: string; title: React.ReactNode; subtitle?: string }) {
+export function PageHero({ eyebrow, title, subtitle }: { eyebrow: React.ReactNode; title: React.ReactNode; subtitle?: string }) {
   return (
     <section className="border-b border-border bg-[var(--navy-deep)]">
       <div className="max-w-7xl mx-auto px-6 py-20 md:py-28">

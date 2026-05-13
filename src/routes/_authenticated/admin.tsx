@@ -65,7 +65,7 @@ function Page() {
   return (
     <PageShell>
       <PageHero
-        eyebrow={<span className="inline-flex items-center gap-2"><Radio className={`h-3 w-3 ${pulse ? "text-emerald-400 animate-ping" : "text-emerald-500"}`} /> Live Control Center</span> as unknown as string}
+        eyebrow={<span className="inline-flex items-center gap-2"><Radio className={`h-3 w-3 ${pulse ? "text-emerald-400 animate-ping" : "text-emerald-500"}`} /> Live Control Center</span>}
         title={<>Admin <span className="gradient-text">Operations</span></>}
         subtitle="Real-time booking management, fleet status and revenue analytics."
       />
