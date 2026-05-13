@@ -7,6 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
@@ -72,11 +73,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "BiLUXS — Luxury Car Hire & Executive Transport Calabar" },
+      { name: "description", content: "BiLUXS delivers elite chauffeur-driven luxury car hire, airport protocol, and executive transport across Calabar, Cross River and Nigeria. A Brightflow Conglomerate company." },
+      { name: "keywords", content: "Luxury car hire Calabar, Executive transport Cross River, Airport protocol services Harbour Road, BiLUXS, Brightflow" },
+      { name: "author", content: "BiLUXS" },
+      { property: "og:title", content: "BiLUXS — Tourism. Travel. Transport." },
+      { property: "og:description", content: "Elite logistics & first-class hospitality. Luxury car hire, executive coaches, airport fast-track and corporate shuttles in Calabar." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
@@ -96,9 +98,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" />
       </head>
       <body>
         {children}
@@ -114,6 +119,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <Toaster />
     </QueryClientProvider>
   );
 }
