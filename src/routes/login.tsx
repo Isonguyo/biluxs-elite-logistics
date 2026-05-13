@@ -134,12 +134,19 @@ function Page() {
   );
 }
 
-function Field({ icon, ...props }: { icon?: React.ReactNode } & React.InputHTMLAttributes<HTMLInputElement> & { onChange: (v: string) => void; value: string }) {
-  const { onChange, value, ...rest } = props;
+type FieldProps = {
+  icon?: React.ReactNode;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: string;
+};
+function Field({ icon, value, onChange, placeholder, type = "text" }: FieldProps) {
   return (
     <div className="flex items-center bg-input border border-border focus-within:border-gold transition-colors">
       {icon && <div className="pl-3 text-gold">{icon}</div>}
-      <input {...rest} value={value} onChange={(e) => onChange(e.target.value)}
+      <input type={type} placeholder={placeholder} value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="flex-1 bg-transparent h-12 px-3 text-sm focus:outline-none placeholder:text-muted-foreground" />
     </div>
   );

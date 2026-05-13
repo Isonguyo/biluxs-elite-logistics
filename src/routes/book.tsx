@@ -69,7 +69,7 @@ function Page() {
     const { data, error } = await supabase.from("bookings").insert({
       user_id: user.id, vehicle_id: vehicle.id,
       pickup_location: pickup, dropoff_location: dropoff,
-      pickup_time: pickupTime ? new Date(pickupTime).toISOString() : null,
+      pickup_time: (pickupTime ? new Date(pickupTime) : new Date()).toISOString(),
       distance_km: distance, base_price: pricing.subtotal, total_price: pricing.total,
       luxury_protocol: luxury, addons: luxury ? ["luxury_protocol"] : [],
     }).select("waybill_code,id").single();
