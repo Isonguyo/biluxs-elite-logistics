@@ -40,12 +40,12 @@
 :root {
   --radius: 2px;
 
-  /* Brand */
-  --navy-deep: oklch(0.16 0.04 270);   /* #0b0d17 */
-  --navy: oklch(0.22 0.05 270);
-  --crimson: oklch(0.55 0.24 27);       /* vibrant red */
-  --crimson-glow: oklch(0.62 0.26 27);
-  --gold: oklch(0.82 0.14 85);          /* warm gold */
+  /* Brand: Navy Blue, White, Maroon */
+  --navy-deep: oklch(0.18 0.06 265);    /* deep navy blue */
+  --navy: oklch(0.26 0.07 265);
+  --crimson: oklch(0.38 0.13 20);        /* maroon */
+  --crimson-glow: oklch(0.46 0.16 22);   /* lighter maroon */
+  --gold: oklch(0.96 0.01 90);           /* white-ish accent */
 
   --background: oklch(0.16 0.04 270);
   --foreground: oklch(0.98 0 0);
