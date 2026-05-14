@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Search, MapPin, Clock, Truck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
+import { RadarPulse } from "@/components/biluxs/anim";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/track")({
@@ -54,9 +56,21 @@ function Page() {
   return (
     <PageShell>
       <PageHero eyebrow="Live Tracking" title={<>Track Your <span className="gradient-text">Waybill</span></>} />
-      <section className="py-16">
+      <section className="py-16 relative">
         <div className="max-w-3xl mx-auto px-6">
-          <form onSubmit={search} className="flex bg-card border border-border focus-within:border-gold transition-colors">
+          <div className="relative h-56 mb-10 glass-blur border border-gold/30 overflow-hidden">
+            <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 30% 50%, var(--crimson) 0%, transparent 60%)" }} />
+            <div className="absolute inset-0 grid place-items-center">
+              <div className="text-center">
+                <div className="flex justify-center mb-3"><RadarPulse /></div>
+                <div className="text-[10px] tracking-[0.4em] uppercase text-gold">BiLUXS HQ</div>
+                <div className="font-display text-xl text-white mt-1">Calabar Harbour Road</div>
+                <div className="text-xs text-muted-foreground mt-1">4.9589° N · 8.3269° E</div>
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={search} className="flex glass-blur border border-border focus-within:border-gold transition-colors">
             <div className="grid place-items-center pl-4 text-gold"><Search className="h-5 w-5" /></div>
             <input value={code} onChange={(e) => setCode(e.target.value)}
               placeholder="Enter waybill (e.g. BLX-A1B2C3)"
@@ -67,7 +81,8 @@ function Page() {
           </form>
 
           {booking && (
-            <div className="mt-10 bg-card border border-border p-8">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+              className="mt-10 glass-blur border border-border p-8">
               <div className="flex items-start justify-between flex-wrap gap-4">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.3em] text-gold">Waybill</div>
@@ -96,7 +111,7 @@ function Page() {
                   ))}
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
       </section>

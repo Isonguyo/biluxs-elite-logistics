@@ -10,10 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackRouteImport } from './routes/track'
+import { Route as ShoppingRouteImport } from './routes/shopping'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FleetRouteImport } from './routes/fleet'
+import { Route as DestinationsRouteImport } from './routes/destinations'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CargoRouteImport } from './routes/cargo'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
@@ -24,6 +27,11 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
   path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShoppingRoute = ShoppingRouteImport.update({
+  id: '/shopping',
+  path: '/shopping',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesRoute = ServicesRouteImport.update({
@@ -41,9 +49,19 @@ const FleetRoute = FleetRouteImport.update({
   path: '/fleet',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DestinationsRoute = DestinationsRouteImport.update({
+  id: '/destinations',
+  path: '/destinations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CargoRoute = CargoRouteImport.update({
+  id: '/cargo',
+  path: '/cargo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BookRoute = BookRouteImport.update({
@@ -80,10 +98,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
+  '/cargo': typeof CargoRoute
   '/contact': typeof ContactRoute
+  '/destinations': typeof DestinationsRoute
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
+  '/shopping': typeof ShoppingRoute
   '/track': typeof TrackRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -92,10 +113,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
+  '/cargo': typeof CargoRoute
   '/contact': typeof ContactRoute
+  '/destinations': typeof DestinationsRoute
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
+  '/shopping': typeof ShoppingRoute
   '/track': typeof TrackRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -106,10 +130,13 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
   '/book': typeof BookRoute
+  '/cargo': typeof CargoRoute
   '/contact': typeof ContactRoute
+  '/destinations': typeof DestinationsRoute
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
+  '/shopping': typeof ShoppingRoute
   '/track': typeof TrackRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -120,10 +147,13 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/book'
+    | '/cargo'
     | '/contact'
+    | '/destinations'
     | '/fleet'
     | '/login'
     | '/services'
+    | '/shopping'
     | '/track'
     | '/admin'
     | '/dashboard'
@@ -132,10 +162,13 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/book'
+    | '/cargo'
     | '/contact'
+    | '/destinations'
     | '/fleet'
     | '/login'
     | '/services'
+    | '/shopping'
     | '/track'
     | '/admin'
     | '/dashboard'
@@ -145,10 +178,13 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/about'
     | '/book'
+    | '/cargo'
     | '/contact'
+    | '/destinations'
     | '/fleet'
     | '/login'
     | '/services'
+    | '/shopping'
     | '/track'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
@@ -159,10 +195,13 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AboutRoute: typeof AboutRoute
   BookRoute: typeof BookRoute
+  CargoRoute: typeof CargoRoute
   ContactRoute: typeof ContactRoute
+  DestinationsRoute: typeof DestinationsRoute
   FleetRoute: typeof FleetRoute
   LoginRoute: typeof LoginRoute
   ServicesRoute: typeof ServicesRoute
+  ShoppingRoute: typeof ShoppingRoute
   TrackRoute: typeof TrackRoute
 }
 
@@ -173,6 +212,13 @@ declare module '@tanstack/react-router' {
       path: '/track'
       fullPath: '/track'
       preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shopping': {
+      id: '/shopping'
+      path: '/shopping'
+      fullPath: '/shopping'
+      preLoaderRoute: typeof ShoppingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services': {
@@ -196,11 +242,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FleetRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/destinations': {
+      id: '/destinations'
+      path: '/destinations'
+      fullPath: '/destinations'
+      preLoaderRoute: typeof DestinationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cargo': {
+      id: '/cargo'
+      path: '/cargo'
+      fullPath: '/cargo'
+      preLoaderRoute: typeof CargoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/book': {
@@ -267,10 +327,13 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AboutRoute: AboutRoute,
   BookRoute: BookRoute,
+  CargoRoute: CargoRoute,
   ContactRoute: ContactRoute,
+  DestinationsRoute: DestinationsRoute,
   FleetRoute: FleetRoute,
   LoginRoute: LoginRoute,
   ServicesRoute: ServicesRoute,
+  ShoppingRoute: ShoppingRoute,
   TrackRoute: TrackRoute,
 }
 export const routeTree = rootRouteImport
