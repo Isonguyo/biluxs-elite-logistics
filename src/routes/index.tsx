@@ -4,6 +4,7 @@ import { Search, ShieldCheck, Sparkles, Award, MapPin, ArrowRight, Car, Bus, Pla
 import { useEffect, useState } from "react";
 import heroImg from "@/assets/biluxs-hero.jpg";
 import { PageShell } from "@/components/biluxs/PageShell";
+import { ScrambleText, Magnetic, KenBurns, RevealLines } from "@/components/biluxs/anim";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -49,7 +50,7 @@ function Landing() {
       {splashing && <Splash done={() => setSplashing(false)} />}
       <PageShell>
         <section className="relative overflow-hidden">
-          <img src={heroImg} alt="BiLUXS luxury fleet" className="absolute inset-0 h-full w-full object-cover opacity-50" />
+          <KenBurns src={heroImg} alt="BiLUXS luxury fleet" className="absolute inset-0 h-full w-full object-cover opacity-50" />
           <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
           <div className="relative max-w-7xl mx-auto px-6 pt-24 pb-32 md:pt-36 md:pb-44">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
@@ -58,21 +59,28 @@ function Landing() {
                 <Sparkles className="h-3 w-3" /> A Brightflow Conglomerate Company
               </div>
               <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.95] text-white">
-                Tourism. Travel.<br /><span className="gradient-text">Transport.</span>
+                <RevealLines text="Tourism. Travel." /><br />
+                <span className="gradient-text"><ScrambleText text="Transport." duration={1600} /></span>
               </h1>
               <p className="mt-6 text-lg text-white/70 max-w-xl leading-relaxed">
                 Chauffeur-driven luxury car hire, executive coaches, airport protocol and corporate logistics — engineered for first-class hospitality across Calabar and beyond.
               </p>
               <div className="mt-10 flex flex-wrap gap-3">
-                <Link to="/book" className="inline-flex items-center justify-center gap-2 px-6 h-14 bg-crimson text-white text-xs uppercase tracking-widest press-effect">
-                  Book Luxury Service <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link to="/track" className="inline-flex items-center justify-center gap-2 px-6 h-14 border border-gold text-gold text-xs uppercase tracking-widest hover:bg-gold hover:text-[var(--navy-deep)] transition-colors">
-                  <Search className="h-4 w-4" /> Track Waybill
-                </Link>
-                <Link to="/fleet" className="inline-flex items-center justify-center gap-2 px-6 h-14 border border-border text-xs uppercase tracking-widest hover:border-white">
-                  Explore Fleet
-                </Link>
+                <Magnetic>
+                  <Link to="/book" className="inline-flex items-center justify-center gap-2 px-6 h-14 bg-crimson text-white text-xs uppercase tracking-widest press-effect liquid-glow">
+                    Book Luxury Service <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Magnetic>
+                <Magnetic>
+                  <Link to="/track" className="inline-flex items-center justify-center gap-2 px-6 h-14 border border-gold text-gold text-xs uppercase tracking-widest hover:bg-gold hover:text-[var(--navy-deep)] transition-colors">
+                    <Search className="h-4 w-4" /> Track Waybill
+                  </Link>
+                </Magnetic>
+                <Magnetic>
+                  <Link to="/fleet" className="inline-flex items-center justify-center gap-2 px-6 h-14 border border-border text-xs uppercase tracking-widest hover:border-white">
+                    Explore Fleet
+                  </Link>
+                </Magnetic>
               </div>
               <div className="mt-12 flex flex-wrap gap-x-10 gap-y-4 text-xs uppercase tracking-widest text-white/60">
                 <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-gold" /> Insured Fleet</div>
