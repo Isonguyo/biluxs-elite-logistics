@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Search, MapPin, Clock, Truck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
+import { RadarPulse } from "@/components/biluxs/anim";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/track")({
