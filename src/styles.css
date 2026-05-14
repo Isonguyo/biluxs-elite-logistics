@@ -33,19 +33,19 @@
   --color-crimson: var(--crimson);
   --color-navy: var(--navy);
   --color-navy-deep: var(--navy-deep);
-  --font-display: "Bebas Neue", "Impact", sans-serif;
+  --font-display: "Playfair Display", "Georgia", serif;
   --font-sans: "Inter", system-ui, sans-serif;
 }
 
 :root {
   --radius: 2px;
 
-  /* Brand */
-  --navy-deep: oklch(0.16 0.04 270);   /* #0b0d17 */
-  --navy: oklch(0.22 0.05 270);
-  --crimson: oklch(0.55 0.24 27);       /* vibrant red */
-  --crimson-glow: oklch(0.62 0.26 27);
-  --gold: oklch(0.82 0.14 85);          /* warm gold */
+  /* Brand: Navy Blue, White, Maroon */
+  --navy-deep: oklch(0.18 0.06 265);    /* deep navy blue */
+  --navy: oklch(0.26 0.07 265);
+  --crimson: oklch(0.38 0.13 20);        /* maroon */
+  --crimson-glow: oklch(0.46 0.16 22);   /* lighter maroon */
+  --gold: oklch(0.96 0.01 90);           /* white-ish accent */
 
   --background: oklch(0.16 0.04 270);
   --foreground: oklch(0.98 0 0);
@@ -97,8 +97,8 @@
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    font-weight: 600;
   }
 }
 

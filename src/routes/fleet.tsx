@@ -61,8 +61,11 @@ function Page() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {list.map((v, i) => (
-              <motion.div key={v.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.04 }}
+              <motion.div key={v.id}
+                initial={{ opacity: 0, x: i % 2 === 0 ? -60 : 60, y: 30 }}
+                whileInView={{ opacity: 1, x: 0, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.7, delay: (i % 3) * 0.12, ease: [0.22, 1, 0.36, 1] }}
                 className="bg-card border border-border overflow-hidden group hover:border-gold transition-colors">
                 <div className="aspect-video bg-[var(--navy-deep)] grid place-items-center relative">
                   {v.image_url ? <img src={v.image_url} alt={v.name} className="h-full w-full object-cover" />
