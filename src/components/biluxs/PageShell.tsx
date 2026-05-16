@@ -24,23 +24,55 @@ export function PageShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function PageHero({ eyebrow, title, subtitle }: { eyebrow: React.ReactNode; title: React.ReactNode; subtitle?: string }) {
+export function PageHero({
+  eyebrow,
+  title,
+  subtitle,
+  image,
+}: {
+  eyebrow: React.ReactNode;
+  title: React.ReactNode;
+  subtitle?: string;
+  image?: string;
+}) {
   return (
-    <section className="border-b border-border bg-[var(--navy-deep)] relative overflow-hidden">
+    <section className="relative border-b border-border bg-[var(--navy-deep)] overflow-hidden">
+      {image && (
+        <>
+          <motion.div
+            initial={{ scale: 1.15, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0"
+          >
+            <motion.img
+              src={image}
+              alt=""
+              loading="eager"
+              className="absolute inset-0 w-full h-full object-cover"
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1.2 }}
+              transition={{ duration: 18, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
+            />
+          </motion.div>
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, oklch(0.16 0.05 265 / 0.55) 0%, oklch(0.10 0.05 265 / 0.95) 100%)" }} />
+          <div className="absolute inset-0 mix-blend-overlay opacity-40" style={{ background: "linear-gradient(115deg, transparent 35%, var(--crimson) 75%, transparent 100%)" }} />
+        </>
+      )}
       <motion.div
-        className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-crimson/10 blur-3xl"
+        className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-crimson/20 blur-3xl"
         animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.7, 0.4] }}
         transition={{ duration: 8, repeat: Infinity }}
       />
-      <div className="relative max-w-7xl mx-auto px-6 py-20 md:py-28">
+      <div className="relative max-w-7xl mx-auto px-6 py-24 md:py-32">
         <motion.div
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
           className="text-[10px] tracking-[0.4em] uppercase text-gold mb-4">{eyebrow}</motion.div>
-        <h1 className="font-display text-5xl md:text-7xl leading-[0.95] text-white">{title}</h1>
+        <h1 className="font-display text-5xl md:text-7xl leading-[0.95] text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.5)]">{title}</h1>
         {subtitle && (
           <motion.p
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-5 text-muted-foreground max-w-2xl leading-relaxed">{subtitle}</motion.p>
+            className="mt-5 text-white/80 max-w-2xl leading-relaxed">{subtitle}</motion.p>
         )}
       </div>
     </section>

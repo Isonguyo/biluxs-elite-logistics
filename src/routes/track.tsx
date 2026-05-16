@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Search, MapPin, Clock, Truck } from "lucide-react";
+import { Search, MapPin, Clock, Truck, Smartphone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
 import { RadarPulse } from "@/components/biluxs/anim";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import heroTrack from "@/assets/hero-track.jpg";
 
 export const Route = createFileRoute("/track")({
   head: () => ({
@@ -55,7 +56,7 @@ function Page() {
 
   return (
     <PageShell>
-      <PageHero eyebrow="Live Tracking" title={<>Track Your <span className="gradient-text">Waybill</span></>} />
+      <PageHero eyebrow="Live Tracking" title={<>Track Your <span className="gradient-text">Waybill</span></>} subtitle="Enter your waybill code for live GPS, status and chauffeur details." image={heroTrack} />
       <section className="py-16 relative">
         <div className="max-w-3xl mx-auto px-6">
           <div className="relative h-56 mb-10 glass-blur border border-gold/30 overflow-hidden">
@@ -79,6 +80,14 @@ function Page() {
               {loading ? "…" : "Track"}
             </button>
           </form>
+
+          <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="mt-4 flex items-start gap-3 p-4 border border-gold/30 bg-gold/5 text-xs text-white/80">
+            <Smartphone className="h-4 w-4 text-gold flex-shrink-0 mt-0.5" />
+            <div>
+              <span className="text-gold font-semibold uppercase tracking-widest">Pro tip</span> — for precision real-time tracking with push alerts at pickup and arrival, download the BiLUXS mobile app. Web tracking refreshes every 30 seconds; the app streams live.
+            </div>
+          </motion.div>
 
           {booking && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}

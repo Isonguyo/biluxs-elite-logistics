@@ -7,6 +7,7 @@ import { Check, ArrowRight, ArrowLeft, Car, MapPin, Sparkles, Receipt } from "lu
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell } from "@/components/biluxs/PageShell";
 import { useAuth } from "@/hooks/useAuth";
+import { AppDownloadModal } from "@/components/biluxs/AppDownloadModal";
 
 type Vehicle = { id: string; name: string; category: string; capacity: number; base_rate: number; per_km_rate: number; image_url: string | null };
 
@@ -39,6 +40,8 @@ function Page() {
   const [distance, setDistance] = useState<number>(15);
   const [luxury, setLuxury] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [successWaybill, setSuccessWaybill] = useState<string | undefined>();
 
   useEffect(() => {
     supabase.from("vehicles").select("id,name,category,capacity,base_rate,per_km_rate,image_url")
@@ -76,6 +79,12 @@ function Page() {
     setSubmitting(false);
     if (error || !data) { toast.error(error?.message || "Could not create booking."); return; }
     toast.success(`Booking confirmed — ${data.waybill_code}`);
+    setSuccessWaybill(data.waybill_code);
+    setSuccessOpen(true);
+  };
+
+  const closeModal = () => {
+    setSuccessOpen(false);
     navigate({ to: "/dashboard" });
   };
 
@@ -133,6 +142,7 @@ function Page() {
           </div>
         </div>
       </section>
+      <AppDownloadModal open={successOpen} onClose={closeModal} waybill={successWaybill} />
     </PageShell>
   );
 }

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Car } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
+import herofleetImg from "@/assets/hero-fleet.jpg";
 import { TiltCard, ParallaxY } from "@/components/biluxs/anim";
 
 export const Route = createFileRoute("/fleet")({
@@ -45,7 +46,7 @@ function Page() {
 
   return (
     <PageShell>
-      <PageHero
+      <PageHero image={herofleetImg}
         eyebrow="Fleet Catalogue"
         title={<>Choose Your <span className="gradient-text">Class</span></>}
         subtitle="Every vehicle in our fleet is GPS-tracked, fully insured and chauffeur-driven by trained professionals."

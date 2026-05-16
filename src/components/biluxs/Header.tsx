@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Search, Menu, X, LogOut, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { Logo } from "./Logo";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -10,6 +11,7 @@ const NAV = [
   { to: "/fleet", label: "Fleet" },
   { to: "/cargo", label: "Cargo" },
   { to: "/shopping", label: "Shopping" },
+  { to: "/procurement", label: "Procurement" },
   { to: "/destinations", label: "Destinations" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
@@ -33,12 +35,8 @@ export function Header() {
       className="sticky top-0 z-50 backdrop-blur-md bg-[var(--navy-deep)]/85 border-b border-border"
     >
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="h-10 w-10 gradient-brand grid place-items-center font-display text-white text-xl">B</div>
-          <div className="leading-none">
-            <div className="font-display text-2xl tracking-widest text-white">BiLUXS</div>
-            <div className="text-[10px] tracking-[0.3em] text-gold uppercase">Elite Logistics</div>
-          </div>
+        <Link to="/" className="flex items-center group">
+          <Logo size={44} />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7 text-xs tracking-widest uppercase">

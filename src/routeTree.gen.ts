@@ -10,8 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackRouteImport } from './routes/track'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ShoppingRouteImport } from './routes/shopping'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ProcurementRouteImport } from './routes/procurement'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FleetRouteImport } from './routes/fleet'
 import { Route as DestinationsRouteImport } from './routes/destinations'
@@ -29,6 +32,11 @@ const TrackRoute = TrackRouteImport.update({
   path: '/track',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShoppingRoute = ShoppingRouteImport.update({
   id: '/shopping',
   path: '/shopping',
@@ -37,6 +45,16 @@ const ShoppingRoute = ShoppingRouteImport.update({
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProcurementRoute = ProcurementRouteImport.update({
+  id: '/procurement',
+  path: '/procurement',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -103,8 +121,11 @@ export interface FileRoutesByFullPath {
   '/destinations': typeof DestinationsRoute
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/procurement': typeof ProcurementRoute
   '/services': typeof ServicesRoute
   '/shopping': typeof ShoppingRoute
+  '/terms': typeof TermsRoute
   '/track': typeof TrackRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -118,8 +139,11 @@ export interface FileRoutesByTo {
   '/destinations': typeof DestinationsRoute
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/procurement': typeof ProcurementRoute
   '/services': typeof ServicesRoute
   '/shopping': typeof ShoppingRoute
+  '/terms': typeof TermsRoute
   '/track': typeof TrackRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -135,8 +159,11 @@ export interface FileRoutesById {
   '/destinations': typeof DestinationsRoute
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
+  '/procurement': typeof ProcurementRoute
   '/services': typeof ServicesRoute
   '/shopping': typeof ShoppingRoute
+  '/terms': typeof TermsRoute
   '/track': typeof TrackRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -152,8 +179,11 @@ export interface FileRouteTypes {
     | '/destinations'
     | '/fleet'
     | '/login'
+    | '/privacy'
+    | '/procurement'
     | '/services'
     | '/shopping'
+    | '/terms'
     | '/track'
     | '/admin'
     | '/dashboard'
@@ -167,8 +197,11 @@ export interface FileRouteTypes {
     | '/destinations'
     | '/fleet'
     | '/login'
+    | '/privacy'
+    | '/procurement'
     | '/services'
     | '/shopping'
+    | '/terms'
     | '/track'
     | '/admin'
     | '/dashboard'
@@ -183,8 +216,11 @@ export interface FileRouteTypes {
     | '/destinations'
     | '/fleet'
     | '/login'
+    | '/privacy'
+    | '/procurement'
     | '/services'
     | '/shopping'
+    | '/terms'
     | '/track'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
@@ -200,8 +236,11 @@ export interface RootRouteChildren {
   DestinationsRoute: typeof DestinationsRoute
   FleetRoute: typeof FleetRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ProcurementRoute: typeof ProcurementRoute
   ServicesRoute: typeof ServicesRoute
   ShoppingRoute: typeof ShoppingRoute
+  TermsRoute: typeof TermsRoute
   TrackRoute: typeof TrackRoute
 }
 
@@ -212,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: '/track'
       fullPath: '/track'
       preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shopping': {
@@ -226,6 +272,20 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/procurement': {
+      id: '/procurement'
+      path: '/procurement'
+      fullPath: '/procurement'
+      preLoaderRoute: typeof ProcurementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -332,8 +392,11 @@ const rootRouteChildren: RootRouteChildren = {
   DestinationsRoute: DestinationsRoute,
   FleetRoute: FleetRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
+  ProcurementRoute: ProcurementRoute,
   ServicesRoute: ServicesRoute,
   ShoppingRoute: ShoppingRoute,
+  TermsRoute: TermsRoute,
   TrackRoute: TrackRoute,
 }
 export const routeTree = rootRouteImport

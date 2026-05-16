@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
+import heroshoppingImg from "@/assets/hero-shopping.jpg";
 import { TiltCard, RevealLines, Magnetic } from "@/components/biluxs/anim";
 import { motion } from "framer-motion";
 import { ShoppingBag, Globe, Plane, Sparkles, ArrowRight, BadgeCheck } from "lucide-react";
@@ -37,7 +38,7 @@ const STEPS = [
 function Page() {
   return (
     <PageShell>
-      <PageHero
+      <PageHero image={heroshoppingImg}
         eyebrow="Fashion & Lifestyle"
         title={<><RevealLines text="Personal Shopping." /><br /><span className="gradient-text">Globally Sourced.</span></>}
         subtitle="From London flagship stores to Dubai's gold towers — BiLUXS concierge sources, authenticates and delivers your luxury wardrobe to Calabar."
