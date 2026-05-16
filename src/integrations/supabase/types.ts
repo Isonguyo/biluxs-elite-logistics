@@ -20,6 +20,7 @@ export type Database = {
           base_price: number
           created_at: string
           distance_km: number
+          driver_id: string | null
           dropoff_location: string
           id: string
           luxury_protocol: boolean
@@ -37,6 +38,7 @@ export type Database = {
           base_price?: number
           created_at?: string
           distance_km?: number
+          driver_id?: string | null
           dropoff_location: string
           id?: string
           luxury_protocol?: boolean
@@ -54,6 +56,7 @@ export type Database = {
           base_price?: number
           created_at?: string
           distance_km?: number
+          driver_id?: string | null
           dropoff_location?: string
           id?: string
           luxury_protocol?: boolean
@@ -67,6 +70,13 @@ export type Database = {
           waybill_code?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "bookings_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "bookings_vehicle_id_fkey"
             columns: ["vehicle_id"]
@@ -103,6 +113,87 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string
           id?: string
+        }
+        Relationships: []
+      }
+      drivers: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          license_no: string | null
+          phone: string
+          photo_url: string | null
+          rating: number
+          status: Database["public"]["Enums"]["driver_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id?: string
+          license_no?: string | null
+          phone: string
+          photo_url?: string | null
+          rating?: number
+          status?: Database["public"]["Enums"]["driver_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          license_no?: string | null
+          phone?: string
+          photo_url?: string | null
+          rating?: number
+          status?: Database["public"]["Enums"]["driver_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      procurement_requests: {
+        Row: {
+          brand: string | null
+          created_at: string
+          estimated_value: number | null
+          id: string
+          item_description: string
+          notes: string | null
+          reference_images: Json
+          size: string | null
+          source_city: string | null
+          status: Database["public"]["Enums"]["procurement_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brand?: string | null
+          created_at?: string
+          estimated_value?: number | null
+          id?: string
+          item_description: string
+          notes?: string | null
+          reference_images?: Json
+          size?: string | null
+          source_city?: string | null
+          status?: Database["public"]["Enums"]["procurement_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brand?: string | null
+          created_at?: string
+          estimated_value?: number | null
+          id?: string
+          item_description?: string
+          notes?: string | null
+          reference_images?: Json
+          size?: string | null
+          source_city?: string | null
+          status?: Database["public"]["Enums"]["procurement_status"]
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -249,6 +340,13 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+      driver_status: "active" | "off_duty" | "suspended"
+      procurement_status:
+        | "submitted"
+        | "sourcing"
+        | "shipped"
+        | "delivered"
+        | "cancelled"
       vehicle_category: "sedan" | "suv" | "bus" | "coach"
       vehicle_status: "available" | "in_use" | "maintenance"
     }
@@ -384,6 +482,14 @@ export const Constants = {
         "confirmed",
         "in_progress",
         "completed",
+        "cancelled",
+      ],
+      driver_status: ["active", "off_duty", "suspended"],
+      procurement_status: [
+        "submitted",
+        "sourcing",
+        "shipped",
+        "delivered",
         "cancelled",
       ],
       vehicle_category: ["sedan", "suv", "bus", "coach"],
