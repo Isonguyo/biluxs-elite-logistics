@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Car, Bus, Plane, Briefcase, ShieldCheck, Award } from "lucide-react";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
+import heroservicesImg from "@/assets/hero-services.jpg";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -24,7 +25,7 @@ const SERVICES = [
 function Page() {
   return (
     <PageShell>
-      <PageHero
+      <PageHero image={heroservicesImg}
         eyebrow="What We Do"
         title={<>Engineered for the <span className="gradient-text">Executive Class</span></>}
         subtitle="Four divisions. One standard. Every BiLUXS journey is built around integrity, reliability and luxury."

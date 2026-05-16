@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
+import herocontactImg from "@/assets/hero-contact.jpg";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -49,7 +50,7 @@ function Page() {
 
   return (
     <PageShell>
-      <PageHero
+      <PageHero image={herocontactImg}
         eyebrow="Contact & Location"
         title={<>Visit our <span className="gradient-text">Calabar HQ</span></>}
         subtitle="Cooperative House, Harbour Road, Calabar, Cross River State — Nigeria."

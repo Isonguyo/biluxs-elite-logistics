@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ShieldCheck, Award, Sparkles, MapPin } from "lucide-react";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
+import heroaboutImg from "@/assets/hero-about.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -17,7 +18,7 @@ export const Route = createFileRoute("/about")({
 function Page() {
   return (
     <PageShell>
-      <PageHero
+      <PageHero image={heroaboutImg}
         eyebrow="About BiLUXS"
         title={<>Professionalism. Safety. <span className="gradient-text">First-Class Hospitality.</span></>}
         subtitle="The elite logistics division of Brightflow Conglomerate, headquartered on Harbour Road, Calabar."

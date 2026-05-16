@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
+import herocargoImg from "@/assets/hero-cargo.jpg";
 import { TiltCard, RevealLines, Magnetic } from "@/components/biluxs/anim";
 import { motion } from "framer-motion";
 import { Package, Truck, ShieldCheck, Clock, Boxes, Lock, Snowflake, ArrowRight } from "lucide-react";
@@ -35,7 +36,7 @@ const TIERS = [
 function Page() {
   return (
     <PageShell>
-      <PageHero
+      <PageHero image={herocargoImg}
         eyebrow="Cargo & Logistics"
         title={<><RevealLines text="Door-to-Door." /><br /><span className="gradient-text">Vault-Grade Trust.</span></>}
         subtitle="From a single confidential envelope to inter-state corporate freight — insured, GPS-tracked and handled by chauffeurs trained in close-protection logistics."

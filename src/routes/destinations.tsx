@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
+import herodestinationsImg from "@/assets/hero-destinations.jpg";
 import { TiltCard, RevealLines, Magnetic, ParallaxY } from "@/components/biluxs/anim";
 import { motion } from "framer-motion";
 import { MapPin, Mountain, Waves, Plane, Compass, ArrowRight } from "lucide-react";
@@ -43,7 +44,7 @@ const DESTS: Dest[] = [
 function Page() {
   return (
     <PageShell>
-      <PageHero
+      <PageHero image={herodestinationsImg}
         eyebrow="Experience"
         title={<><RevealLines text="Destinations" /><br /><span className="gradient-text">Worth the Journey.</span></>}
         subtitle="Curated escapes — from the highland air of Obudu to overwater villas in Zanzibar. BiLUXS handles flights, transfers, accommodation and protocol end-to-end."
