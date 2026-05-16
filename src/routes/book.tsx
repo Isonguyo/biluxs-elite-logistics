@@ -40,6 +40,8 @@ function Page() {
   const [distance, setDistance] = useState<number>(15);
   const [luxury, setLuxury] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [successWaybill, setSuccessWaybill] = useState<string | undefined>();
 
   useEffect(() => {
     supabase.from("vehicles").select("id,name,category,capacity,base_rate,per_km_rate,image_url")
