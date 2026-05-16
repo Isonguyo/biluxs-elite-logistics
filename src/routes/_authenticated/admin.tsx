@@ -19,13 +19,15 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 type Booking = {
   id: string; waybill_code: string; pickup_location: string; dropoff_location: string;
-  status: string; total_price: number; user_id: string; created_at: string;
+  status: string; total_price: number; user_id: string; created_at: string; driver_id: string | null;
 };
 type Vehicle = { id: string; name: string; status: string; category: string };
+type Driver = { id: string; full_name: string; status: string };
 
 function Page() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [drivers, setDrivers] = useState<Driver[]>([]);
   const [pulse, setPulse] = useState(false);
 
   const loadAll = () => {
@@ -33,6 +35,8 @@ function Page() {
       .then(({ data }) => setBookings((data as Booking[]) || []));
     supabase.from("vehicles").select("id,name,status,category").order("name")
       .then(({ data }) => setVehicles((data as Vehicle[]) || []));
+    supabase.from("drivers").select("id,full_name,status").eq("status", "active").order("full_name")
+      .then(({ data }) => setDrivers((data as Driver[]) || []));
   };
 
   useEffect(() => {
@@ -53,6 +57,14 @@ function Page() {
   const setVehicleStatus = async (id: string, status: string) => {
     const { error } = await supabase.from("vehicles").update({ status: status as never }).eq("id", id);
     if (error) toast.error(error.message); else toast.success(`Vehicle marked ${status}`);
+  };
+  const assignDriver = async (bookingId: string, driverId: string) => {
+    const { error } = await supabase.from("bookings").update({ driver_id: driverId || null }).eq("id", bookingId);
+    if (error) toast.error(error.message);
+    else {
+      const d = drivers.find((x) => x.id === driverId);
+      toast.success(driverId ? `Assigned ${d?.full_name ?? "driver"}` : "Driver unassigned");
+    }
   };
 
   const stats = {
@@ -86,7 +98,7 @@ function Page() {
               </div>
               <div className="max-h-[600px] overflow-y-auto divide-y divide-border">
                 {bookings.map((b) => (
-                  <div key={b.id} className="p-4 grid md:grid-cols-[auto_1fr_auto_auto] gap-4 items-center text-sm">
+                  <div key={b.id} className="p-4 grid md:grid-cols-[auto_1fr_auto_auto_auto] gap-3 items-center text-sm">
                     <div>
                       <div className="font-display tracking-widest">{b.waybill_code}</div>
                       <div className="text-[10px] text-muted-foreground">{new Date(b.created_at).toLocaleString()}</div>
@@ -96,6 +108,11 @@ function Page() {
                       <div className="text-muted-foreground">→ {b.dropoff_location}</div>
                     </div>
                     <div className="font-display text-lg">₦{Number(b.total_price).toLocaleString()}</div>
+                    <select value={b.driver_id ?? ""} onChange={(e) => assignDriver(b.id, e.target.value)}
+                      className={`bg-input border h-9 px-2 text-[10px] uppercase tracking-widest focus:outline-none focus:border-gold ${b.driver_id ? "border-gold text-gold" : "border-border"}`}>
+                      <option value="">— Assign driver —</option>
+                      {drivers.map((d) => <option key={d.id} value={d.id}>{d.full_name}</option>)}
+                    </select>
                     <select value={b.status} onChange={(e) => setStatus(b.id, e.target.value)}
                       className="bg-input border border-border h-9 px-3 text-xs focus:outline-none focus:border-gold">
                       {["pending", "confirmed", "in_progress", "completed", "cancelled"].map((s) =>
