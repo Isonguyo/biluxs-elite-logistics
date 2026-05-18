@@ -1,4 +1,4 @@
-import logo from "@/assets/biluxs-logo.jpg";
+import logo from "@/assets/biluxs-logo.png";
 
 export function Logo({ size = 44, withText = true }: { size?: number; withText?: boolean }) {
   return (
@@ -8,8 +8,8 @@ export function Logo({ size = 44, withText = true }: { size?: number; withText?:
         alt="BiLUXS — Brightflow Logistics Luxury Services"
         width={size}
         height={size}
-        className="object-cover"
-        style={{ width: size, height: size }}
+        className="object-contain"
+        style={{ width: size, height: size, filter: "invert(1)" }}
       />
       {withText && (
         <span className="leading-none hidden sm:flex flex-col gap-1">
