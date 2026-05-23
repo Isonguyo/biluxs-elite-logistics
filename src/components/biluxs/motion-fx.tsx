@@ -8,6 +8,7 @@ import {
   MotionProps,
   Variants,
 } from "framer-motion";
+import { usePointerFine } from "@/hooks/usePointerFine";
 
 /* ---------- Split Text: per-character masked reveal ---------- */
 export function SplitText({
