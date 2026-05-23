@@ -1,8 +1,10 @@
-23:38:12.563 Running build in Washington, D.C., USA (East) – iad1
-23:38:12.564 Build machine configuration: 2 cores, 8 GB
-23:38:12.683 Cloning github.com/Isonguyo/biluxs-elite-logistics (Branch: main, Commit: 13c3d3f)
-23:38:12.685 Previous build caches not available.
-23:38:13.240 Cloning completed: 557.000ms
-23:38:13.577 Running "vercel build"
-23:38:13.616 Vercel CLI 54.4.1
-23:38:14.169 Running "install" command: `npm run build `...
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".output/server",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}
