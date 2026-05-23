@@ -143,3 +143,15 @@
   50%      { box-shadow: 0 0 0 3px var(--gold), 0 0 30px 6px var(--crimson); }
 }
 .liquid-glow:hover { animation: liquid-border 1.6s ease-in-out infinite; }
+
+/* Device-aware motion: tap feedback on touch devices, hover effects only on fine pointers */
+@media (hover: none), (pointer: coarse) {
+  button, a, [role="button"] {
+    transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:active, a:active, [role="button"]:active {
+    transform: scale(0.96);
+  }
+  .liquid-glow:hover { animation: none; }
+}
