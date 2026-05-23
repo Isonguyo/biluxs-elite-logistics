@@ -4,7 +4,7 @@ import { PageShell, PageHero } from "@/components/biluxs/PageShell";
 import { SplitText, CardCascade, CascadeItem, MagneticButton } from "@/components/biluxs/motion-fx";
 import { motion } from "framer-motion";
 import heroaboutImg from "@/assets/hero-about.jpg";
-import founderImg from "@/assets/founder.jpg";
+import founderImg from "@/assets/1779462253013.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -230,9 +230,9 @@ function Page() {
             >
               <Quote className="absolute -top-4 -left-4 h-10 w-10 text-crimson bg-[var(--navy-deep)] p-2" />
               <blockquote className="font-display text-xl md:text-2xl text-white leading-snug">
-                “Success only happens when opportunity meets preparation. At BiLUXS, we don't just
+                "Success only happens when opportunity meets preparation. At BiLUXS, we don't just
                 bridge logistics gaps; we prepare business to meet lifestyle, and style to clash
-                with class.”
+                with class."
               </blockquote>
               <figcaption className="mt-4 text-xs uppercase tracking-[0.3em] text-gold/80">
                 — Dr. Aniefiok Iton
