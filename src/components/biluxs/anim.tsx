@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, ReactNode } from "react";
+import { usePointerFine } from "@/hooks/usePointerFine";
 import { motion, useMotionValue, useSpring, useTransform, useScroll, MotionProps } from "framer-motion";
 
 /* -------- Scramble Text -------- */
@@ -29,15 +30,24 @@ export function ScrambleText({ text, duration = 1400, className = "" }: { text: 
 /* -------- Magnetic Button (wraps any element) -------- */
 export function Magnetic({ children, strength = 0.35, className = "" }: { children: ReactNode; strength?: number; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const fine = usePointerFine();
   const x = useSpring(0, { stiffness: 200, damping: 15 });
   const y = useSpring(0, { stiffness: 200, damping: 15 });
   const onMove = (e: React.MouseEvent) => {
+    if (!fine) return;
     const el = ref.current; if (!el) return;
     const r = el.getBoundingClientRect();
     x.set((e.clientX - (r.left + r.width / 2)) * strength);
     y.set((e.clientY - (r.top + r.height / 2)) * strength);
   };
   const onLeave = () => { x.set(0); y.set(0); };
+  if (!fine) {
+    return (
+      <motion.div className={className} whileTap={{ scale: 0.96 }} transition={{ type: "spring", stiffness: 400, damping: 22 }}>
+        {children}
+      </motion.div>
+    );
+  }
   return (
     <motion.div ref={ref} onMouseMove={onMove} onMouseLeave={onLeave} style={{ x, y }} className={className}>
       {children}
@@ -48,9 +58,11 @@ export function Magnetic({ children, strength = 0.35, className = "" }: { childr
 /* -------- 3D Tilt Card -------- */
 export function TiltCard({ children, className = "", max = 10 }: { children: ReactNode; className?: string; max?: number }) {
   const ref = useRef<HTMLDivElement>(null);
+  const fine = usePointerFine();
   const rx = useSpring(0, { stiffness: 200, damping: 18 });
   const ry = useSpring(0, { stiffness: 200, damping: 18 });
   const onMove = (e: React.MouseEvent) => {
+    if (!fine) return;
     const el = ref.current; if (!el) return;
     const r = el.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width - 0.5;
@@ -59,6 +71,13 @@ export function TiltCard({ children, className = "", max = 10 }: { children: Rea
     rx.set(-py * max);
   };
   const onLeave = () => { rx.set(0); ry.set(0); };
+  if (!fine) {
+    return (
+      <motion.div className={className} whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 22 }}>
+        {children}
+      </motion.div>
+    );
+  }
   return (
     <motion.div
       ref={ref}
