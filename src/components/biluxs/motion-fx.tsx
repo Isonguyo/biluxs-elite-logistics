@@ -8,6 +8,7 @@ import {
   MotionProps,
   Variants,
 } from "framer-motion";
+import { usePointerFine } from "@/hooks/usePointerFine";
 
 /* ---------- Split Text: per-character masked reveal ---------- */
 export function SplitText({
@@ -80,10 +81,12 @@ export function MagneticButton({
   radius?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const fine = usePointerFine();
   const x = useSpring(0, { stiffness: 220, damping: 18, mass: 0.6 });
   const y = useSpring(0, { stiffness: 220, damping: 18, mass: 0.6 });
 
   const handleMove = (e: React.MouseEvent) => {
+    if (!fine) return;
     const el = ref.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
@@ -101,6 +104,19 @@ export function MagneticButton({
     x.set(0);
     y.set(0);
   };
+
+  if (!fine) {
+    return (
+      <motion.div
+        style={{ display: "inline-block" }}
+        className={className}
+        whileTap={{ scale: 0.96 }}
+        transition={{ type: "spring", stiffness: 400, damping: 22 }}
+      >
+        {children}
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
