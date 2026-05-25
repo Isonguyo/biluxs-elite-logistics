@@ -60,7 +60,7 @@ function Landing() {
               </div>
               <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.95] text-white">
                 <RevealLines text="Tourism. Travel." /><br />
-                <span className="gradient-text"><ScrambleText text="Transport." duration={1600} /></span>
+                <span className="gradient-text"><ScrambleText text="BILUXS." duration={1600} /></span>
               </h1>
               <p className="mt-6 text-lg text-white/70 max-w-xl leading-relaxed">
                 Chauffeur-driven luxury car hire, executive coaches, airport protocol and corporate logistics — engineered for first-class hospitality across Calabar and beyond.
