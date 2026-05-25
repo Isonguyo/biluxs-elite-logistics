@@ -12,7 +12,10 @@ const PORT = process.env.PORT || 3000;
 app.use(compression());
 
 // Serve static files from dist/client
-app.use(express.static("dist/client"));
+app.use(express.static("dist/client", {
+  maxAge: "1d",
+  etag: false,
+}));
 
 // Serve index.html for all routes (SPA)
 app.get("*", (req, res) => {
