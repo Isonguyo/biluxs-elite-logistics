@@ -54,7 +54,12 @@ function Page() {
   };
 
   const submit = async () => {
-    if (!user) { toast.error("Sign in to submit a procurement request."); navigate({ to: "/login" }); return; }
+    if (website_verify) { console.warn("Bot submission blocked"); return; }
+    const now = Date.now();
+    if (submitLockRef.current || now - lastSubmitRef.current < 2000) return;
+    submitLockRef.current = true;
+    lastSubmitRef.current = now;
+    if (!user) { toast.error("Sign in to submit a procurement request."); navigate({ to: "/login" }); submitLockRef.current = false; return; }
     setSubmitting(true);
     const urls: string[] = [];
     for (const f of files) {
