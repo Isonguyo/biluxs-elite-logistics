@@ -9,19 +9,36 @@ import { ScrambleText, Magnetic, KenBurns, RevealLines } from "@/components/bilu
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "BiLUXS — Luxury Car Hire Calabar | Executive Transport Cross River" },
-      { name: "description", content: "Chauffeur-driven luxury car hire, executive coaches, airport protocol & corporate logistics in Calabar, Cross River. A Brightflow Conglomerate company." },
-      { property: "og:title", content: "BiLUXS — Luxury Car Hire Calabar | Executive Transport Cross River" },
-      { property: "og:description", content: "Chauffeur-driven luxury car hire, executive coaches, airport protocol & corporate logistics in Calabar, Cross River. A Brightflow Conglomerate company." },
+      {
+        title: "BiLUXS — Luxury Car Hire Calabar | Executive Transport Cross River",
+      },
+      {
+        name: "description",
+        content:
+          "Chauffeur-driven luxury car hire, executive coaches, airport protocol & corporate logistics in Calabar, Cross River. A Brightflow Conglomerate company.",
+      },
+      {
+        property: "og:title",
+        content:
+          "BiLUXS — Luxury Car Hire Calabar | Executive Transport Cross River",
+      },
+      {
+        property: "og:description",
+        content:
+          "Chauffeur-driven luxury car hire, executive coaches, airport protocol & corporate logistics in Calabar, Cross River. A Brightflow Conglomerate company.",
+      },
     ],
-    links: [{ rel: "canonical", href: "/" }
-           // Favicon
-    { rel: "icon", href: "https://res.cloudinary.com/dbozz4sgv/image/upload/v1783969651/bilux_whvihe.png" },
-           ],
+    links: [
+      { rel: "canonical", href: "/" },
+      {
+        rel: "icon",
+        type: "image/png",
+        href: "https://res.cloudinary.com/dbozz4sgv/image/upload/v1783969651/bilux_whvihe.png",
+      },
+    ],
   }),
   component: Landing,
 });
-
 function Splash({ done }: { done: () => void }) {
   useEffect(() => {
     const t = setTimeout(done, 1800);
