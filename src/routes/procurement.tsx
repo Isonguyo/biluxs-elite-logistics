@@ -75,6 +75,7 @@ function Page() {
       reference_images: urls,
     });
     setSubmitting(false);
+    submitLockRef.current = false;
     if (error) { toast.error(error.message); return; }
     toast.success("Procurement request submitted — our concierge will reach out within 12 hours.");
     navigate({ to: "/dashboard" });
