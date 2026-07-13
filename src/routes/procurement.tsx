@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Globe, ShoppingBag, Image as ImageIcon, Check, ArrowRight, ArrowLeft, Upload, X } from "lucide-react";
