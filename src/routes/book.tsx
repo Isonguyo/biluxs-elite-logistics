@@ -69,8 +69,15 @@ function Page() {
   };
 
   const submit = async () => {
-    if (!user) { toast.error("Sign in to confirm your booking."); navigate({ to: "/login" }); return; }
-    if (!vehicle) return;
+    // Honeypot: silently discard bots
+    if (website_verify) { console.warn("Bot submission blocked"); return; }
+    // Debounce / lock: block rapid duplicate clicks (2s window)
+    const now = Date.now();
+    if (submitLockRef.current || now - lastSubmitRef.current < 2000) return;
+    submitLockRef.current = true;
+    lastSubmitRef.current = now;
+    if (!user) { toast.error("Sign in to confirm your booking."); navigate({ to: "/login" }); submitLockRef.current = false; return; }
+    if (!vehicle) { submitLockRef.current = false; return; }
     setSubmitting(true);
     const { data, error } = await supabase.from("bookings").insert({
       user_id: user.id, vehicle_id: vehicle.id,
@@ -80,6 +87,7 @@ function Page() {
       luxury_protocol: luxury, addons: luxury ? ["luxury_protocol"] : [],
     }).select("waybill_code,id").single();
     setSubmitting(false);
+    submitLockRef.current = false;
     if (error || !data) { toast.error(error?.message || "Could not create booking."); return; }
     toast.success(`Booking confirmed — ${data.waybill_code}`);
     setSuccessWaybill(data.waybill_code);
