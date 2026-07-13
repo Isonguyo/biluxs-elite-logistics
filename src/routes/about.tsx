@@ -4,7 +4,7 @@ import { PageShell, PageHero } from "@/components/biluxs/PageShell";
 import { SplitText, CardCascade, CascadeItem, MagneticButton } from "@/components/biluxs/motion-fx";
 import { motion } from "framer-motion";
 import heroaboutImg from "@/assets/hero-about.jpg";
-import founderImg from "@/assets/1779462253013.jpg";
+
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -169,8 +169,8 @@ function Page() {
             <div className="relative">
               <div className="absolute -inset-3 border border-gold/30" />
               <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-crimson/20 blur-2xl" />
-              <img
-                src={founderImg}
+            <img
+                src="https://res.cloudinary.com/dbozz4sgv/image/upload/v1783971891/Ani_kj281l.jpg"
                 alt="Dr. (Mrs.) Aniefiok Aniekan Iton — Founder & President of Brightflow Conglomerate / BiLUXS"
                 width={1024}
                 height={1024}
