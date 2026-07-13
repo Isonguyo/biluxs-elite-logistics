@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -40,6 +40,9 @@ function Page() {
   const [distance, setDistance] = useState<number>(15);
   const [luxury, setLuxury] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [website_verify, setWebsiteVerify] = useState(""); // honeypot
+  const lastSubmitRef = useRef<number>(0);
+  const submitLockRef = useRef(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [successWaybill, setSuccessWaybill] = useState<string | undefined>();
 
@@ -66,8 +69,15 @@ function Page() {
   };
 
   const submit = async () => {
-    if (!user) { toast.error("Sign in to confirm your booking."); navigate({ to: "/login" }); return; }
-    if (!vehicle) return;
+    // Honeypot: silently discard bots
+    if (website_verify) { console.warn("Bot submission blocked"); return; }
+    // Debounce / lock: block rapid duplicate clicks (2s window)
+    const now = Date.now();
+    if (submitLockRef.current || now - lastSubmitRef.current < 2000) return;
+    submitLockRef.current = true;
+    lastSubmitRef.current = now;
+    if (!user) { toast.error("Sign in to confirm your booking."); navigate({ to: "/login" }); submitLockRef.current = false; return; }
+    if (!vehicle) { submitLockRef.current = false; return; }
     setSubmitting(true);
     const { data, error } = await supabase.from("bookings").insert({
       user_id: user.id, vehicle_id: vehicle.id,
@@ -77,6 +87,7 @@ function Page() {
       luxury_protocol: luxury, addons: luxury ? ["luxury_protocol"] : [],
     }).select("waybill_code,id").single();
     setSubmitting(false);
+    submitLockRef.current = false;
     if (error || !data) { toast.error(error?.message || "Could not create booking."); return; }
     toast.success(`Booking confirmed — ${data.waybill_code}`);
     setSuccessWaybill(data.waybill_code);
@@ -118,6 +129,18 @@ function Page() {
                   )}
                 </motion.div>
               </AnimatePresence>
+
+              {/* Honeypot — bots fill hidden fields; real users don't see this */}
+              <input
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                name="website_verify"
+                value={website_verify}
+                onChange={(e) => setWebsiteVerify(e.target.value)}
+                style={{ display: "none" }}
+              />
 
               <div className="mt-10 flex items-center justify-between">
                 <button disabled={step === 0} onClick={() => setStep(step - 1)}

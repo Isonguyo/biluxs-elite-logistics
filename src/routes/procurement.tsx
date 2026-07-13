@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Globe, ShoppingBag, Image as ImageIcon, Check, ArrowRight, ArrowLeft, Upload, X } from "lucide-react";
@@ -37,6 +37,9 @@ function Page() {
   const [notes, setNotes] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [website_verify, setWebsiteVerify] = useState(""); // honeypot
+  const lastSubmitRef = useRef<number>(0);
+  const submitLockRef = useRef(false);
 
   const canNext = () => {
     if (step === 0) return !!city;
@@ -51,7 +54,12 @@ function Page() {
   };
 
   const submit = async () => {
-    if (!user) { toast.error("Sign in to submit a procurement request."); navigate({ to: "/login" }); return; }
+    if (website_verify) { console.warn("Bot submission blocked"); return; }
+    const now = Date.now();
+    if (submitLockRef.current || now - lastSubmitRef.current < 2000) return;
+    submitLockRef.current = true;
+    lastSubmitRef.current = now;
+    if (!user) { toast.error("Sign in to submit a procurement request."); navigate({ to: "/login" }); submitLockRef.current = false; return; }
     setSubmitting(true);
     const urls: string[] = [];
     for (const f of files) {
@@ -67,6 +75,7 @@ function Page() {
       reference_images: urls,
     });
     setSubmitting(false);
+    submitLockRef.current = false;
     if (error) { toast.error(error.message); return; }
     toast.success("Procurement request submitted — our concierge will reach out within 12 hours.");
     navigate({ to: "/dashboard" });
@@ -167,6 +176,18 @@ function Page() {
                 )}
               </motion.div>
             </AnimatePresence>
+
+            {/* Honeypot — hidden from real users; bots fill and get rejected */}
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              name="website_verify"
+              value={website_verify}
+              onChange={(e) => setWebsiteVerify(e.target.value)}
+              style={{ display: "none" }}
+            />
 
             <div className="mt-10 flex items-center justify-between">
               <button disabled={step === 0} onClick={() => setStep(step - 1)}
