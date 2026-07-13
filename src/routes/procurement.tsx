@@ -37,6 +37,9 @@ function Page() {
   const [notes, setNotes] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [website_verify, setWebsiteVerify] = useState(""); // honeypot
+  const lastSubmitRef = useRef<number>(0);
+  const submitLockRef = useRef(false);
 
   const canNext = () => {
     if (step === 0) return !!city;
