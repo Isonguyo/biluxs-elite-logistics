@@ -11,8 +11,8 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "BiLUXS — Luxury Car Hire Calabar | Executive Transport Cross River" },
       { name: "description", content: "Chauffeur-driven luxury car hire, executive coaches, airport protocol & corporate logistics in Calabar, Cross River. A Brightflow Conglomerate company." },
-      { property: "og:title", content: "BiLUXS — Tourism. Travel. Transport." },
-      { property: "og:description", content: "Elite chauffeur-driven luxury logistics across Calabar and Nigeria." },
+      { property: "og:title", content: "BiLUXS — Luxury Car Hire Calabar | Executive Transport Cross River" },
+      { property: "og:description", content: "Chauffeur-driven luxury car hire, executive coaches, airport protocol & corporate logistics in Calabar, Cross River. A Brightflow Conglomerate company." },
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
