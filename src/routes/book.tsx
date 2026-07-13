@@ -40,6 +40,9 @@ function Page() {
   const [distance, setDistance] = useState<number>(15);
   const [luxury, setLuxury] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [website_verify, setWebsiteVerify] = useState(""); // honeypot
+  const lastSubmitRef = useRef<number>(0);
+  const submitLockRef = useRef(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [successWaybill, setSuccessWaybill] = useState<string | undefined>();
 
