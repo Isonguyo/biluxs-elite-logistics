@@ -177,6 +177,18 @@ function Page() {
               </motion.div>
             </AnimatePresence>
 
+            {/* Honeypot — hidden from real users; bots fill and get rejected */}
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              name="website_verify"
+              value={website_verify}
+              onChange={(e) => setWebsiteVerify(e.target.value)}
+              style={{ display: "none" }}
+            />
+
             <div className="mt-10 flex items-center justify-between">
               <button disabled={step === 0} onClick={() => setStep(step - 1)}
                 className="inline-flex items-center gap-2 px-4 h-11 border border-border text-xs uppercase tracking-widest disabled:opacity-30 hover:border-gold transition-colors">
