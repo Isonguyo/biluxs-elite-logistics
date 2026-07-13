@@ -44,10 +44,20 @@ function Splash({ done }: { done: () => void }) {
 }
 
 function Landing() {
-  const [splashing, setSplashing] = useState(true);
+  const [splashing, setSplashing] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !sessionStorage.getItem("biluxs-splash-seen");
+  });
   return (
     <>
-      {splashing && <Splash done={() => setSplashing(false)} />}
+      {splashing && (
+        <Splash
+          done={() => {
+            sessionStorage.setItem("biluxs-splash-seen", "1");
+            setSplashing(false);
+          }}
+        />
+      )}
       <PageShell>
         <section className="relative overflow-hidden">
           <KenBurns src={heroImg} alt="BiLUXS luxury fleet" className="absolute inset-0 h-full w-full object-cover opacity-50" />
