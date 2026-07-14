@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Search, Menu, X, LogOut, LayoutDashboard, ShieldCheck, ChevronDown } from "lucide-react";
+import { Search, Menu, X, LogOut, LayoutDashboard, ShieldCheck, ChevronDown, Crown, ScanLine } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Logo } from "./Logo";
@@ -30,7 +30,7 @@ const NAV_ITEMS = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin, isDriver, isSuperUser, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -106,9 +106,19 @@ export function Header() {
               <Link to="/dashboard" className="hidden md:inline-flex h-10 w-10 items-center justify-center border border-border hover:border-gold transition-colors" title="Dashboard">
                 <LayoutDashboard className="h-4 w-4" />
               </Link>
+              {isDriver && (
+                <Link to="/driver" className="hidden md:inline-flex h-10 w-10 items-center justify-center border border-emerald-500/60 text-emerald-400" title="Driver">
+                  <ScanLine className="h-4 w-4" />
+                </Link>
+              )}
               {isAdmin && (
-                <Link to="/admin" className="hidden md:inline-flex h-10 w-10 items-center justify-center border border-gold text-gold" title="Admin">
+                <Link to="/admin" className="hidden md:inline-flex h-10 w-10 items-center justify-center border border-gold text-gold" title="Command Center">
                   <ShieldCheck className="h-4 w-4" />
+                </Link>
+              )}
+              {isSuperUser && (
+                <Link to="/super" className="hidden md:inline-flex h-10 w-10 items-center justify-center border border-crimson text-crimson" title="Super User">
+                  <Crown className="h-4 w-4" />
                 </Link>
               )}
               <button onClick={handleSignOut} className="hidden md:inline-flex h-10 w-10 items-center justify-center border border-border hover:border-crimson hover:text-crimson transition-colors" title="Sign out">
@@ -154,7 +164,9 @@ export function Header() {
             {user ? (
               <>
                 <Link to="/dashboard" onClick={() => setOpen(false)} className="hover:text-gold">Dashboard</Link>
-                {isAdmin && <Link to="/admin" onClick={() => setOpen(false)} className="text-gold">Admin</Link>}
+                {isDriver && <Link to="/driver" onClick={() => setOpen(false)} className="text-emerald-400">Driver Ops</Link>}
+                {isAdmin && <Link to="/admin" onClick={() => setOpen(false)} className="text-gold">Command Center</Link>}
+                {isSuperUser && <Link to="/super" onClick={() => setOpen(false)} className="text-crimson">Super User</Link>}
                 <button onClick={handleSignOut} className="text-left text-crimson">Sign out</button>
               </>
             ) : (
