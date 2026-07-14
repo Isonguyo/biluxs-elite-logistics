@@ -7,7 +7,7 @@ import { Check, ArrowRight, ArrowLeft, Car, MapPin, Sparkles, Receipt } from "lu
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell } from "@/components/biluxs/PageShell";
 import { useAuth } from "@/hooks/useAuth";
-import { AppDownloadModal } from "@/components/biluxs/AppDownloadModal";
+import { PaystackModal, type PaymentResult } from "@/components/biluxs/PaystackModal";
 
 type Vehicle = { id: string; name: string; category: string; capacity: number; base_rate: number; per_km_rate: number; image_url: string | null };
 
@@ -43,8 +43,8 @@ function Page() {
   const [website_verify, setWebsiteVerify] = useState(""); // honeypot
   const lastSubmitRef = useRef<number>(0);
   const submitLockRef = useRef(false);
-  const [successOpen, setSuccessOpen] = useState(false);
-  const [successWaybill, setSuccessWaybill] = useState<string | undefined>();
+  const [payOpen, setPayOpen] = useState(false);
+  const [pendingBookingId, setPendingBookingId] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.from("vehicles").select("id,name,category,capacity,base_rate,per_km_rate,image_url")
@@ -69,9 +69,7 @@ function Page() {
   };
 
   const submit = async () => {
-    // Honeypot: silently discard bots
     if (website_verify) { console.warn("Bot submission blocked"); return; }
-    // Debounce / lock: block rapid duplicate clicks (2s window)
     const now = Date.now();
     if (submitLockRef.current || now - lastSubmitRef.current < 2000) return;
     submitLockRef.current = true;
@@ -89,13 +87,19 @@ function Page() {
     setSubmitting(false);
     submitLockRef.current = false;
     if (error || !data) { toast.error(error?.message || "Could not create booking."); return; }
-    toast.success(`Booking confirmed — ${data.waybill_code}`);
-    setSuccessWaybill(data.waybill_code);
-    setSuccessOpen(true);
+    setPendingBookingId(data.id);
+    setPayOpen(true);
   };
 
-  const closeModal = () => {
-    setSuccessOpen(false);
+  const onPaymentSuccess = async (r: PaymentResult) => {
+    if (!pendingBookingId) return;
+    const { data, error } = await supabase.from("bookings").update({
+      payment_status: "paid", payment_ref: r.ref, payment_amount: r.amount,
+      paid_at: new Date().toISOString(), status: "confirmed",
+    } as never).eq("id", pendingBookingId).select("waybill_code").single();
+    setPayOpen(false);
+    if (error || !data) { toast.error("Payment recorded but confirmation failed."); return; }
+    toast.success(`Paid — ${(data as { waybill_code: string }).waybill_code}. Boarding QR ready.`);
     navigate({ to: "/dashboard" });
   };
 
@@ -155,7 +159,7 @@ function Page() {
                 ) : (
                   <button disabled={submitting} onClick={submit}
                     className="inline-flex items-center gap-2 px-6 h-11 bg-gold text-[var(--navy-deep)] text-xs uppercase tracking-widest font-semibold press-effect disabled:opacity-50">
-                    {submitting ? "Confirming…" : <>Confirm & Pay <Check className="h-4 w-4" /></>}
+                    {submitting ? "Reserving…" : <>Proceed to Payment <Check className="h-4 w-4" /></>}
                   </button>
                 )}
               </div>
@@ -165,7 +169,9 @@ function Page() {
           </div>
         </div>
       </section>
-      <AppDownloadModal open={successOpen} onClose={closeModal} waybill={successWaybill} />
+      <PaystackModal open={payOpen} amount={pricing.total}
+        email={user?.email ?? "guest@biluxs.com"}
+        onClose={() => setPayOpen(false)} onSuccess={onPaymentSuccess} />
     </PageShell>
   );
 }

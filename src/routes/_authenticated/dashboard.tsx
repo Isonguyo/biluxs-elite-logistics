@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Plus, MapPin, Receipt, Calendar, Crown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import QRCode from "react-qr-code";
+import { Plus, MapPin, Receipt, Calendar, Crown, QrCode, ShieldCheck, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
 import { useAuth } from "@/hooks/useAuth";
@@ -14,13 +15,14 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 type Booking = {
   id: string; waybill_code: string; pickup_location: string; dropoff_location: string;
   status: string; total_price: number; created_at: string; pickup_time: string | null;
-  luxury_protocol: boolean;
+  luxury_protocol: boolean; payment_status: string; qr_token: string | null; qr_status: string;
 };
 
 function Page() {
   const { user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [profile, setProfile] = useState<{ full_name: string | null } | null>(null);
+  const [qrOpen, setQrOpen] = useState<Booking | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -35,10 +37,12 @@ function Page() {
     return () => { supabase.removeChannel(ch); };
   }, [user]);
 
+  const active = bookings.find((b) => b.payment_status === "paid" && b.qr_status === "valid" && ["confirmed", "pending"].includes(b.status));
+
   const stats = {
     total: bookings.length,
     active: bookings.filter((b) => ["pending", "confirmed", "in_progress"].includes(b.status)).length,
-    spent: bookings.reduce((a, b) => a + Number(b.total_price), 0),
+    spent: bookings.filter((b) => b.payment_status === "paid").reduce((a, b) => a + Number(b.total_price), 0),
     vip: bookings.filter((b) => b.luxury_protocol).length,
   };
 
@@ -58,6 +62,10 @@ function Page() {
             <Stat icon={<MapPin className="h-5 w-5" />} label="Total Spend" value={`₦${stats.spent.toLocaleString()}`} />
           </div>
 
+          {active && active.qr_token && (
+            <ActiveTripCard booking={active} onOpen={() => setQrOpen(active)} />
+          )}
+
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-display text-2xl tracking-widest">Your Bookings</h2>
             <Link to="/book" className="inline-flex items-center gap-2 px-4 h-11 bg-crimson text-white text-xs uppercase tracking-widest press-effect">
@@ -75,7 +83,7 @@ function Page() {
               {bookings.map((b, i) => (
                 <motion.div key={b.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.04 }}
-                  className="bg-card border border-border p-5 grid md:grid-cols-[auto_1fr_auto_auto] gap-5 items-center hover:border-gold transition-colors">
+                  className="bg-card border border-border p-5 grid md:grid-cols-[auto_1fr_auto_auto_auto] gap-5 items-center hover:border-gold transition-colors">
                   <div>
                     <div className="text-[10px] uppercase tracking-[0.3em] text-gold">Waybill</div>
                     <div className="font-display text-lg tracking-widest">{b.waybill_code}</div>
@@ -86,9 +94,16 @@ function Page() {
                     {b.luxury_protocol && <div className="mt-1 inline-flex items-center gap-1 text-[10px] text-gold uppercase tracking-widest"><Crown className="h-3 w-3" /> Luxury Protocol</div>}
                   </div>
                   <StatusBadge status={b.status} />
+                  <PayBadge status={b.payment_status} />
                   <div className="text-right">
                     <div className="font-display text-xl">₦{Number(b.total_price).toLocaleString()}</div>
-                    <Link to="/track" className="text-[10px] uppercase tracking-widest text-gold hover:underline">Track →</Link>
+                    {b.payment_status === "paid" && b.qr_status === "valid" && b.qr_token ? (
+                      <button onClick={() => setQrOpen(b)} className="text-[10px] uppercase tracking-widest text-gold hover:underline inline-flex items-center gap-1">
+                        <QrCode className="h-3 w-3" /> Show QR
+                      </button>
+                    ) : (
+                      <Link to="/track" className="text-[10px] uppercase tracking-widest text-gold hover:underline">Track →</Link>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -96,7 +111,64 @@ function Page() {
           )}
         </div>
       </section>
+
+      <QrModal booking={qrOpen} onClose={() => setQrOpen(null)} />
     </PageShell>
+  );
+}
+
+function ActiveTripCard({ booking, onOpen }: { booking: Booking; onOpen: () => void }) {
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      className="mb-8 relative overflow-hidden border border-gold/40 bg-gradient-to-br from-[var(--navy-deep)] via-[var(--navy-deep)] to-gold/5 p-6">
+      <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{ backgroundImage: "radial-gradient(circle at 20% 20%, gold 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+      <div className="relative grid md:grid-cols-[1fr_auto] gap-6 items-center">
+        <div>
+          <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gold">
+            <ShieldCheck className="h-3 w-3" /> Active Trip · Boarding Ready
+          </div>
+          <div className="font-display text-3xl mt-2 tracking-widest">{booking.waybill_code}</div>
+          <div className="text-sm text-muted-foreground mt-3">{booking.pickup_location} → {booking.dropoff_location}</div>
+          <button onClick={onOpen}
+            className="mt-5 inline-flex items-center gap-2 px-5 h-11 bg-gold text-[var(--navy-deep)] text-xs uppercase tracking-widest font-semibold press-effect">
+            <QrCode className="h-4 w-4" /> Show Boarding QR
+          </button>
+        </div>
+        <div className="hidden md:block bg-white p-3">
+          <QRCode value={booking.qr_token!} size={132} />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function QrModal({ booking, onClose }: { booking: Booking | null; onClose: () => void }) {
+  return (
+    <AnimatePresence>
+      {booking && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-md grid place-items-center p-4">
+          <motion.div initial={{ scale: 0.85 }} animate={{ scale: 1 }} exit={{ scale: 0.85 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[var(--navy-deep)] border border-gold/40 p-8 max-w-sm w-full text-center relative">
+            <button onClick={onClose} className="absolute top-3 right-3 text-muted-foreground hover:text-white"><X className="h-4 w-4" /></button>
+            <div className="text-[10px] uppercase tracking-[0.4em] text-gold">Boarding Pass</div>
+            <div className="font-display text-3xl mt-2">{booking.waybill_code}</div>
+            <div className="mt-6 bg-white p-4 inline-block">
+              {booking.qr_token && <QRCode value={booking.qr_token} size={220} />}
+            </div>
+            <div className="mt-5 text-xs text-muted-foreground">
+              Present this code to your chauffeur. Single-use — invalidated upon scan.
+            </div>
+            <div className="mt-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-emerald-400">
+              <span className="h-1.5 w-1.5 bg-emerald-400 rounded-full animate-pulse" /> Valid
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -118,4 +190,13 @@ function StatusBadge({ status }: { status: string }) {
     cancelled: "bg-red-500/20 text-red-300",
   };
   return <div className={`px-3 h-7 inline-flex items-center text-[10px] uppercase tracking-widest ${map[status] || "bg-muted text-foreground"}`}>{status.replace("_", " ")}</div>;
+}
+
+function PayBadge({ status }: { status: string }) {
+  const paid = status === "paid";
+  return (
+    <div className={`px-3 h-7 inline-flex items-center text-[10px] uppercase tracking-widest ${paid ? "bg-emerald-500/20 text-emerald-300" : "bg-amber-500/20 text-amber-300"}`}>
+      {paid ? "Paid" : "Unpaid"}
+    </div>
+  );
 }

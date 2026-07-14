@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      alerts: {
+        Row: {
+          body: string | null
+          booking_id: string | null
+          created_at: string
+          driver_id: string | null
+          id: string
+          kind: string
+          metadata: Json
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          booking_id?: string | null
+          created_at?: string
+          driver_id?: string | null
+          id?: string
+          kind: string
+          metadata?: Json
+          title: string
+        }
+        Update: {
+          body?: string | null
+          booking_id?: string | null
+          created_at?: string
+          driver_id?: string | null
+          id?: string
+          kind?: string
+          metadata?: Json
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alerts_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alerts_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           addons: Json
@@ -21,11 +69,19 @@ export type Database = {
           created_at: string
           distance_km: number
           driver_id: string | null
+          driver_lat_lng: Json | null
           dropoff_location: string
           id: string
           luxury_protocol: boolean
+          paid_at: string | null
+          payment_amount: number | null
+          payment_ref: string | null
+          payment_status: string
           pickup_location: string
           pickup_time: string
+          qr_status: string
+          qr_token: string | null
+          qr_verified_at: string | null
           status: Database["public"]["Enums"]["booking_status"]
           total_price: number
           updated_at: string
@@ -39,11 +95,19 @@ export type Database = {
           created_at?: string
           distance_km?: number
           driver_id?: string | null
+          driver_lat_lng?: Json | null
           dropoff_location: string
           id?: string
           luxury_protocol?: boolean
+          paid_at?: string | null
+          payment_amount?: number | null
+          payment_ref?: string | null
+          payment_status?: string
           pickup_location: string
           pickup_time: string
+          qr_status?: string
+          qr_token?: string | null
+          qr_verified_at?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
           total_price?: number
           updated_at?: string
@@ -57,11 +121,19 @@ export type Database = {
           created_at?: string
           distance_km?: number
           driver_id?: string | null
+          driver_lat_lng?: Json | null
           dropoff_location?: string
           id?: string
           luxury_protocol?: boolean
+          paid_at?: string | null
+          payment_amount?: number | null
+          payment_ref?: string | null
+          payment_status?: string
           pickup_location?: string
           pickup_time?: string
+          qr_status?: string
+          qr_token?: string | null
+          qr_verified_at?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
           total_price?: number
           updated_at?: string
@@ -127,6 +199,7 @@ export type Database = {
           rating: number
           status: Database["public"]["Enums"]["driver_status"]
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -138,6 +211,7 @@ export type Database = {
           rating?: number
           status?: Database["public"]["Enums"]["driver_status"]
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -149,6 +223,7 @@ export type Database = {
           rating?: number
           status?: Database["public"]["Enums"]["driver_status"]
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -331,9 +406,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      scan_booking_qr: { Args: { _qr_token: string }; Returns: Json }
     }
     Enums: {
-      app_role: "admin" | "corporate_admin" | "user"
+      app_role:
+        | "admin"
+        | "corporate_admin"
+        | "user"
+        | "super_user"
+        | "driver"
+        | "customer"
       booking_status:
         | "pending"
         | "confirmed"
@@ -476,7 +558,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "corporate_admin", "user"],
+      app_role: [
+        "admin",
+        "corporate_admin",
+        "user",
+        "super_user",
+        "driver",
+        "customer",
+      ],
       booking_status: [
         "pending",
         "confirmed",
