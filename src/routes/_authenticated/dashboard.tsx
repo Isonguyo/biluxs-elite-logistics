@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import QRCode from "react-qr-code";
-import { Plus, MapPin, Receipt, Calendar, Crown, QrCode, ShieldCheck, X } from "lucide-react";
+import { Plus, MapPin, Receipt, Calendar, Crown, QrCode, ShieldCheck, X, ScanLine } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
 import { useAuth } from "@/hooks/useAuth";
