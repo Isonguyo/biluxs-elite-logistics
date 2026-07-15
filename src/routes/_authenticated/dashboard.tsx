@@ -53,6 +53,44 @@ function Page() {
         title={<>Welcome, <span className="gradient-text">{profile?.full_name || "VIP Member"}</span></>}
         subtitle="Track your active waybills, review past trips and manage your luxury reservations."
       />
+      {(isSuperUser || isAdmin || isDriver) && (
+        <section className="pt-8">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="border border-gold/30 bg-gradient-to-r from-crimson/10 via-black/40 to-gold/10 p-5">
+              <div className="text-[10px] uppercase tracking-[0.4em] text-gold mb-3">Staff Access · Elevated Panels</div>
+              <div className="grid sm:grid-cols-3 gap-3">
+                {isSuperUser && (
+                  <Link to="/super" className="group border border-crimson/40 bg-black/40 p-4 hover:bg-crimson/10 transition-colors flex items-center gap-3">
+                    <Crown className="h-5 w-5 text-crimson" />
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-crimson">Super User</div>
+                      <div className="text-sm text-white/90">Master Control</div>
+                    </div>
+                  </Link>
+                )}
+                {isAdmin && (
+                  <Link to="/admin" className="group border border-gold/40 bg-black/40 p-4 hover:bg-gold/10 transition-colors flex items-center gap-3">
+                    <ShieldCheck className="h-5 w-5 text-gold" />
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-gold">Admin</div>
+                      <div className="text-sm text-white/90">Command Center</div>
+                    </div>
+                  </Link>
+                )}
+                {isDriver && (
+                  <Link to="/driver" className="group border border-emerald-500/40 bg-black/40 p-4 hover:bg-emerald-500/10 transition-colors flex items-center gap-3">
+                    <ScanLine className="h-5 w-5 text-emerald-400" />
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-emerald-400">Driver</div>
+                      <div className="text-sm text-white/90">Operations Panel</div>
+                    </div>
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
