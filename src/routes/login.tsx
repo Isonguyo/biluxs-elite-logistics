@@ -25,6 +25,17 @@ const credSchema = z.object({
   company: z.string().trim().max(150).optional(),
 });
 
+type AppRole = "super_user" | "admin" | "driver" | "customer" | "corporate_admin" | "user";
+
+async function getRoleHome(userId: string) {
+  const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+  const roles = ((data ?? []) as { role: AppRole }[]).map((row) => row.role);
+  if (roles.includes("super_user")) return "/super";
+  if (roles.includes("admin")) return "/admin";
+  if (roles.includes("driver")) return "/driver";
+  return "/dashboard";
+}
+
 function Page() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -33,8 +44,8 @@ function Page() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) navigate({ to: "/dashboard" });
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session) navigate({ to: await getRoleHome(session.user.id) as never });
     });
   }, [navigate]);
 
@@ -61,12 +72,12 @@ function Page() {
         toast.success("Account created. Check your email to confirm, then sign in.");
         setMode("signin");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email: form.email, password: form.password,
         });
         if (error) throw error;
         toast.success("Welcome back.");
-        navigate({ to: "/dashboard" });
+        navigate({ to: await getRoleHome(data.user.id) as never });
       }
     } catch (err) {
       toast.error((err as Error).message);

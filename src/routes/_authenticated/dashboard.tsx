@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import QRCode from "react-qr-code";
@@ -20,6 +20,7 @@ type Booking = {
 
 function Page() {
   const { user, isAdmin, isDriver, isSuperUser } = useAuth();
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [profile, setProfile] = useState<{ full_name: string | null } | null>(null);
   const [qrOpen, setQrOpen] = useState<Booking | null>(null);
@@ -36,6 +37,12 @@ function Page() {
       .subscribe();
     return () => { supabase.removeChannel(ch); };
   }, [user]);
+
+  useEffect(() => {
+    if (isSuperUser) navigate({ to: "/super" });
+    else if (isAdmin) navigate({ to: "/admin" });
+    else if (isDriver) navigate({ to: "/driver" });
+  }, [isAdmin, isDriver, isSuperUser, navigate]);
 
   const active = bookings.find((b) => b.payment_status === "paid" && b.qr_status === "valid" && ["confirmed", "pending"].includes(b.status));
 

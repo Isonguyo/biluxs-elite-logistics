@@ -11,9 +11,13 @@ export function useAuth() {
   const [roles, setRoles] = useState<AppRole[]>([]);
 
   useEffect(() => {
-    const loadRoles = (uid: string) => {
-      supabase.from("user_roles").select("role").eq("user_id", uid)
-        .then(({ data }) => setRoles(((data ?? []) as { role: AppRole }[]).map((r) => r.role)));
+    const loadRoles = async (uid: string) => {
+      const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", uid);
+      if (error) {
+        setRoles([]);
+        return;
+      }
+      setRoles(((data ?? []) as { role: AppRole }[]).map((r) => r.role));
     };
     const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
@@ -22,10 +26,10 @@ export function useAuth() {
       else setRoles([]);
     });
 
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
+    supabase.auth.getSession().then(async ({ data: { session: s } }) => {
       setSession(s);
       setUser(s?.user ?? null);
-      if (s?.user) loadRoles(s.user.id);
+      if (s?.user) await loadRoles(s.user.id);
       setLoading(false);
     });
 
@@ -37,7 +41,7 @@ export function useAuth() {
     session, user, loading, roles,
     isSuperUser: has("super_user"),
     isAdmin: has("admin") || has("super_user"),
-    isDriver: has("driver"),
+    isDriver: has("driver") || has("admin") || has("super_user"),
     signOut: () => supabase.auth.signOut(),
   };
 }
