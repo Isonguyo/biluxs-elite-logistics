@@ -19,7 +19,7 @@ type Booking = {
 };
 
 function Page() {
-  const { user } = useAuth();
+  const { user, isAdmin, isDriver, isSuperUser } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [profile, setProfile] = useState<{ full_name: string | null } | null>(null);
   const [qrOpen, setQrOpen] = useState<Booking | null>(null);
