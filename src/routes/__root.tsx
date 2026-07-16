@@ -8,6 +8,8 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
+import { LoaderProvider } from "@/components/biluxs/GlobalLoader";
+import { OfflineOverlay } from "@/components/biluxs/OfflineOverlay";
 
 import appCss from "../styles.css?url";
 
@@ -120,7 +122,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <LoaderProvider>
+        <Outlet />
+      </LoaderProvider>
+      <OfflineOverlay />
       <Toaster />
     </QueryClientProvider>
   );
