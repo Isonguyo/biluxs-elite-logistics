@@ -57,6 +57,13 @@ export type Database = {
             foreignKeyName: "alerts_driver_id_fkey"
             columns: ["driver_id"]
             isOneToOne: false
+            referencedRelation: "driver_stats"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "alerts_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
             referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
@@ -146,6 +153,13 @@ export type Database = {
             foreignKeyName: "bookings_driver_id_fkey"
             columns: ["driver_id"]
             isOneToOne: false
+            referencedRelation: "driver_stats"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "bookings_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
             referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
@@ -157,6 +171,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      contact_messages: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          is_read: boolean
+          message: string
+          name: string
+          phone: string | null
+          read_at: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          is_read?: boolean
+          message: string
+          name: string
+          phone?: string | null
+          read_at?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          name?: string
+          phone?: string | null
+          read_at?: string | null
+        }
+        Relationships: []
       }
       corporate_accounts: {
         Row: {
@@ -190,6 +240,58 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      driver_reviews: {
+        Row: {
+          booking_id: string | null
+          comment: string | null
+          created_at: string
+          driver_id: string
+          id: string
+          rating: number
+          reviewer_id: string
+        }
+        Insert: {
+          booking_id?: string | null
+          comment?: string | null
+          created_at?: string
+          driver_id: string
+          id?: string
+          rating: number
+          reviewer_id: string
+        }
+        Update: {
+          booking_id?: string | null
+          comment?: string | null
+          created_at?: string
+          driver_id?: string
+          id?: string
+          rating?: number
+          reviewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_reviews_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "driver_stats"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "driver_reviews_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       drivers: {
         Row: {
@@ -399,7 +501,20 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      driver_stats: {
+        Row: {
+          active_rides: number | null
+          avg_rating: number | null
+          base_rating: number | null
+          completed_rides: number | null
+          driver_id: string | null
+          full_name: string | null
+          phone: string | null
+          review_count: number | null
+          status: Database["public"]["Enums"]["driver_status"] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
