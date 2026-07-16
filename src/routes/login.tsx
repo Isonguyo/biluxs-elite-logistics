@@ -65,9 +65,14 @@ function Page() {
         });
         if (error) throw error;
         if (account === "corporate" && form.company.trim()) {
-          await supabase.from("corporate_accounts").insert({
-            company_name: form.company, contact_email: form.email, contact_phone: form.phone || null,
-          });
+          const { data: sess } = await supabase.auth.getSession();
+          const uid = sess.session?.user.id;
+          if (uid) {
+            await supabase.from("corporate_accounts").insert({
+              user_id: uid,
+              company_name: form.company, contact_email: form.email, contact_phone: form.phone || null,
+            });
+          }
         }
         toast.success("Account created. Check your email to confirm, then sign in.");
         setMode("signin");
