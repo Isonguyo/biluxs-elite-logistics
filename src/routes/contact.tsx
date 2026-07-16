@@ -22,65 +22,36 @@ export const Route = createFileRoute("/contact")({
 const schema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100),
   email: z.string().trim().email("Invalid email address").max(255),
-  company: z.string().trim().max(150).optional(),
-  message: z.string().trim().min(1, "Message is required").max(1000),
+  phone: z.string().trim().max(30).optional().or(z.literal("")),
+  company: z.string().trim().max(150).optional().or(z.literal("")),
+  message: z.string().trim().min(1, "Message is required").max(2000),
 });
 
 function Page() {
-  const [form, setForm] = useState({ name: "", email: "", message: "", company: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "", company: "" });
   const [submitting, setSubmitting] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validate form entries with Zod
     const parsed = schema.safeParse(form);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
     }
-
     setSubmitting(true);
-
     try {
-      if (form.company.trim()) {
-        // 🏢 Path A: Corporate Partnership Request (requires sign-in)
-        const { data: sess } = await supabase.auth.getSession();
-        const uid = sess.session?.user.id;
-        if (!uid) {
-          toast.error("Please sign in to submit a corporate partnership request.");
-          setSubmitting(false);
-          return;
-        }
-        const { error } = await supabase.from("corporate_accounts").insert({
-          user_id: uid,
-          company_name: form.company.trim(),
-          contact_email: form.email.trim(),
-          address: form.message.trim(), // Storing message in address column per your DB setup
-        });
-
-        if (error) throw error;
-        toast.success("Partnership request received. Our corporate desk will reach out.");
-      } else {
-        // ✉️ Path B: General Concierge Message
-        // Change this line:
-        // const { error } = await supabase.from("contact_messages").insert({
-
-        // To this (adding 'as any'):
-        const { error } = await (supabase as any).from("contact_messages").insert({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          message: form.message.trim(),
-        });
-
-        if (error) throw error;
-        toast.success("Message received. Our concierge will respond shortly.");
-      }
-
-      // Clear the form fields ONLY if the database insert was successful
-      setForm({ name: "", email: "", message: "", company: "" });
+      const { error } = await (supabase as any).from("contact_messages").insert({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim() || null,
+        company: form.company.trim() || null,
+        message: form.message.trim(),
+      });
+      if (error) throw error;
+      toast.success("Message received. Our concierge will respond shortly.");
+      setForm({ name: "", email: "", phone: "", message: "", company: "" });
     } catch (error: any) {
-      toast.error(error.message || "An unexpected error occurred. Please try again.");
+      toast.error(error.message || "Could not send message. Try again.");
     } finally {
       setSubmitting(false);
     }
@@ -113,47 +84,37 @@ function Page() {
           </div>
 
           <form onSubmit={submit} className="bg-card border border-border p-8">
-            <h2 className="font-display text-2xl tracking-widest mb-6">Inquiry / Partnership</h2>
+            <h2 className="font-display text-2xl tracking-widest mb-6">Send a Message</h2>
             <div className="grid gap-4">
-              <input
-                required
-                maxLength={100}
-                value={form.name}
+              <input required maxLength={100} value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Full name"
-                className="h-12 px-4 bg-input border border-border focus:outline-none focus:border-gold text-sm"
-              />
-              <input
-                required
-                type="email"
-                maxLength={255}
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder="Email address"
-                className="h-12 px-4 bg-input border border-border focus:outline-none focus:border-gold text-sm"
-              />
-              <input
-                maxLength={150}
-                value={form.company}
+                className="h-12 px-4 bg-input border border-border focus:outline-none focus:border-gold text-sm" />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <input required type="email" maxLength={255} value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  placeholder="Email address"
+                  className="h-12 px-4 bg-input border border-border focus:outline-none focus:border-gold text-sm" />
+                <input maxLength={30} value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  placeholder="Phone (optional)"
+                  className="h-12 px-4 bg-input border border-border focus:outline-none focus:border-gold text-sm" />
+              </div>
+              <input maxLength={150} value={form.company}
                 onChange={(e) => setForm({ ...form, company: e.target.value })}
-                placeholder="Company (for partnership requests)"
-                className="h-12 px-4 bg-input border border-border focus:outline-none focus:border-gold text-sm"
-              />
-              <textarea
-                required
-                maxLength={1000}
-                rows={5}
-                value={form.message}
+                placeholder="Company (optional)"
+                className="h-12 px-4 bg-input border border-border focus:outline-none focus:border-gold text-sm" />
+              <textarea required maxLength={2000} rows={5} value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 placeholder="How can we serve you?"
-                className="px-4 py-3 bg-input border border-border focus:outline-none focus:border-gold text-sm resize-none"
-              />
-              <button
-                disabled={submitting}
-                className="h-12 bg-crimson text-white text-xs uppercase tracking-widest press-effect inline-flex items-center justify-center gap-2 disabled:opacity-60"
-              >
+                className="px-4 py-3 bg-input border border-border focus:outline-none focus:border-gold text-sm resize-none" />
+              <button disabled={submitting}
+                className="h-12 bg-crimson text-white text-xs uppercase tracking-widest press-effect inline-flex items-center justify-center gap-2 disabled:opacity-60">
                 {submitting ? "Sending…" : <>Send Message <Send className="h-4 w-4" /></>}
               </button>
+              <p className="text-[10px] text-muted-foreground text-center">
+                Your message is delivered directly to our admin concierge desk.
+              </p>
             </div>
           </form>
         </div>
