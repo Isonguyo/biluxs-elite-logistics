@@ -188,7 +188,7 @@ function Page() {
                       tickFormatter={(v) => v >= 1000 ? `₦${(v / 1000).toFixed(0)}k` : `₦${v}`} />
                     <Tooltip
                       contentStyle={{ background: "#0b0d17", border: "1px solid #DC143C", fontSize: 12 }}
-                      formatter={(v: number) => [`₦${v.toLocaleString()}`, "Revenue"]}
+                      formatter={(v: any) => [`₦${Number(v).toLocaleString()}`, "Revenue"]}
                     />
                     <Area type="monotone" dataKey="revenue" stroke="#DC143C" strokeWidth={2} fill="url(#revColor)" />
                   </AreaChart>
@@ -209,7 +209,7 @@ function Page() {
                     </Pie>
                     <Legend wrapperStyle={{ fontSize: 11, color: "#94a3b8" }} />
                     <Tooltip contentStyle={{ background: "#0b0d17", border: "1px solid #D4AF37", fontSize: 12 }}
-                      formatter={(v: number) => `₦${v.toLocaleString()}`} />
+                      formatter={(v: any) => `₦${Number(v).toLocaleString()}`} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -232,7 +232,7 @@ function Page() {
                   <YAxis stroke="#5a6478" fontSize={10} tickLine={false} axisLine={false}
                     tickFormatter={(v) => v >= 1000 ? `₦${(v / 1000).toFixed(0)}k` : `₦${v}`} />
                   <Tooltip contentStyle={{ background: "#0b0d17", border: "1px solid #DC143C", fontSize: 12 }}
-                    formatter={(v: number) => `₦${v.toLocaleString()}`} />
+                    formatter={(v: any) => `₦${Number(v).toLocaleString()}`} />
                   <Bar dataKey="revenue" fill="#DC143C" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
