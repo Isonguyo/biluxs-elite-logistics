@@ -62,9 +62,21 @@ function Page() {
     if (!user) { toast.error("Sign in to submit a procurement request."); navigate({ to: "/login" }); submitLockRef.current = false; return; }
     setSubmitting(true);
     const urls: string[] = [];
+    const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp", "image/gif", "application/pdf"];
+    const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
     for (const f of files) {
-      const path = `${user.id}/${Date.now()}-${f.name}`;
-      const { error: upErr } = await supabase.storage.from("procurement-refs").upload(path, f, { upsert: false });
+      if (!ALLOWED_MIME.includes(f.type)) {
+        toast.error(`Rejected ${f.name}: only JPG, PNG, WEBP, GIF, or PDF allowed.`);
+        continue;
+      }
+      if (f.size > MAX_BYTES) {
+        toast.error(`Rejected ${f.name}: exceeds 10 MB limit.`);
+        continue;
+      }
+      // Strip path separators from the filename so the object path stays scoped to `${user.id}/...`
+      const safeName = f.name.replace(/[^\w.\-]+/g, "_").slice(-120);
+      const path = `${user.id}/${Date.now()}-${safeName}`;
+      const { error: upErr } = await supabase.storage.from("procurement-refs").upload(path, f, { upsert: false, contentType: f.type });
       if (upErr) { toast.error(`Upload failed: ${upErr.message}`); continue; }
       const { data: signed } = await supabase.storage.from("procurement-refs").createSignedUrl(path, 60 * 60 * 24 * 365);
       if (signed?.signedUrl) urls.push(signed.signedUrl);
