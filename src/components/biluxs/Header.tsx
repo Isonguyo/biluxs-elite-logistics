@@ -98,7 +98,7 @@ export function Header() {
           <Link to="/track" className="hidden sm:inline-flex items-center gap-2 px-3 h-10 border border-border text-[10px] uppercase tracking-widest hover:border-gold hover:text-gold transition-colors">
             <Search className="h-4 w-4" /> Track
           </Link>
-          <Link to="/book" className="inline-flex items-center px-4 h-10 bg-crimson text-white text-[10px] uppercase tracking-widest press-effect">
+          <Link to="/fleet" className="inline-flex items-center px-4 h-10 bg-crimson text-white text-[10px] uppercase tracking-widest press-effect">
             Book Now
           </Link>
           {user ? (

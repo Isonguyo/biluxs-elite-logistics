@@ -58,7 +58,7 @@ function Page() {
           </div>
           <div className="flex gap-3">
             <Link to="/fleet" className="px-6 h-12 inline-flex items-center border border-border text-xs uppercase tracking-widest hover:border-white">View Fleet</Link>
-            <Link to="/book" className="px-6 h-12 inline-flex items-center bg-crimson text-white text-xs uppercase tracking-widest press-effect">Book Now</Link>
+            <Link to="/fleet" className="px-6 h-12 inline-flex items-center bg-crimson text-white text-xs uppercase tracking-widest press-effect">Book Now</Link>
           </div>
         </div>
       </section>
