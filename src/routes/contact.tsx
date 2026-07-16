@@ -44,8 +44,16 @@ function Page() {
 
     try {
       if (form.company.trim()) {
-        // 🏢 Path A: Corporate Partnership Request
+        // 🏢 Path A: Corporate Partnership Request (requires sign-in)
+        const { data: sess } = await supabase.auth.getSession();
+        const uid = sess.session?.user.id;
+        if (!uid) {
+          toast.error("Please sign in to submit a corporate partnership request.");
+          setSubmitting(false);
+          return;
+        }
         const { error } = await supabase.from("corporate_accounts").insert({
+          user_id: uid,
           company_name: form.company.trim(),
           contact_email: form.email.trim(),
           address: form.message.trim(), // Storing message in address column per your DB setup
