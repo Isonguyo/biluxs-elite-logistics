@@ -6,7 +6,7 @@ import { PortalLayout, Card, Empty } from "@/components/portal/PortalLayout";
 import { ngn, dt } from "@/lib/portal";
 import { ArrowRight } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/portal/trips")({
+export const Route = createFileRoute("/_authenticated/portal/trips/")({
   head: () => ({
     meta: [
       { title: "My Trips — BiLUXS Member Portal" },

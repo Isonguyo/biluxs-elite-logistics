@@ -30,6 +30,7 @@ import { Route as AuthenticatedDriverRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
+import { Route as AuthenticatedPortalTripsIndexRouteImport } from './routes/_authenticated/portal/trips.index'
 
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
@@ -136,6 +137,12 @@ const AuthenticatedPortalIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedPortalRoute,
   } as any)
+const AuthenticatedPortalTripsIndexRoute =
+  AuthenticatedPortalTripsIndexRouteImport.update({
+    id: '/trips/',
+    path: '/trips/',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/portal': typeof AuthenticatedPortalRouteWithChildren
   '/super': typeof AuthenticatedSuperRoute
   '/portal/': typeof AuthenticatedPortalIndexRoute
+  '/portal/trips/': typeof AuthenticatedPortalTripsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -179,6 +187,7 @@ export interface FileRoutesByTo {
   '/driver': typeof AuthenticatedDriverRoute
   '/super': typeof AuthenticatedSuperRoute
   '/portal': typeof AuthenticatedPortalIndexRoute
+  '/portal/trips': typeof AuthenticatedPortalTripsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -203,6 +212,7 @@ export interface FileRoutesById {
   '/_authenticated/portal': typeof AuthenticatedPortalRouteWithChildren
   '/_authenticated/super': typeof AuthenticatedSuperRoute
   '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
+  '/_authenticated/portal/trips/': typeof AuthenticatedPortalTripsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/super'
     | '/portal/'
+    | '/portal/trips/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | '/driver'
     | '/super'
     | '/portal'
+    | '/portal/trips'
   id:
     | '__root__'
     | '/'
@@ -271,6 +283,7 @@ export interface FileRouteTypes {
     | '/_authenticated/portal'
     | '/_authenticated/super'
     | '/_authenticated/portal/'
+    | '/_authenticated/portal/trips/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -440,15 +453,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalIndexRouteImport
       parentRoute: typeof AuthenticatedPortalRoute
     }
+    '/_authenticated/portal/trips/': {
+      id: '/_authenticated/portal/trips/'
+      path: '/trips'
+      fullPath: '/portal/trips/'
+      preLoaderRoute: typeof AuthenticatedPortalTripsIndexRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
   }
 }
 
 interface AuthenticatedPortalRouteChildren {
   AuthenticatedPortalIndexRoute: typeof AuthenticatedPortalIndexRoute
+  AuthenticatedPortalTripsIndexRoute: typeof AuthenticatedPortalTripsIndexRoute
 }
 
 const AuthenticatedPortalRouteChildren: AuthenticatedPortalRouteChildren = {
   AuthenticatedPortalIndexRoute: AuthenticatedPortalIndexRoute,
+  AuthenticatedPortalTripsIndexRoute: AuthenticatedPortalTripsIndexRoute,
 }
 
 const AuthenticatedPortalRouteWithChildren =
