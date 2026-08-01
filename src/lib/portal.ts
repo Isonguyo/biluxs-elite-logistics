@@ -18,15 +18,17 @@ export const greeting = () => {
   return "Good evening";
 };
 
-export const TIERS = [
+export type Tier = { key: string; label: string; min: number; perks: string[] };
+
+export const TIERS: Tier[] = [
   { key: "silver", label: "Silver", min: 0, perks: ["Priority booking", "Standard support"] },
   { key: "gold", label: "Gold", min: 500, perks: ["Free airport meet & greet", "5% wallet bonus", "Priority dispatch"] },
   { key: "diamond", label: "Diamond", min: 2000, perks: ["Complimentary upgrades", "10% wallet bonus", "Dedicated concierge"] },
   { key: "elite", label: "Elite", min: 5000, perks: ["Private security escort", "15% wallet bonus", "24/7 personal assistant", "VIP lounge access"] },
-] as const;
+];
 
 export function tierOf(points: number) {
-  let current = TIERS[0];
+  let current: Tier = TIERS[0]!;
   for (const t of TIERS) if (points >= t.min) current = t;
   const next = TIERS.find((t) => t.min > points) ?? null;
   return { current, next, toNext: next ? next.min - points : 0 };
