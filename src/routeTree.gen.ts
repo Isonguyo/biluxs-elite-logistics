@@ -25,9 +25,30 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSuperRouteImport } from './routes/_authenticated/super'
+import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
 import { Route as AuthenticatedDriverRouteImport } from './routes/_authenticated/driver'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
+import { Route as AuthenticatedPortalWalletRouteImport } from './routes/_authenticated/portal/wallet'
+import { Route as AuthenticatedPortalToursRouteImport } from './routes/_authenticated/portal/tours'
+import { Route as AuthenticatedPortalSupportRouteImport } from './routes/_authenticated/portal/support'
+import { Route as AuthenticatedPortalShoppingRouteImport } from './routes/_authenticated/portal/shopping'
+import { Route as AuthenticatedPortalSettingsRouteImport } from './routes/_authenticated/portal/settings'
+import { Route as AuthenticatedPortalProfileRouteImport } from './routes/_authenticated/portal/profile'
+import { Route as AuthenticatedPortalPlacesRouteImport } from './routes/_authenticated/portal/places'
+import { Route as AuthenticatedPortalPaymentsRouteImport } from './routes/_authenticated/portal/payments'
+import { Route as AuthenticatedPortalNotificationsRouteImport } from './routes/_authenticated/portal/notifications'
+import { Route as AuthenticatedPortalMessagesRouteImport } from './routes/_authenticated/portal/messages'
+import { Route as AuthenticatedPortalLoyaltyRouteImport } from './routes/_authenticated/portal/loyalty'
+import { Route as AuthenticatedPortalHotelsRouteImport } from './routes/_authenticated/portal/hotels'
+import { Route as AuthenticatedPortalFlightsRouteImport } from './routes/_authenticated/portal/flights'
+import { Route as AuthenticatedPortalDocumentsRouteImport } from './routes/_authenticated/portal/documents'
+import { Route as AuthenticatedPortalConciergeRouteImport } from './routes/_authenticated/portal/concierge'
+import { Route as AuthenticatedPortalCargoRouteImport } from './routes/_authenticated/portal/cargo'
+import { Route as AuthenticatedPortalAnalyticsRouteImport } from './routes/_authenticated/portal/analytics'
+import { Route as AuthenticatedPortalTripsIndexRouteImport } from './routes/_authenticated/portal/trips.index'
+import { Route as AuthenticatedPortalTripsIdRouteImport } from './routes/_authenticated/portal/trips.$id'
 
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
@@ -108,6 +129,11 @@ const AuthenticatedSuperRoute = AuthenticatedSuperRouteImport.update({
   path: '/super',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPortalRoute = AuthenticatedPortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDriverRoute = AuthenticatedDriverRouteImport.update({
   id: '/driver',
   path: '/driver',
@@ -123,6 +149,126 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPortalIndexRoute =
+  AuthenticatedPortalIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalWalletRoute =
+  AuthenticatedPortalWalletRouteImport.update({
+    id: '/wallet',
+    path: '/wallet',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalToursRoute =
+  AuthenticatedPortalToursRouteImport.update({
+    id: '/tours',
+    path: '/tours',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalSupportRoute =
+  AuthenticatedPortalSupportRouteImport.update({
+    id: '/support',
+    path: '/support',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalShoppingRoute =
+  AuthenticatedPortalShoppingRouteImport.update({
+    id: '/shopping',
+    path: '/shopping',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalSettingsRoute =
+  AuthenticatedPortalSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalProfileRoute =
+  AuthenticatedPortalProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalPlacesRoute =
+  AuthenticatedPortalPlacesRouteImport.update({
+    id: '/places',
+    path: '/places',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalPaymentsRoute =
+  AuthenticatedPortalPaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalNotificationsRoute =
+  AuthenticatedPortalNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalMessagesRoute =
+  AuthenticatedPortalMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalLoyaltyRoute =
+  AuthenticatedPortalLoyaltyRouteImport.update({
+    id: '/loyalty',
+    path: '/loyalty',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalHotelsRoute =
+  AuthenticatedPortalHotelsRouteImport.update({
+    id: '/hotels',
+    path: '/hotels',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalFlightsRoute =
+  AuthenticatedPortalFlightsRouteImport.update({
+    id: '/flights',
+    path: '/flights',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalDocumentsRoute =
+  AuthenticatedPortalDocumentsRouteImport.update({
+    id: '/documents',
+    path: '/documents',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalConciergeRoute =
+  AuthenticatedPortalConciergeRouteImport.update({
+    id: '/concierge',
+    path: '/concierge',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalCargoRoute =
+  AuthenticatedPortalCargoRouteImport.update({
+    id: '/cargo',
+    path: '/cargo',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalAnalyticsRoute =
+  AuthenticatedPortalAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalTripsIndexRoute =
+  AuthenticatedPortalTripsIndexRouteImport.update({
+    id: '/trips/',
+    path: '/trips/',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalTripsIdRoute =
+  AuthenticatedPortalTripsIdRouteImport.update({
+    id: '/trips/$id',
+    path: '/trips/$id',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -142,7 +288,28 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driver': typeof AuthenticatedDriverRoute
+  '/portal': typeof AuthenticatedPortalRouteWithChildren
   '/super': typeof AuthenticatedSuperRoute
+  '/portal/analytics': typeof AuthenticatedPortalAnalyticsRoute
+  '/portal/cargo': typeof AuthenticatedPortalCargoRoute
+  '/portal/concierge': typeof AuthenticatedPortalConciergeRoute
+  '/portal/documents': typeof AuthenticatedPortalDocumentsRoute
+  '/portal/flights': typeof AuthenticatedPortalFlightsRoute
+  '/portal/hotels': typeof AuthenticatedPortalHotelsRoute
+  '/portal/loyalty': typeof AuthenticatedPortalLoyaltyRoute
+  '/portal/messages': typeof AuthenticatedPortalMessagesRoute
+  '/portal/notifications': typeof AuthenticatedPortalNotificationsRoute
+  '/portal/payments': typeof AuthenticatedPortalPaymentsRoute
+  '/portal/places': typeof AuthenticatedPortalPlacesRoute
+  '/portal/profile': typeof AuthenticatedPortalProfileRoute
+  '/portal/settings': typeof AuthenticatedPortalSettingsRoute
+  '/portal/shopping': typeof AuthenticatedPortalShoppingRoute
+  '/portal/support': typeof AuthenticatedPortalSupportRoute
+  '/portal/tours': typeof AuthenticatedPortalToursRoute
+  '/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/portal/': typeof AuthenticatedPortalIndexRoute
+  '/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
+  '/portal/trips/': typeof AuthenticatedPortalTripsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -163,6 +330,26 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driver': typeof AuthenticatedDriverRoute
   '/super': typeof AuthenticatedSuperRoute
+  '/portal/analytics': typeof AuthenticatedPortalAnalyticsRoute
+  '/portal/cargo': typeof AuthenticatedPortalCargoRoute
+  '/portal/concierge': typeof AuthenticatedPortalConciergeRoute
+  '/portal/documents': typeof AuthenticatedPortalDocumentsRoute
+  '/portal/flights': typeof AuthenticatedPortalFlightsRoute
+  '/portal/hotels': typeof AuthenticatedPortalHotelsRoute
+  '/portal/loyalty': typeof AuthenticatedPortalLoyaltyRoute
+  '/portal/messages': typeof AuthenticatedPortalMessagesRoute
+  '/portal/notifications': typeof AuthenticatedPortalNotificationsRoute
+  '/portal/payments': typeof AuthenticatedPortalPaymentsRoute
+  '/portal/places': typeof AuthenticatedPortalPlacesRoute
+  '/portal/profile': typeof AuthenticatedPortalProfileRoute
+  '/portal/settings': typeof AuthenticatedPortalSettingsRoute
+  '/portal/shopping': typeof AuthenticatedPortalShoppingRoute
+  '/portal/support': typeof AuthenticatedPortalSupportRoute
+  '/portal/tours': typeof AuthenticatedPortalToursRoute
+  '/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/portal': typeof AuthenticatedPortalIndexRoute
+  '/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
+  '/portal/trips': typeof AuthenticatedPortalTripsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -184,7 +371,28 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/driver': typeof AuthenticatedDriverRoute
+  '/_authenticated/portal': typeof AuthenticatedPortalRouteWithChildren
   '/_authenticated/super': typeof AuthenticatedSuperRoute
+  '/_authenticated/portal/analytics': typeof AuthenticatedPortalAnalyticsRoute
+  '/_authenticated/portal/cargo': typeof AuthenticatedPortalCargoRoute
+  '/_authenticated/portal/concierge': typeof AuthenticatedPortalConciergeRoute
+  '/_authenticated/portal/documents': typeof AuthenticatedPortalDocumentsRoute
+  '/_authenticated/portal/flights': typeof AuthenticatedPortalFlightsRoute
+  '/_authenticated/portal/hotels': typeof AuthenticatedPortalHotelsRoute
+  '/_authenticated/portal/loyalty': typeof AuthenticatedPortalLoyaltyRoute
+  '/_authenticated/portal/messages': typeof AuthenticatedPortalMessagesRoute
+  '/_authenticated/portal/notifications': typeof AuthenticatedPortalNotificationsRoute
+  '/_authenticated/portal/payments': typeof AuthenticatedPortalPaymentsRoute
+  '/_authenticated/portal/places': typeof AuthenticatedPortalPlacesRoute
+  '/_authenticated/portal/profile': typeof AuthenticatedPortalProfileRoute
+  '/_authenticated/portal/settings': typeof AuthenticatedPortalSettingsRoute
+  '/_authenticated/portal/shopping': typeof AuthenticatedPortalShoppingRoute
+  '/_authenticated/portal/support': typeof AuthenticatedPortalSupportRoute
+  '/_authenticated/portal/tours': typeof AuthenticatedPortalToursRoute
+  '/_authenticated/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
+  '/_authenticated/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
+  '/_authenticated/portal/trips/': typeof AuthenticatedPortalTripsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -206,7 +414,28 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/driver'
+    | '/portal'
     | '/super'
+    | '/portal/analytics'
+    | '/portal/cargo'
+    | '/portal/concierge'
+    | '/portal/documents'
+    | '/portal/flights'
+    | '/portal/hotels'
+    | '/portal/loyalty'
+    | '/portal/messages'
+    | '/portal/notifications'
+    | '/portal/payments'
+    | '/portal/places'
+    | '/portal/profile'
+    | '/portal/settings'
+    | '/portal/shopping'
+    | '/portal/support'
+    | '/portal/tours'
+    | '/portal/wallet'
+    | '/portal/'
+    | '/portal/trips/$id'
+    | '/portal/trips/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -227,6 +456,26 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/driver'
     | '/super'
+    | '/portal/analytics'
+    | '/portal/cargo'
+    | '/portal/concierge'
+    | '/portal/documents'
+    | '/portal/flights'
+    | '/portal/hotels'
+    | '/portal/loyalty'
+    | '/portal/messages'
+    | '/portal/notifications'
+    | '/portal/payments'
+    | '/portal/places'
+    | '/portal/profile'
+    | '/portal/settings'
+    | '/portal/shopping'
+    | '/portal/support'
+    | '/portal/tours'
+    | '/portal/wallet'
+    | '/portal'
+    | '/portal/trips/$id'
+    | '/portal/trips'
   id:
     | '__root__'
     | '/'
@@ -247,7 +496,28 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/driver'
+    | '/_authenticated/portal'
     | '/_authenticated/super'
+    | '/_authenticated/portal/analytics'
+    | '/_authenticated/portal/cargo'
+    | '/_authenticated/portal/concierge'
+    | '/_authenticated/portal/documents'
+    | '/_authenticated/portal/flights'
+    | '/_authenticated/portal/hotels'
+    | '/_authenticated/portal/loyalty'
+    | '/_authenticated/portal/messages'
+    | '/_authenticated/portal/notifications'
+    | '/_authenticated/portal/payments'
+    | '/_authenticated/portal/places'
+    | '/_authenticated/portal/profile'
+    | '/_authenticated/portal/settings'
+    | '/_authenticated/portal/shopping'
+    | '/_authenticated/portal/support'
+    | '/_authenticated/portal/tours'
+    | '/_authenticated/portal/wallet'
+    | '/_authenticated/portal/'
+    | '/_authenticated/portal/trips/$id'
+    | '/_authenticated/portal/trips/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -382,6 +652,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/portal': {
+      id: '/_authenticated/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof AuthenticatedPortalRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/driver': {
       id: '/_authenticated/driver'
       path: '/driver'
@@ -403,13 +680,203 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/portal/': {
+      id: '/_authenticated/portal/'
+      path: '/'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof AuthenticatedPortalIndexRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/wallet': {
+      id: '/_authenticated/portal/wallet'
+      path: '/wallet'
+      fullPath: '/portal/wallet'
+      preLoaderRoute: typeof AuthenticatedPortalWalletRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/tours': {
+      id: '/_authenticated/portal/tours'
+      path: '/tours'
+      fullPath: '/portal/tours'
+      preLoaderRoute: typeof AuthenticatedPortalToursRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/support': {
+      id: '/_authenticated/portal/support'
+      path: '/support'
+      fullPath: '/portal/support'
+      preLoaderRoute: typeof AuthenticatedPortalSupportRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/shopping': {
+      id: '/_authenticated/portal/shopping'
+      path: '/shopping'
+      fullPath: '/portal/shopping'
+      preLoaderRoute: typeof AuthenticatedPortalShoppingRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/settings': {
+      id: '/_authenticated/portal/settings'
+      path: '/settings'
+      fullPath: '/portal/settings'
+      preLoaderRoute: typeof AuthenticatedPortalSettingsRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/profile': {
+      id: '/_authenticated/portal/profile'
+      path: '/profile'
+      fullPath: '/portal/profile'
+      preLoaderRoute: typeof AuthenticatedPortalProfileRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/places': {
+      id: '/_authenticated/portal/places'
+      path: '/places'
+      fullPath: '/portal/places'
+      preLoaderRoute: typeof AuthenticatedPortalPlacesRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/payments': {
+      id: '/_authenticated/portal/payments'
+      path: '/payments'
+      fullPath: '/portal/payments'
+      preLoaderRoute: typeof AuthenticatedPortalPaymentsRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/notifications': {
+      id: '/_authenticated/portal/notifications'
+      path: '/notifications'
+      fullPath: '/portal/notifications'
+      preLoaderRoute: typeof AuthenticatedPortalNotificationsRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/messages': {
+      id: '/_authenticated/portal/messages'
+      path: '/messages'
+      fullPath: '/portal/messages'
+      preLoaderRoute: typeof AuthenticatedPortalMessagesRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/loyalty': {
+      id: '/_authenticated/portal/loyalty'
+      path: '/loyalty'
+      fullPath: '/portal/loyalty'
+      preLoaderRoute: typeof AuthenticatedPortalLoyaltyRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/hotels': {
+      id: '/_authenticated/portal/hotels'
+      path: '/hotels'
+      fullPath: '/portal/hotels'
+      preLoaderRoute: typeof AuthenticatedPortalHotelsRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/flights': {
+      id: '/_authenticated/portal/flights'
+      path: '/flights'
+      fullPath: '/portal/flights'
+      preLoaderRoute: typeof AuthenticatedPortalFlightsRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/documents': {
+      id: '/_authenticated/portal/documents'
+      path: '/documents'
+      fullPath: '/portal/documents'
+      preLoaderRoute: typeof AuthenticatedPortalDocumentsRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/concierge': {
+      id: '/_authenticated/portal/concierge'
+      path: '/concierge'
+      fullPath: '/portal/concierge'
+      preLoaderRoute: typeof AuthenticatedPortalConciergeRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/cargo': {
+      id: '/_authenticated/portal/cargo'
+      path: '/cargo'
+      fullPath: '/portal/cargo'
+      preLoaderRoute: typeof AuthenticatedPortalCargoRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/analytics': {
+      id: '/_authenticated/portal/analytics'
+      path: '/analytics'
+      fullPath: '/portal/analytics'
+      preLoaderRoute: typeof AuthenticatedPortalAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/trips/': {
+      id: '/_authenticated/portal/trips/'
+      path: '/trips'
+      fullPath: '/portal/trips/'
+      preLoaderRoute: typeof AuthenticatedPortalTripsIndexRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/trips/$id': {
+      id: '/_authenticated/portal/trips/$id'
+      path: '/trips/$id'
+      fullPath: '/portal/trips/$id'
+      preLoaderRoute: typeof AuthenticatedPortalTripsIdRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
   }
 }
+
+interface AuthenticatedPortalRouteChildren {
+  AuthenticatedPortalAnalyticsRoute: typeof AuthenticatedPortalAnalyticsRoute
+  AuthenticatedPortalCargoRoute: typeof AuthenticatedPortalCargoRoute
+  AuthenticatedPortalConciergeRoute: typeof AuthenticatedPortalConciergeRoute
+  AuthenticatedPortalDocumentsRoute: typeof AuthenticatedPortalDocumentsRoute
+  AuthenticatedPortalFlightsRoute: typeof AuthenticatedPortalFlightsRoute
+  AuthenticatedPortalHotelsRoute: typeof AuthenticatedPortalHotelsRoute
+  AuthenticatedPortalLoyaltyRoute: typeof AuthenticatedPortalLoyaltyRoute
+  AuthenticatedPortalMessagesRoute: typeof AuthenticatedPortalMessagesRoute
+  AuthenticatedPortalNotificationsRoute: typeof AuthenticatedPortalNotificationsRoute
+  AuthenticatedPortalPaymentsRoute: typeof AuthenticatedPortalPaymentsRoute
+  AuthenticatedPortalPlacesRoute: typeof AuthenticatedPortalPlacesRoute
+  AuthenticatedPortalProfileRoute: typeof AuthenticatedPortalProfileRoute
+  AuthenticatedPortalSettingsRoute: typeof AuthenticatedPortalSettingsRoute
+  AuthenticatedPortalShoppingRoute: typeof AuthenticatedPortalShoppingRoute
+  AuthenticatedPortalSupportRoute: typeof AuthenticatedPortalSupportRoute
+  AuthenticatedPortalToursRoute: typeof AuthenticatedPortalToursRoute
+  AuthenticatedPortalWalletRoute: typeof AuthenticatedPortalWalletRoute
+  AuthenticatedPortalIndexRoute: typeof AuthenticatedPortalIndexRoute
+  AuthenticatedPortalTripsIdRoute: typeof AuthenticatedPortalTripsIdRoute
+  AuthenticatedPortalTripsIndexRoute: typeof AuthenticatedPortalTripsIndexRoute
+}
+
+const AuthenticatedPortalRouteChildren: AuthenticatedPortalRouteChildren = {
+  AuthenticatedPortalAnalyticsRoute: AuthenticatedPortalAnalyticsRoute,
+  AuthenticatedPortalCargoRoute: AuthenticatedPortalCargoRoute,
+  AuthenticatedPortalConciergeRoute: AuthenticatedPortalConciergeRoute,
+  AuthenticatedPortalDocumentsRoute: AuthenticatedPortalDocumentsRoute,
+  AuthenticatedPortalFlightsRoute: AuthenticatedPortalFlightsRoute,
+  AuthenticatedPortalHotelsRoute: AuthenticatedPortalHotelsRoute,
+  AuthenticatedPortalLoyaltyRoute: AuthenticatedPortalLoyaltyRoute,
+  AuthenticatedPortalMessagesRoute: AuthenticatedPortalMessagesRoute,
+  AuthenticatedPortalNotificationsRoute: AuthenticatedPortalNotificationsRoute,
+  AuthenticatedPortalPaymentsRoute: AuthenticatedPortalPaymentsRoute,
+  AuthenticatedPortalPlacesRoute: AuthenticatedPortalPlacesRoute,
+  AuthenticatedPortalProfileRoute: AuthenticatedPortalProfileRoute,
+  AuthenticatedPortalSettingsRoute: AuthenticatedPortalSettingsRoute,
+  AuthenticatedPortalShoppingRoute: AuthenticatedPortalShoppingRoute,
+  AuthenticatedPortalSupportRoute: AuthenticatedPortalSupportRoute,
+  AuthenticatedPortalToursRoute: AuthenticatedPortalToursRoute,
+  AuthenticatedPortalWalletRoute: AuthenticatedPortalWalletRoute,
+  AuthenticatedPortalIndexRoute: AuthenticatedPortalIndexRoute,
+  AuthenticatedPortalTripsIdRoute: AuthenticatedPortalTripsIdRoute,
+  AuthenticatedPortalTripsIndexRoute: AuthenticatedPortalTripsIndexRoute,
+}
+
+const AuthenticatedPortalRouteWithChildren =
+  AuthenticatedPortalRoute._addFileChildren(AuthenticatedPortalRouteChildren)
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDriverRoute: typeof AuthenticatedDriverRoute
+  AuthenticatedPortalRoute: typeof AuthenticatedPortalRouteWithChildren
   AuthenticatedSuperRoute: typeof AuthenticatedSuperRoute
 }
 
@@ -417,6 +884,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDriverRoute: AuthenticatedDriverRoute,
+  AuthenticatedPortalRoute: AuthenticatedPortalRouteWithChildren,
   AuthenticatedSuperRoute: AuthenticatedSuperRoute,
 }
 
@@ -444,13 +912,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
