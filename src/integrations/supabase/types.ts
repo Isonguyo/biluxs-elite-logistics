@@ -1049,6 +1049,23 @@ export type Database = {
       }
     }
     Functions: {
+      get_booking_driver: {
+        Args: { _booking_id: string }
+        Returns: {
+          full_name: string
+          id: string
+          lat_lng: Json
+          phone: string
+          photo_url: string
+          plate_number: string
+          rating: number
+          status: Database["public"]["Enums"]["driver_status"]
+          vehicle_model: string
+          verified: boolean
+          whatsapp: string
+          years_experience: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
