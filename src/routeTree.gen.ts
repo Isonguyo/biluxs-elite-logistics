@@ -30,6 +30,7 @@ import { Route as AuthenticatedDriverRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
+import { Route as AuthenticatedPortalHotelsRouteImport } from './routes/_authenticated/portal/hotels'
 import { Route as AuthenticatedPortalFlightsRouteImport } from './routes/_authenticated/portal/flights'
 import { Route as AuthenticatedPortalTripsIndexRouteImport } from './routes/_authenticated/portal/trips.index'
 import { Route as AuthenticatedPortalTripsIdRouteImport } from './routes/_authenticated/portal/trips.$id'
@@ -139,6 +140,12 @@ const AuthenticatedPortalIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedPortalRoute,
   } as any)
+const AuthenticatedPortalHotelsRoute =
+  AuthenticatedPortalHotelsRouteImport.update({
+    id: '/hotels',
+    path: '/hotels',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
 const AuthenticatedPortalFlightsRoute =
   AuthenticatedPortalFlightsRouteImport.update({
     id: '/flights',
@@ -179,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/portal': typeof AuthenticatedPortalRouteWithChildren
   '/super': typeof AuthenticatedSuperRoute
   '/portal/flights': typeof AuthenticatedPortalFlightsRoute
+  '/portal/hotels': typeof AuthenticatedPortalHotelsRoute
   '/portal/': typeof AuthenticatedPortalIndexRoute
   '/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
   '/portal/trips/': typeof AuthenticatedPortalTripsIndexRoute
@@ -203,6 +211,7 @@ export interface FileRoutesByTo {
   '/driver': typeof AuthenticatedDriverRoute
   '/super': typeof AuthenticatedSuperRoute
   '/portal/flights': typeof AuthenticatedPortalFlightsRoute
+  '/portal/hotels': typeof AuthenticatedPortalHotelsRoute
   '/portal': typeof AuthenticatedPortalIndexRoute
   '/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
   '/portal/trips': typeof AuthenticatedPortalTripsIndexRoute
@@ -230,6 +239,7 @@ export interface FileRoutesById {
   '/_authenticated/portal': typeof AuthenticatedPortalRouteWithChildren
   '/_authenticated/super': typeof AuthenticatedSuperRoute
   '/_authenticated/portal/flights': typeof AuthenticatedPortalFlightsRoute
+  '/_authenticated/portal/hotels': typeof AuthenticatedPortalHotelsRoute
   '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
   '/_authenticated/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
   '/_authenticated/portal/trips/': typeof AuthenticatedPortalTripsIndexRoute
@@ -257,6 +267,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/super'
     | '/portal/flights'
+    | '/portal/hotels'
     | '/portal/'
     | '/portal/trips/$id'
     | '/portal/trips/'
@@ -281,6 +292,7 @@ export interface FileRouteTypes {
     | '/driver'
     | '/super'
     | '/portal/flights'
+    | '/portal/hotels'
     | '/portal'
     | '/portal/trips/$id'
     | '/portal/trips'
@@ -307,6 +319,7 @@ export interface FileRouteTypes {
     | '/_authenticated/portal'
     | '/_authenticated/super'
     | '/_authenticated/portal/flights'
+    | '/_authenticated/portal/hotels'
     | '/_authenticated/portal/'
     | '/_authenticated/portal/trips/$id'
     | '/_authenticated/portal/trips/'
@@ -479,6 +492,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalIndexRouteImport
       parentRoute: typeof AuthenticatedPortalRoute
     }
+    '/_authenticated/portal/hotels': {
+      id: '/_authenticated/portal/hotels'
+      path: '/hotels'
+      fullPath: '/portal/hotels'
+      preLoaderRoute: typeof AuthenticatedPortalHotelsRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
     '/_authenticated/portal/flights': {
       id: '/_authenticated/portal/flights'
       path: '/flights'
@@ -505,6 +525,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedPortalRouteChildren {
   AuthenticatedPortalFlightsRoute: typeof AuthenticatedPortalFlightsRoute
+  AuthenticatedPortalHotelsRoute: typeof AuthenticatedPortalHotelsRoute
   AuthenticatedPortalIndexRoute: typeof AuthenticatedPortalIndexRoute
   AuthenticatedPortalTripsIdRoute: typeof AuthenticatedPortalTripsIdRoute
   AuthenticatedPortalTripsIndexRoute: typeof AuthenticatedPortalTripsIndexRoute
@@ -512,6 +533,7 @@ interface AuthenticatedPortalRouteChildren {
 
 const AuthenticatedPortalRouteChildren: AuthenticatedPortalRouteChildren = {
   AuthenticatedPortalFlightsRoute: AuthenticatedPortalFlightsRoute,
+  AuthenticatedPortalHotelsRoute: AuthenticatedPortalHotelsRoute,
   AuthenticatedPortalIndexRoute: AuthenticatedPortalIndexRoute,
   AuthenticatedPortalTripsIdRoute: AuthenticatedPortalTripsIdRoute,
   AuthenticatedPortalTripsIndexRoute: AuthenticatedPortalTripsIndexRoute,
