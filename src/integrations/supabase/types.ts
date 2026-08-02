@@ -363,6 +363,73 @@ export type Database = {
         }
         Relationships: []
       }
+      driver_incidents: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          driver_id: string
+          id: string
+          kind: string
+          lat: number | null
+          lng: number | null
+          note: string | null
+          photo_url: string | null
+          resolved: boolean
+          severity: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          driver_id: string
+          id?: string
+          kind: string
+          lat?: number | null
+          lng?: number | null
+          note?: string | null
+          photo_url?: string | null
+          resolved?: boolean
+          severity?: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          driver_id?: string
+          id?: string
+          kind?: string
+          lat?: number | null
+          lng?: number | null
+          note?: string | null
+          photo_url?: string | null
+          resolved?: boolean
+          severity?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_incidents_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_incidents_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "driver_stats"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "driver_incidents_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       driver_reviews: {
         Row: {
           booking_id: string | null
@@ -415,12 +482,57 @@ export type Database = {
           },
         ]
       }
+      driver_shifts: {
+        Row: {
+          created_at: string
+          driver_id: string
+          ended_at: string | null
+          id: string
+          started_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          driver_id: string
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          driver_id?: string
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_shifts_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "driver_stats"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "driver_shifts_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       drivers: {
         Row: {
+          availability: string
           created_at: string
           full_name: string
           id: string
+          last_seen_at: string | null
           license_no: string | null
+          luxury_certified: boolean
           phone: string
           photo_url: string | null
           plate_number: string | null
@@ -434,10 +546,13 @@ export type Database = {
           years_experience: number
         }
         Insert: {
+          availability?: string
           created_at?: string
           full_name: string
           id?: string
+          last_seen_at?: string | null
           license_no?: string | null
+          luxury_certified?: boolean
           phone: string
           photo_url?: string | null
           plate_number?: string | null
@@ -451,10 +566,13 @@ export type Database = {
           years_experience?: number
         }
         Update: {
+          availability?: string
           created_at?: string
           full_name?: string
           id?: string
+          last_seen_at?: string | null
           license_no?: string | null
+          luxury_certified?: boolean
           phone?: string
           photo_url?: string | null
           plate_number?: string | null
@@ -918,6 +1036,54 @@ export type Database = {
         }
         Relationships: []
       }
+      vehicle_inspections: {
+        Row: {
+          checklist: Json
+          created_at: string
+          driver_id: string
+          fuel_level: number | null
+          id: string
+          mileage: number | null
+          notes: string | null
+          passed: boolean
+        }
+        Insert: {
+          checklist?: Json
+          created_at?: string
+          driver_id: string
+          fuel_level?: number | null
+          id?: string
+          mileage?: number | null
+          notes?: string | null
+          passed?: boolean
+        }
+        Update: {
+          checklist?: Json
+          created_at?: string
+          driver_id?: string
+          fuel_level?: number | null
+          id?: string
+          mileage?: number | null
+          notes?: string | null
+          passed?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_inspections_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "driver_stats"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "vehicle_inspections_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicles: {
         Row: {
           base_rate: number
@@ -1033,6 +1199,31 @@ export type Database = {
       }
     }
     Views: {
+      driver_earnings: {
+        Row: {
+          day: string | null
+          distance_km: number | null
+          driver_id: string | null
+          gross: number | null
+          trips: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "driver_stats"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "bookings_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       driver_stats: {
         Row: {
           active_rides: number | null
@@ -1073,6 +1264,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_self_driver: { Args: { _driver_id: string }; Returns: boolean }
       scan_booking_qr: { Args: { _qr_token: string }; Returns: Json }
       wallet_topup: {
         Args: { _amount: number; _description?: string; _reference?: string }
