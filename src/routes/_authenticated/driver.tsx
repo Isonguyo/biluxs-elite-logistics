@@ -34,7 +34,7 @@ export const Route = createFileRoute("/_authenticated/driver")({
 type Booking = {
   id: string; waybill_code: string; pickup_location: string; dropoff_location: string;
   status: string; qr_status: string; driver_id: string | null; pickup_time: string;
-  total_price: number; distance_km: number; luxury_protocol: boolean; payment_status: string;
+  total_price: number; distance_km: number; luxury_protocol: boolean; payment_status: string; updated_at: string;
 };
 type DriverRow = {
   id: string; full_name: string; phone: string; photo_url: string | null; plate_number: string | null;
