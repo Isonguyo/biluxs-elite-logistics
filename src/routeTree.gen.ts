@@ -52,6 +52,8 @@ import { Route as AuthenticatedAdminTripsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminTourismRouteImport } from './routes/_authenticated/admin/tourism'
 import { Route as AuthenticatedAdminSupportRouteImport } from './routes/_authenticated/admin/support'
 import { Route as AuthenticatedAdminShoppingRouteImport } from './routes/_authenticated/admin/shopping'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
+import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
 import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin/payments'
 import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
 import { Route as AuthenticatedAdminIncidentsRouteImport } from './routes/_authenticated/admin/incidents'
@@ -62,6 +64,7 @@ import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminConciergeRouteImport } from './routes/_authenticated/admin/concierge'
 import { Route as AuthenticatedAdminCargoRouteImport } from './routes/_authenticated/admin/cargo'
 import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin/audit'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin/analytics'
 import { Route as AuthenticatedPortalTripsIndexRouteImport } from './routes/_authenticated/portal/trips.index'
 import { Route as AuthenticatedAdminBookingsIndexRouteImport } from './routes/_authenticated/admin/bookings.index'
 import { Route as AuthenticatedPortalTripsIdRouteImport } from './routes/_authenticated/portal/trips.$id'
@@ -302,6 +305,18 @@ const AuthenticatedAdminShoppingRoute =
     path: '/shopping',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminReportsRoute =
+  AuthenticatedAdminReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminPaymentsRoute =
   AuthenticatedAdminPaymentsRouteImport.update({
     id: '/payments',
@@ -359,6 +374,12 @@ const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedPortalTripsIndexRoute =
   AuthenticatedPortalTripsIndexRouteImport.update({
     id: '/trips/',
@@ -404,6 +425,7 @@ export interface FileRoutesByFullPath {
   '/driver': typeof AuthenticatedDriverRoute
   '/portal': typeof AuthenticatedPortalRouteWithChildren
   '/super': typeof AuthenticatedSuperRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/cargo': typeof AuthenticatedAdminCargoRoute
   '/admin/concierge': typeof AuthenticatedAdminConciergeRoute
@@ -414,6 +436,8 @@ export interface FileRoutesByFullPath {
   '/admin/incidents': typeof AuthenticatedAdminIncidentsRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/shopping': typeof AuthenticatedAdminShoppingRoute
   '/admin/support': typeof AuthenticatedAdminSupportRoute
   '/admin/tourism': typeof AuthenticatedAdminTourismRoute
@@ -460,6 +484,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driver': typeof AuthenticatedDriverRoute
   '/super': typeof AuthenticatedSuperRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/cargo': typeof AuthenticatedAdminCargoRoute
   '/admin/concierge': typeof AuthenticatedAdminConciergeRoute
@@ -470,6 +495,8 @@ export interface FileRoutesByTo {
   '/admin/incidents': typeof AuthenticatedAdminIncidentsRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/shopping': typeof AuthenticatedAdminShoppingRoute
   '/admin/support': typeof AuthenticatedAdminSupportRoute
   '/admin/tourism': typeof AuthenticatedAdminTourismRoute
@@ -520,6 +547,7 @@ export interface FileRoutesById {
   '/_authenticated/driver': typeof AuthenticatedDriverRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRouteWithChildren
   '/_authenticated/super': typeof AuthenticatedSuperRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/cargo': typeof AuthenticatedAdminCargoRoute
   '/_authenticated/admin/concierge': typeof AuthenticatedAdminConciergeRoute
@@ -530,6 +558,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/incidents': typeof AuthenticatedAdminIncidentsRoute
   '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/shopping': typeof AuthenticatedAdminShoppingRoute
   '/_authenticated/admin/support': typeof AuthenticatedAdminSupportRoute
   '/_authenticated/admin/tourism': typeof AuthenticatedAdminTourismRoute
@@ -580,6 +610,7 @@ export interface FileRouteTypes {
     | '/driver'
     | '/portal'
     | '/super'
+    | '/admin/analytics'
     | '/admin/audit'
     | '/admin/cargo'
     | '/admin/concierge'
@@ -590,6 +621,8 @@ export interface FileRouteTypes {
     | '/admin/incidents'
     | '/admin/notifications'
     | '/admin/payments'
+    | '/admin/reports'
+    | '/admin/settings'
     | '/admin/shopping'
     | '/admin/support'
     | '/admin/tourism'
@@ -636,6 +669,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/driver'
     | '/super'
+    | '/admin/analytics'
     | '/admin/audit'
     | '/admin/cargo'
     | '/admin/concierge'
@@ -646,6 +680,8 @@ export interface FileRouteTypes {
     | '/admin/incidents'
     | '/admin/notifications'
     | '/admin/payments'
+    | '/admin/reports'
+    | '/admin/settings'
     | '/admin/shopping'
     | '/admin/support'
     | '/admin/tourism'
@@ -695,6 +731,7 @@ export interface FileRouteTypes {
     | '/_authenticated/driver'
     | '/_authenticated/portal'
     | '/_authenticated/super'
+    | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/audit'
     | '/_authenticated/admin/cargo'
     | '/_authenticated/admin/concierge'
@@ -705,6 +742,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/incidents'
     | '/_authenticated/admin/notifications'
     | '/_authenticated/admin/payments'
+    | '/_authenticated/admin/reports'
+    | '/_authenticated/admin/settings'
     | '/_authenticated/admin/shopping'
     | '/_authenticated/admin/support'
     | '/_authenticated/admin/tourism'
@@ -1055,6 +1094,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminShoppingRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/reports': {
+      id: '/_authenticated/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/payments': {
       id: '/_authenticated/admin/payments'
       path: '/payments'
@@ -1125,6 +1178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/portal/trips/': {
       id: '/_authenticated/portal/trips/'
       path: '/trips'
@@ -1157,6 +1217,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
   AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
   AuthenticatedAdminCargoRoute: typeof AuthenticatedAdminCargoRoute
   AuthenticatedAdminConciergeRoute: typeof AuthenticatedAdminConciergeRoute
@@ -1167,6 +1228,8 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminIncidentsRoute: typeof AuthenticatedAdminIncidentsRoute
   AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
   AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminShoppingRoute: typeof AuthenticatedAdminShoppingRoute
   AuthenticatedAdminSupportRoute: typeof AuthenticatedAdminSupportRoute
   AuthenticatedAdminTourismRoute: typeof AuthenticatedAdminTourismRoute
@@ -1177,6 +1240,7 @@ interface AuthenticatedAdminRouteChildren {
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
   AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
   AuthenticatedAdminCargoRoute: AuthenticatedAdminCargoRoute,
   AuthenticatedAdminConciergeRoute: AuthenticatedAdminConciergeRoute,
@@ -1187,6 +1251,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminIncidentsRoute: AuthenticatedAdminIncidentsRoute,
   AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
   AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
+  AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+  AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminShoppingRoute: AuthenticatedAdminShoppingRoute,
   AuthenticatedAdminSupportRoute: AuthenticatedAdminSupportRoute,
   AuthenticatedAdminTourismRoute: AuthenticatedAdminTourismRoute,
@@ -1288,3 +1354,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
