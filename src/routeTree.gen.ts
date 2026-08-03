@@ -30,6 +30,7 @@ import { Route as AuthenticatedDriverRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedPortalWalletRouteImport } from './routes/_authenticated/portal/wallet'
 import { Route as AuthenticatedPortalToursRouteImport } from './routes/_authenticated/portal/tours'
 import { Route as AuthenticatedPortalSupportRouteImport } from './routes/_authenticated/portal/support'
@@ -47,8 +48,24 @@ import { Route as AuthenticatedPortalDocumentsRouteImport } from './routes/_auth
 import { Route as AuthenticatedPortalConciergeRouteImport } from './routes/_authenticated/portal/concierge'
 import { Route as AuthenticatedPortalCargoRouteImport } from './routes/_authenticated/portal/cargo'
 import { Route as AuthenticatedPortalAnalyticsRouteImport } from './routes/_authenticated/portal/analytics'
+import { Route as AuthenticatedAdminTripsRouteImport } from './routes/_authenticated/admin/trips'
+import { Route as AuthenticatedAdminTourismRouteImport } from './routes/_authenticated/admin/tourism'
+import { Route as AuthenticatedAdminSupportRouteImport } from './routes/_authenticated/admin/support'
+import { Route as AuthenticatedAdminShoppingRouteImport } from './routes/_authenticated/admin/shopping'
+import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin/payments'
+import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
+import { Route as AuthenticatedAdminIncidentsRouteImport } from './routes/_authenticated/admin/incidents'
+import { Route as AuthenticatedAdminFleetRouteImport } from './routes/_authenticated/admin/fleet'
+import { Route as AuthenticatedAdminDriversRouteImport } from './routes/_authenticated/admin/drivers'
+import { Route as AuthenticatedAdminDispatchRouteImport } from './routes/_authenticated/admin/dispatch'
+import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin/customers'
+import { Route as AuthenticatedAdminConciergeRouteImport } from './routes/_authenticated/admin/concierge'
+import { Route as AuthenticatedAdminCargoRouteImport } from './routes/_authenticated/admin/cargo'
+import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin/audit'
 import { Route as AuthenticatedPortalTripsIndexRouteImport } from './routes/_authenticated/portal/trips.index'
+import { Route as AuthenticatedAdminBookingsIndexRouteImport } from './routes/_authenticated/admin/bookings.index'
 import { Route as AuthenticatedPortalTripsIdRouteImport } from './routes/_authenticated/portal/trips.$id'
+import { Route as AuthenticatedAdminBookingsIdRouteImport } from './routes/_authenticated/admin/bookings.$id'
 
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
@@ -155,6 +172,11 @@ const AuthenticatedPortalIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedPortalRoute,
   } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedPortalWalletRoute =
   AuthenticatedPortalWalletRouteImport.update({
     id: '/wallet',
@@ -257,17 +279,109 @@ const AuthenticatedPortalAnalyticsRoute =
     path: '/analytics',
     getParentRoute: () => AuthenticatedPortalRoute,
   } as any)
+const AuthenticatedAdminTripsRoute = AuthenticatedAdminTripsRouteImport.update({
+  id: '/trips',
+  path: '/trips',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminTourismRoute =
+  AuthenticatedAdminTourismRouteImport.update({
+    id: '/tourism',
+    path: '/tourism',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSupportRoute =
+  AuthenticatedAdminSupportRouteImport.update({
+    id: '/support',
+    path: '/support',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminShoppingRoute =
+  AuthenticatedAdminShoppingRouteImport.update({
+    id: '/shopping',
+    path: '/shopping',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminPaymentsRoute =
+  AuthenticatedAdminPaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminNotificationsRoute =
+  AuthenticatedAdminNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminIncidentsRoute =
+  AuthenticatedAdminIncidentsRouteImport.update({
+    id: '/incidents',
+    path: '/incidents',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminFleetRoute = AuthenticatedAdminFleetRouteImport.update({
+  id: '/fleet',
+  path: '/fleet',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminDriversRoute =
+  AuthenticatedAdminDriversRouteImport.update({
+    id: '/drivers',
+    path: '/drivers',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminDispatchRoute =
+  AuthenticatedAdminDispatchRouteImport.update({
+    id: '/dispatch',
+    path: '/dispatch',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminCustomersRoute =
+  AuthenticatedAdminCustomersRouteImport.update({
+    id: '/customers',
+    path: '/customers',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminConciergeRoute =
+  AuthenticatedAdminConciergeRouteImport.update({
+    id: '/concierge',
+    path: '/concierge',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminCargoRoute = AuthenticatedAdminCargoRouteImport.update({
+  id: '/cargo',
+  path: '/cargo',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedPortalTripsIndexRoute =
   AuthenticatedPortalTripsIndexRouteImport.update({
     id: '/trips/',
     path: '/trips/',
     getParentRoute: () => AuthenticatedPortalRoute,
   } as any)
+const AuthenticatedAdminBookingsIndexRoute =
+  AuthenticatedAdminBookingsIndexRouteImport.update({
+    id: '/bookings/',
+    path: '/bookings/',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedPortalTripsIdRoute =
   AuthenticatedPortalTripsIdRouteImport.update({
     id: '/trips/$id',
     path: '/trips/$id',
     getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedAdminBookingsIdRoute =
+  AuthenticatedAdminBookingsIdRouteImport.update({
+    id: '/bookings/$id',
+    path: '/bookings/$id',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -285,11 +399,25 @@ export interface FileRoutesByFullPath {
   '/shopping': typeof ShoppingRoute
   '/terms': typeof TermsRoute
   '/track': typeof TrackRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driver': typeof AuthenticatedDriverRoute
   '/portal': typeof AuthenticatedPortalRouteWithChildren
   '/super': typeof AuthenticatedSuperRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/cargo': typeof AuthenticatedAdminCargoRoute
+  '/admin/concierge': typeof AuthenticatedAdminConciergeRoute
+  '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/dispatch': typeof AuthenticatedAdminDispatchRoute
+  '/admin/drivers': typeof AuthenticatedAdminDriversRoute
+  '/admin/fleet': typeof AuthenticatedAdminFleetRoute
+  '/admin/incidents': typeof AuthenticatedAdminIncidentsRoute
+  '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/shopping': typeof AuthenticatedAdminShoppingRoute
+  '/admin/support': typeof AuthenticatedAdminSupportRoute
+  '/admin/tourism': typeof AuthenticatedAdminTourismRoute
+  '/admin/trips': typeof AuthenticatedAdminTripsRoute
   '/portal/analytics': typeof AuthenticatedPortalAnalyticsRoute
   '/portal/cargo': typeof AuthenticatedPortalCargoRoute
   '/portal/concierge': typeof AuthenticatedPortalConciergeRoute
@@ -307,8 +435,11 @@ export interface FileRoutesByFullPath {
   '/portal/support': typeof AuthenticatedPortalSupportRoute
   '/portal/tours': typeof AuthenticatedPortalToursRoute
   '/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/portal/': typeof AuthenticatedPortalIndexRoute
+  '/admin/bookings/$id': typeof AuthenticatedAdminBookingsIdRoute
   '/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
+  '/admin/bookings/': typeof AuthenticatedAdminBookingsIndexRoute
   '/portal/trips/': typeof AuthenticatedPortalTripsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -326,10 +457,23 @@ export interface FileRoutesByTo {
   '/shopping': typeof ShoppingRoute
   '/terms': typeof TermsRoute
   '/track': typeof TrackRoute
-  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driver': typeof AuthenticatedDriverRoute
   '/super': typeof AuthenticatedSuperRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/cargo': typeof AuthenticatedAdminCargoRoute
+  '/admin/concierge': typeof AuthenticatedAdminConciergeRoute
+  '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/dispatch': typeof AuthenticatedAdminDispatchRoute
+  '/admin/drivers': typeof AuthenticatedAdminDriversRoute
+  '/admin/fleet': typeof AuthenticatedAdminFleetRoute
+  '/admin/incidents': typeof AuthenticatedAdminIncidentsRoute
+  '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/shopping': typeof AuthenticatedAdminShoppingRoute
+  '/admin/support': typeof AuthenticatedAdminSupportRoute
+  '/admin/tourism': typeof AuthenticatedAdminTourismRoute
+  '/admin/trips': typeof AuthenticatedAdminTripsRoute
   '/portal/analytics': typeof AuthenticatedPortalAnalyticsRoute
   '/portal/cargo': typeof AuthenticatedPortalCargoRoute
   '/portal/concierge': typeof AuthenticatedPortalConciergeRoute
@@ -347,8 +491,11 @@ export interface FileRoutesByTo {
   '/portal/support': typeof AuthenticatedPortalSupportRoute
   '/portal/tours': typeof AuthenticatedPortalToursRoute
   '/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/portal': typeof AuthenticatedPortalIndexRoute
+  '/admin/bookings/$id': typeof AuthenticatedAdminBookingsIdRoute
   '/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
+  '/admin/bookings': typeof AuthenticatedAdminBookingsIndexRoute
   '/portal/trips': typeof AuthenticatedPortalTripsIndexRoute
 }
 export interface FileRoutesById {
@@ -368,11 +515,25 @@ export interface FileRoutesById {
   '/shopping': typeof ShoppingRoute
   '/terms': typeof TermsRoute
   '/track': typeof TrackRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/driver': typeof AuthenticatedDriverRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRouteWithChildren
   '/_authenticated/super': typeof AuthenticatedSuperRoute
+  '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/_authenticated/admin/cargo': typeof AuthenticatedAdminCargoRoute
+  '/_authenticated/admin/concierge': typeof AuthenticatedAdminConciergeRoute
+  '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/_authenticated/admin/dispatch': typeof AuthenticatedAdminDispatchRoute
+  '/_authenticated/admin/drivers': typeof AuthenticatedAdminDriversRoute
+  '/_authenticated/admin/fleet': typeof AuthenticatedAdminFleetRoute
+  '/_authenticated/admin/incidents': typeof AuthenticatedAdminIncidentsRoute
+  '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/_authenticated/admin/shopping': typeof AuthenticatedAdminShoppingRoute
+  '/_authenticated/admin/support': typeof AuthenticatedAdminSupportRoute
+  '/_authenticated/admin/tourism': typeof AuthenticatedAdminTourismRoute
+  '/_authenticated/admin/trips': typeof AuthenticatedAdminTripsRoute
   '/_authenticated/portal/analytics': typeof AuthenticatedPortalAnalyticsRoute
   '/_authenticated/portal/cargo': typeof AuthenticatedPortalCargoRoute
   '/_authenticated/portal/concierge': typeof AuthenticatedPortalConciergeRoute
@@ -390,8 +551,11 @@ export interface FileRoutesById {
   '/_authenticated/portal/support': typeof AuthenticatedPortalSupportRoute
   '/_authenticated/portal/tours': typeof AuthenticatedPortalToursRoute
   '/_authenticated/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
+  '/_authenticated/admin/bookings/$id': typeof AuthenticatedAdminBookingsIdRoute
   '/_authenticated/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
+  '/_authenticated/admin/bookings/': typeof AuthenticatedAdminBookingsIndexRoute
   '/_authenticated/portal/trips/': typeof AuthenticatedPortalTripsIndexRoute
 }
 export interface FileRouteTypes {
@@ -416,6 +580,20 @@ export interface FileRouteTypes {
     | '/driver'
     | '/portal'
     | '/super'
+    | '/admin/audit'
+    | '/admin/cargo'
+    | '/admin/concierge'
+    | '/admin/customers'
+    | '/admin/dispatch'
+    | '/admin/drivers'
+    | '/admin/fleet'
+    | '/admin/incidents'
+    | '/admin/notifications'
+    | '/admin/payments'
+    | '/admin/shopping'
+    | '/admin/support'
+    | '/admin/tourism'
+    | '/admin/trips'
     | '/portal/analytics'
     | '/portal/cargo'
     | '/portal/concierge'
@@ -433,8 +611,11 @@ export interface FileRouteTypes {
     | '/portal/support'
     | '/portal/tours'
     | '/portal/wallet'
+    | '/admin/'
     | '/portal/'
+    | '/admin/bookings/$id'
     | '/portal/trips/$id'
+    | '/admin/bookings/'
     | '/portal/trips/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -452,10 +633,23 @@ export interface FileRouteTypes {
     | '/shopping'
     | '/terms'
     | '/track'
-    | '/admin'
     | '/dashboard'
     | '/driver'
     | '/super'
+    | '/admin/audit'
+    | '/admin/cargo'
+    | '/admin/concierge'
+    | '/admin/customers'
+    | '/admin/dispatch'
+    | '/admin/drivers'
+    | '/admin/fleet'
+    | '/admin/incidents'
+    | '/admin/notifications'
+    | '/admin/payments'
+    | '/admin/shopping'
+    | '/admin/support'
+    | '/admin/tourism'
+    | '/admin/trips'
     | '/portal/analytics'
     | '/portal/cargo'
     | '/portal/concierge'
@@ -473,8 +667,11 @@ export interface FileRouteTypes {
     | '/portal/support'
     | '/portal/tours'
     | '/portal/wallet'
+    | '/admin'
     | '/portal'
+    | '/admin/bookings/$id'
     | '/portal/trips/$id'
+    | '/admin/bookings'
     | '/portal/trips'
   id:
     | '__root__'
@@ -498,6 +695,20 @@ export interface FileRouteTypes {
     | '/_authenticated/driver'
     | '/_authenticated/portal'
     | '/_authenticated/super'
+    | '/_authenticated/admin/audit'
+    | '/_authenticated/admin/cargo'
+    | '/_authenticated/admin/concierge'
+    | '/_authenticated/admin/customers'
+    | '/_authenticated/admin/dispatch'
+    | '/_authenticated/admin/drivers'
+    | '/_authenticated/admin/fleet'
+    | '/_authenticated/admin/incidents'
+    | '/_authenticated/admin/notifications'
+    | '/_authenticated/admin/payments'
+    | '/_authenticated/admin/shopping'
+    | '/_authenticated/admin/support'
+    | '/_authenticated/admin/tourism'
+    | '/_authenticated/admin/trips'
     | '/_authenticated/portal/analytics'
     | '/_authenticated/portal/cargo'
     | '/_authenticated/portal/concierge'
@@ -515,8 +726,11 @@ export interface FileRouteTypes {
     | '/_authenticated/portal/support'
     | '/_authenticated/portal/tours'
     | '/_authenticated/portal/wallet'
+    | '/_authenticated/admin/'
     | '/_authenticated/portal/'
+    | '/_authenticated/admin/bookings/$id'
     | '/_authenticated/portal/trips/$id'
+    | '/_authenticated/admin/bookings/'
     | '/_authenticated/portal/trips/'
   fileRoutesById: FileRoutesById
 }
@@ -687,6 +901,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalIndexRouteImport
       parentRoute: typeof AuthenticatedPortalRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/portal/wallet': {
       id: '/_authenticated/portal/wallet'
       path: '/wallet'
@@ -806,12 +1027,117 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalAnalyticsRouteImport
       parentRoute: typeof AuthenticatedPortalRoute
     }
+    '/_authenticated/admin/trips': {
+      id: '/_authenticated/admin/trips'
+      path: '/trips'
+      fullPath: '/admin/trips'
+      preLoaderRoute: typeof AuthenticatedAdminTripsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/tourism': {
+      id: '/_authenticated/admin/tourism'
+      path: '/tourism'
+      fullPath: '/admin/tourism'
+      preLoaderRoute: typeof AuthenticatedAdminTourismRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/support': {
+      id: '/_authenticated/admin/support'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AuthenticatedAdminSupportRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/shopping': {
+      id: '/_authenticated/admin/shopping'
+      path: '/shopping'
+      fullPath: '/admin/shopping'
+      preLoaderRoute: typeof AuthenticatedAdminShoppingRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/payments': {
+      id: '/_authenticated/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AuthenticatedAdminPaymentsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/notifications': {
+      id: '/_authenticated/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AuthenticatedAdminNotificationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/incidents': {
+      id: '/_authenticated/admin/incidents'
+      path: '/incidents'
+      fullPath: '/admin/incidents'
+      preLoaderRoute: typeof AuthenticatedAdminIncidentsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/fleet': {
+      id: '/_authenticated/admin/fleet'
+      path: '/fleet'
+      fullPath: '/admin/fleet'
+      preLoaderRoute: typeof AuthenticatedAdminFleetRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/drivers': {
+      id: '/_authenticated/admin/drivers'
+      path: '/drivers'
+      fullPath: '/admin/drivers'
+      preLoaderRoute: typeof AuthenticatedAdminDriversRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/dispatch': {
+      id: '/_authenticated/admin/dispatch'
+      path: '/dispatch'
+      fullPath: '/admin/dispatch'
+      preLoaderRoute: typeof AuthenticatedAdminDispatchRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/customers': {
+      id: '/_authenticated/admin/customers'
+      path: '/customers'
+      fullPath: '/admin/customers'
+      preLoaderRoute: typeof AuthenticatedAdminCustomersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/concierge': {
+      id: '/_authenticated/admin/concierge'
+      path: '/concierge'
+      fullPath: '/admin/concierge'
+      preLoaderRoute: typeof AuthenticatedAdminConciergeRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/cargo': {
+      id: '/_authenticated/admin/cargo'
+      path: '/cargo'
+      fullPath: '/admin/cargo'
+      preLoaderRoute: typeof AuthenticatedAdminCargoRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/audit': {
+      id: '/_authenticated/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/portal/trips/': {
       id: '/_authenticated/portal/trips/'
       path: '/trips'
       fullPath: '/portal/trips/'
       preLoaderRoute: typeof AuthenticatedPortalTripsIndexRouteImport
       parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/admin/bookings/': {
+      id: '/_authenticated/admin/bookings/'
+      path: '/bookings'
+      fullPath: '/admin/bookings/'
+      preLoaderRoute: typeof AuthenticatedAdminBookingsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/portal/trips/$id': {
       id: '/_authenticated/portal/trips/$id'
@@ -820,8 +1146,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalTripsIdRouteImport
       parentRoute: typeof AuthenticatedPortalRoute
     }
+    '/_authenticated/admin/bookings/$id': {
+      id: '/_authenticated/admin/bookings/$id'
+      path: '/bookings/$id'
+      fullPath: '/admin/bookings/$id'
+      preLoaderRoute: typeof AuthenticatedAdminBookingsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
+  AuthenticatedAdminCargoRoute: typeof AuthenticatedAdminCargoRoute
+  AuthenticatedAdminConciergeRoute: typeof AuthenticatedAdminConciergeRoute
+  AuthenticatedAdminCustomersRoute: typeof AuthenticatedAdminCustomersRoute
+  AuthenticatedAdminDispatchRoute: typeof AuthenticatedAdminDispatchRoute
+  AuthenticatedAdminDriversRoute: typeof AuthenticatedAdminDriversRoute
+  AuthenticatedAdminFleetRoute: typeof AuthenticatedAdminFleetRoute
+  AuthenticatedAdminIncidentsRoute: typeof AuthenticatedAdminIncidentsRoute
+  AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
+  AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
+  AuthenticatedAdminShoppingRoute: typeof AuthenticatedAdminShoppingRoute
+  AuthenticatedAdminSupportRoute: typeof AuthenticatedAdminSupportRoute
+  AuthenticatedAdminTourismRoute: typeof AuthenticatedAdminTourismRoute
+  AuthenticatedAdminTripsRoute: typeof AuthenticatedAdminTripsRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminBookingsIdRoute: typeof AuthenticatedAdminBookingsIdRoute
+  AuthenticatedAdminBookingsIndexRoute: typeof AuthenticatedAdminBookingsIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
+  AuthenticatedAdminCargoRoute: AuthenticatedAdminCargoRoute,
+  AuthenticatedAdminConciergeRoute: AuthenticatedAdminConciergeRoute,
+  AuthenticatedAdminCustomersRoute: AuthenticatedAdminCustomersRoute,
+  AuthenticatedAdminDispatchRoute: AuthenticatedAdminDispatchRoute,
+  AuthenticatedAdminDriversRoute: AuthenticatedAdminDriversRoute,
+  AuthenticatedAdminFleetRoute: AuthenticatedAdminFleetRoute,
+  AuthenticatedAdminIncidentsRoute: AuthenticatedAdminIncidentsRoute,
+  AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
+  AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
+  AuthenticatedAdminShoppingRoute: AuthenticatedAdminShoppingRoute,
+  AuthenticatedAdminSupportRoute: AuthenticatedAdminSupportRoute,
+  AuthenticatedAdminTourismRoute: AuthenticatedAdminTourismRoute,
+  AuthenticatedAdminTripsRoute: AuthenticatedAdminTripsRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminBookingsIdRoute: AuthenticatedAdminBookingsIdRoute,
+  AuthenticatedAdminBookingsIndexRoute: AuthenticatedAdminBookingsIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedPortalRouteChildren {
   AuthenticatedPortalAnalyticsRoute: typeof AuthenticatedPortalAnalyticsRoute
@@ -873,7 +1249,7 @@ const AuthenticatedPortalRouteWithChildren =
   AuthenticatedPortalRoute._addFileChildren(AuthenticatedPortalRouteChildren)
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDriverRoute: typeof AuthenticatedDriverRoute
   AuthenticatedPortalRoute: typeof AuthenticatedPortalRouteWithChildren
@@ -881,7 +1257,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDriverRoute: AuthenticatedDriverRoute,
   AuthenticatedPortalRoute: AuthenticatedPortalRouteWithChildren,
