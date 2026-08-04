@@ -32,12 +32,24 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedSuperIndexRouteImport } from './routes/_authenticated/super/index'
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedSuperSecurityRouteImport } from './routes/_authenticated/super/security'
 import { Route as AuthenticatedSuperRbacRouteImport } from './routes/_authenticated/super/rbac'
 import { Route as AuthenticatedSuperPricingRouteImport } from './routes/_authenticated/super/pricing'
+import { Route as AuthenticatedSuperPartnersRouteImport } from './routes/_authenticated/super/partners'
 import { Route as AuthenticatedSuperOrganizationsRouteImport } from './routes/_authenticated/super/organizations'
 import { Route as AuthenticatedSuperIntegrationsRouteImport } from './routes/_authenticated/super/integrations'
+import { Route as AuthenticatedSuperInfrastructureRouteImport } from './routes/_authenticated/super/infrastructure'
+import { Route as AuthenticatedSuperFleetRouteImport } from './routes/_authenticated/super/fleet'
+import { Route as AuthenticatedSuperFinanceRouteImport } from './routes/_authenticated/super/finance'
 import { Route as AuthenticatedSuperFeaturesRouteImport } from './routes/_authenticated/super/features'
+import { Route as AuthenticatedSuperDeveloperRouteImport } from './routes/_authenticated/super/developer'
+import { Route as AuthenticatedSuperDestinationsRouteImport } from './routes/_authenticated/super/destinations'
+import { Route as AuthenticatedSuperCustomersRouteImport } from './routes/_authenticated/super/customers'
+import { Route as AuthenticatedSuperCmsRouteImport } from './routes/_authenticated/super/cms'
+import { Route as AuthenticatedSuperBroadcastsRouteImport } from './routes/_authenticated/super/broadcasts'
 import { Route as AuthenticatedSuperAutomationRouteImport } from './routes/_authenticated/super/automation'
+import { Route as AuthenticatedSuperAuditRouteImport } from './routes/_authenticated/super/audit'
+import { Route as AuthenticatedSuperApiRouteImport } from './routes/_authenticated/super/api'
 import { Route as AuthenticatedSuperAdminsRouteImport } from './routes/_authenticated/super/admins'
 import { Route as AuthenticatedPortalWalletRouteImport } from './routes/_authenticated/portal/wallet'
 import { Route as AuthenticatedPortalToursRouteImport } from './routes/_authenticated/portal/tours'
@@ -193,6 +205,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedSuperSecurityRoute =
+  AuthenticatedSuperSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => AuthenticatedSuperRoute,
+  } as any)
 const AuthenticatedSuperRbacRoute = AuthenticatedSuperRbacRouteImport.update({
   id: '/rbac',
   path: '/rbac',
@@ -202,6 +220,12 @@ const AuthenticatedSuperPricingRoute =
   AuthenticatedSuperPricingRouteImport.update({
     id: '/pricing',
     path: '/pricing',
+    getParentRoute: () => AuthenticatedSuperRoute,
+  } as any)
+const AuthenticatedSuperPartnersRoute =
+  AuthenticatedSuperPartnersRouteImport.update({
+    id: '/partners',
+    path: '/partners',
     getParentRoute: () => AuthenticatedSuperRoute,
   } as any)
 const AuthenticatedSuperOrganizationsRoute =
@@ -216,10 +240,56 @@ const AuthenticatedSuperIntegrationsRoute =
     path: '/integrations',
     getParentRoute: () => AuthenticatedSuperRoute,
   } as any)
+const AuthenticatedSuperInfrastructureRoute =
+  AuthenticatedSuperInfrastructureRouteImport.update({
+    id: '/infrastructure',
+    path: '/infrastructure',
+    getParentRoute: () => AuthenticatedSuperRoute,
+  } as any)
+const AuthenticatedSuperFleetRoute = AuthenticatedSuperFleetRouteImport.update({
+  id: '/fleet',
+  path: '/fleet',
+  getParentRoute: () => AuthenticatedSuperRoute,
+} as any)
+const AuthenticatedSuperFinanceRoute =
+  AuthenticatedSuperFinanceRouteImport.update({
+    id: '/finance',
+    path: '/finance',
+    getParentRoute: () => AuthenticatedSuperRoute,
+  } as any)
 const AuthenticatedSuperFeaturesRoute =
   AuthenticatedSuperFeaturesRouteImport.update({
     id: '/features',
     path: '/features',
+    getParentRoute: () => AuthenticatedSuperRoute,
+  } as any)
+const AuthenticatedSuperDeveloperRoute =
+  AuthenticatedSuperDeveloperRouteImport.update({
+    id: '/developer',
+    path: '/developer',
+    getParentRoute: () => AuthenticatedSuperRoute,
+  } as any)
+const AuthenticatedSuperDestinationsRoute =
+  AuthenticatedSuperDestinationsRouteImport.update({
+    id: '/destinations',
+    path: '/destinations',
+    getParentRoute: () => AuthenticatedSuperRoute,
+  } as any)
+const AuthenticatedSuperCustomersRoute =
+  AuthenticatedSuperCustomersRouteImport.update({
+    id: '/customers',
+    path: '/customers',
+    getParentRoute: () => AuthenticatedSuperRoute,
+  } as any)
+const AuthenticatedSuperCmsRoute = AuthenticatedSuperCmsRouteImport.update({
+  id: '/cms',
+  path: '/cms',
+  getParentRoute: () => AuthenticatedSuperRoute,
+} as any)
+const AuthenticatedSuperBroadcastsRoute =
+  AuthenticatedSuperBroadcastsRouteImport.update({
+    id: '/broadcasts',
+    path: '/broadcasts',
     getParentRoute: () => AuthenticatedSuperRoute,
   } as any)
 const AuthenticatedSuperAutomationRoute =
@@ -228,6 +298,16 @@ const AuthenticatedSuperAutomationRoute =
     path: '/automation',
     getParentRoute: () => AuthenticatedSuperRoute,
   } as any)
+const AuthenticatedSuperAuditRoute = AuthenticatedSuperAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedSuperRoute,
+} as any)
+const AuthenticatedSuperApiRoute = AuthenticatedSuperApiRouteImport.update({
+  id: '/api',
+  path: '/api',
+  getParentRoute: () => AuthenticatedSuperRoute,
+} as any)
 const AuthenticatedSuperAdminsRoute =
   AuthenticatedSuperAdminsRouteImport.update({
     id: '/admins',
@@ -514,12 +594,24 @@ export interface FileRoutesByFullPath {
   '/portal/tours': typeof AuthenticatedPortalToursRoute
   '/portal/wallet': typeof AuthenticatedPortalWalletRoute
   '/super/admins': typeof AuthenticatedSuperAdminsRoute
+  '/super/api': typeof AuthenticatedSuperApiRoute
+  '/super/audit': typeof AuthenticatedSuperAuditRoute
   '/super/automation': typeof AuthenticatedSuperAutomationRoute
+  '/super/broadcasts': typeof AuthenticatedSuperBroadcastsRoute
+  '/super/cms': typeof AuthenticatedSuperCmsRoute
+  '/super/customers': typeof AuthenticatedSuperCustomersRoute
+  '/super/destinations': typeof AuthenticatedSuperDestinationsRoute
+  '/super/developer': typeof AuthenticatedSuperDeveloperRoute
   '/super/features': typeof AuthenticatedSuperFeaturesRoute
+  '/super/finance': typeof AuthenticatedSuperFinanceRoute
+  '/super/fleet': typeof AuthenticatedSuperFleetRoute
+  '/super/infrastructure': typeof AuthenticatedSuperInfrastructureRoute
   '/super/integrations': typeof AuthenticatedSuperIntegrationsRoute
   '/super/organizations': typeof AuthenticatedSuperOrganizationsRoute
+  '/super/partners': typeof AuthenticatedSuperPartnersRoute
   '/super/pricing': typeof AuthenticatedSuperPricingRoute
   '/super/rbac': typeof AuthenticatedSuperRbacRoute
+  '/super/security': typeof AuthenticatedSuperSecurityRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/portal/': typeof AuthenticatedPortalIndexRoute
   '/super/': typeof AuthenticatedSuperIndexRoute
@@ -580,12 +672,24 @@ export interface FileRoutesByTo {
   '/portal/tours': typeof AuthenticatedPortalToursRoute
   '/portal/wallet': typeof AuthenticatedPortalWalletRoute
   '/super/admins': typeof AuthenticatedSuperAdminsRoute
+  '/super/api': typeof AuthenticatedSuperApiRoute
+  '/super/audit': typeof AuthenticatedSuperAuditRoute
   '/super/automation': typeof AuthenticatedSuperAutomationRoute
+  '/super/broadcasts': typeof AuthenticatedSuperBroadcastsRoute
+  '/super/cms': typeof AuthenticatedSuperCmsRoute
+  '/super/customers': typeof AuthenticatedSuperCustomersRoute
+  '/super/destinations': typeof AuthenticatedSuperDestinationsRoute
+  '/super/developer': typeof AuthenticatedSuperDeveloperRoute
   '/super/features': typeof AuthenticatedSuperFeaturesRoute
+  '/super/finance': typeof AuthenticatedSuperFinanceRoute
+  '/super/fleet': typeof AuthenticatedSuperFleetRoute
+  '/super/infrastructure': typeof AuthenticatedSuperInfrastructureRoute
   '/super/integrations': typeof AuthenticatedSuperIntegrationsRoute
   '/super/organizations': typeof AuthenticatedSuperOrganizationsRoute
+  '/super/partners': typeof AuthenticatedSuperPartnersRoute
   '/super/pricing': typeof AuthenticatedSuperPricingRoute
   '/super/rbac': typeof AuthenticatedSuperRbacRoute
+  '/super/security': typeof AuthenticatedSuperSecurityRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/portal': typeof AuthenticatedPortalIndexRoute
   '/super': typeof AuthenticatedSuperIndexRoute
@@ -651,12 +755,24 @@ export interface FileRoutesById {
   '/_authenticated/portal/tours': typeof AuthenticatedPortalToursRoute
   '/_authenticated/portal/wallet': typeof AuthenticatedPortalWalletRoute
   '/_authenticated/super/admins': typeof AuthenticatedSuperAdminsRoute
+  '/_authenticated/super/api': typeof AuthenticatedSuperApiRoute
+  '/_authenticated/super/audit': typeof AuthenticatedSuperAuditRoute
   '/_authenticated/super/automation': typeof AuthenticatedSuperAutomationRoute
+  '/_authenticated/super/broadcasts': typeof AuthenticatedSuperBroadcastsRoute
+  '/_authenticated/super/cms': typeof AuthenticatedSuperCmsRoute
+  '/_authenticated/super/customers': typeof AuthenticatedSuperCustomersRoute
+  '/_authenticated/super/destinations': typeof AuthenticatedSuperDestinationsRoute
+  '/_authenticated/super/developer': typeof AuthenticatedSuperDeveloperRoute
   '/_authenticated/super/features': typeof AuthenticatedSuperFeaturesRoute
+  '/_authenticated/super/finance': typeof AuthenticatedSuperFinanceRoute
+  '/_authenticated/super/fleet': typeof AuthenticatedSuperFleetRoute
+  '/_authenticated/super/infrastructure': typeof AuthenticatedSuperInfrastructureRoute
   '/_authenticated/super/integrations': typeof AuthenticatedSuperIntegrationsRoute
   '/_authenticated/super/organizations': typeof AuthenticatedSuperOrganizationsRoute
+  '/_authenticated/super/partners': typeof AuthenticatedSuperPartnersRoute
   '/_authenticated/super/pricing': typeof AuthenticatedSuperPricingRoute
   '/_authenticated/super/rbac': typeof AuthenticatedSuperRbacRoute
+  '/_authenticated/super/security': typeof AuthenticatedSuperSecurityRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
   '/_authenticated/super/': typeof AuthenticatedSuperIndexRoute
@@ -722,12 +838,24 @@ export interface FileRouteTypes {
     | '/portal/tours'
     | '/portal/wallet'
     | '/super/admins'
+    | '/super/api'
+    | '/super/audit'
     | '/super/automation'
+    | '/super/broadcasts'
+    | '/super/cms'
+    | '/super/customers'
+    | '/super/destinations'
+    | '/super/developer'
     | '/super/features'
+    | '/super/finance'
+    | '/super/fleet'
+    | '/super/infrastructure'
     | '/super/integrations'
     | '/super/organizations'
+    | '/super/partners'
     | '/super/pricing'
     | '/super/rbac'
+    | '/super/security'
     | '/admin/'
     | '/portal/'
     | '/super/'
@@ -788,12 +916,24 @@ export interface FileRouteTypes {
     | '/portal/tours'
     | '/portal/wallet'
     | '/super/admins'
+    | '/super/api'
+    | '/super/audit'
     | '/super/automation'
+    | '/super/broadcasts'
+    | '/super/cms'
+    | '/super/customers'
+    | '/super/destinations'
+    | '/super/developer'
     | '/super/features'
+    | '/super/finance'
+    | '/super/fleet'
+    | '/super/infrastructure'
     | '/super/integrations'
     | '/super/organizations'
+    | '/super/partners'
     | '/super/pricing'
     | '/super/rbac'
+    | '/super/security'
     | '/admin'
     | '/portal'
     | '/super'
@@ -858,12 +998,24 @@ export interface FileRouteTypes {
     | '/_authenticated/portal/tours'
     | '/_authenticated/portal/wallet'
     | '/_authenticated/super/admins'
+    | '/_authenticated/super/api'
+    | '/_authenticated/super/audit'
     | '/_authenticated/super/automation'
+    | '/_authenticated/super/broadcasts'
+    | '/_authenticated/super/cms'
+    | '/_authenticated/super/customers'
+    | '/_authenticated/super/destinations'
+    | '/_authenticated/super/developer'
     | '/_authenticated/super/features'
+    | '/_authenticated/super/finance'
+    | '/_authenticated/super/fleet'
+    | '/_authenticated/super/infrastructure'
     | '/_authenticated/super/integrations'
     | '/_authenticated/super/organizations'
+    | '/_authenticated/super/partners'
     | '/_authenticated/super/pricing'
     | '/_authenticated/super/rbac'
+    | '/_authenticated/super/security'
     | '/_authenticated/admin/'
     | '/_authenticated/portal/'
     | '/_authenticated/super/'
@@ -1054,6 +1206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/super/security': {
+      id: '/_authenticated/super/security'
+      path: '/security'
+      fullPath: '/super/security'
+      preLoaderRoute: typeof AuthenticatedSuperSecurityRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
     '/_authenticated/super/rbac': {
       id: '/_authenticated/super/rbac'
       path: '/rbac'
@@ -1066,6 +1225,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/super/pricing'
       preLoaderRoute: typeof AuthenticatedSuperPricingRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
+    '/_authenticated/super/partners': {
+      id: '/_authenticated/super/partners'
+      path: '/partners'
+      fullPath: '/super/partners'
+      preLoaderRoute: typeof AuthenticatedSuperPartnersRouteImport
       parentRoute: typeof AuthenticatedSuperRoute
     }
     '/_authenticated/super/organizations': {
@@ -1082,6 +1248,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperIntegrationsRouteImport
       parentRoute: typeof AuthenticatedSuperRoute
     }
+    '/_authenticated/super/infrastructure': {
+      id: '/_authenticated/super/infrastructure'
+      path: '/infrastructure'
+      fullPath: '/super/infrastructure'
+      preLoaderRoute: typeof AuthenticatedSuperInfrastructureRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
+    '/_authenticated/super/fleet': {
+      id: '/_authenticated/super/fleet'
+      path: '/fleet'
+      fullPath: '/super/fleet'
+      preLoaderRoute: typeof AuthenticatedSuperFleetRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
+    '/_authenticated/super/finance': {
+      id: '/_authenticated/super/finance'
+      path: '/finance'
+      fullPath: '/super/finance'
+      preLoaderRoute: typeof AuthenticatedSuperFinanceRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
     '/_authenticated/super/features': {
       id: '/_authenticated/super/features'
       path: '/features'
@@ -1089,11 +1276,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperFeaturesRouteImport
       parentRoute: typeof AuthenticatedSuperRoute
     }
+    '/_authenticated/super/developer': {
+      id: '/_authenticated/super/developer'
+      path: '/developer'
+      fullPath: '/super/developer'
+      preLoaderRoute: typeof AuthenticatedSuperDeveloperRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
+    '/_authenticated/super/destinations': {
+      id: '/_authenticated/super/destinations'
+      path: '/destinations'
+      fullPath: '/super/destinations'
+      preLoaderRoute: typeof AuthenticatedSuperDestinationsRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
+    '/_authenticated/super/customers': {
+      id: '/_authenticated/super/customers'
+      path: '/customers'
+      fullPath: '/super/customers'
+      preLoaderRoute: typeof AuthenticatedSuperCustomersRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
+    '/_authenticated/super/cms': {
+      id: '/_authenticated/super/cms'
+      path: '/cms'
+      fullPath: '/super/cms'
+      preLoaderRoute: typeof AuthenticatedSuperCmsRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
+    '/_authenticated/super/broadcasts': {
+      id: '/_authenticated/super/broadcasts'
+      path: '/broadcasts'
+      fullPath: '/super/broadcasts'
+      preLoaderRoute: typeof AuthenticatedSuperBroadcastsRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
     '/_authenticated/super/automation': {
       id: '/_authenticated/super/automation'
       path: '/automation'
       fullPath: '/super/automation'
       preLoaderRoute: typeof AuthenticatedSuperAutomationRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
+    '/_authenticated/super/audit': {
+      id: '/_authenticated/super/audit'
+      path: '/audit'
+      fullPath: '/super/audit'
+      preLoaderRoute: typeof AuthenticatedSuperAuditRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
+    '/_authenticated/super/api': {
+      id: '/_authenticated/super/api'
+      path: '/api'
+      fullPath: '/super/api'
+      preLoaderRoute: typeof AuthenticatedSuperApiRouteImport
       parentRoute: typeof AuthenticatedSuperRoute
     }
     '/_authenticated/super/admins': {
@@ -1472,23 +1708,47 @@ const AuthenticatedPortalRouteWithChildren =
 
 interface AuthenticatedSuperRouteChildren {
   AuthenticatedSuperAdminsRoute: typeof AuthenticatedSuperAdminsRoute
+  AuthenticatedSuperApiRoute: typeof AuthenticatedSuperApiRoute
+  AuthenticatedSuperAuditRoute: typeof AuthenticatedSuperAuditRoute
   AuthenticatedSuperAutomationRoute: typeof AuthenticatedSuperAutomationRoute
+  AuthenticatedSuperBroadcastsRoute: typeof AuthenticatedSuperBroadcastsRoute
+  AuthenticatedSuperCmsRoute: typeof AuthenticatedSuperCmsRoute
+  AuthenticatedSuperCustomersRoute: typeof AuthenticatedSuperCustomersRoute
+  AuthenticatedSuperDestinationsRoute: typeof AuthenticatedSuperDestinationsRoute
+  AuthenticatedSuperDeveloperRoute: typeof AuthenticatedSuperDeveloperRoute
   AuthenticatedSuperFeaturesRoute: typeof AuthenticatedSuperFeaturesRoute
+  AuthenticatedSuperFinanceRoute: typeof AuthenticatedSuperFinanceRoute
+  AuthenticatedSuperFleetRoute: typeof AuthenticatedSuperFleetRoute
+  AuthenticatedSuperInfrastructureRoute: typeof AuthenticatedSuperInfrastructureRoute
   AuthenticatedSuperIntegrationsRoute: typeof AuthenticatedSuperIntegrationsRoute
   AuthenticatedSuperOrganizationsRoute: typeof AuthenticatedSuperOrganizationsRoute
+  AuthenticatedSuperPartnersRoute: typeof AuthenticatedSuperPartnersRoute
   AuthenticatedSuperPricingRoute: typeof AuthenticatedSuperPricingRoute
   AuthenticatedSuperRbacRoute: typeof AuthenticatedSuperRbacRoute
+  AuthenticatedSuperSecurityRoute: typeof AuthenticatedSuperSecurityRoute
   AuthenticatedSuperIndexRoute: typeof AuthenticatedSuperIndexRoute
 }
 
 const AuthenticatedSuperRouteChildren: AuthenticatedSuperRouteChildren = {
   AuthenticatedSuperAdminsRoute: AuthenticatedSuperAdminsRoute,
+  AuthenticatedSuperApiRoute: AuthenticatedSuperApiRoute,
+  AuthenticatedSuperAuditRoute: AuthenticatedSuperAuditRoute,
   AuthenticatedSuperAutomationRoute: AuthenticatedSuperAutomationRoute,
+  AuthenticatedSuperBroadcastsRoute: AuthenticatedSuperBroadcastsRoute,
+  AuthenticatedSuperCmsRoute: AuthenticatedSuperCmsRoute,
+  AuthenticatedSuperCustomersRoute: AuthenticatedSuperCustomersRoute,
+  AuthenticatedSuperDestinationsRoute: AuthenticatedSuperDestinationsRoute,
+  AuthenticatedSuperDeveloperRoute: AuthenticatedSuperDeveloperRoute,
   AuthenticatedSuperFeaturesRoute: AuthenticatedSuperFeaturesRoute,
+  AuthenticatedSuperFinanceRoute: AuthenticatedSuperFinanceRoute,
+  AuthenticatedSuperFleetRoute: AuthenticatedSuperFleetRoute,
+  AuthenticatedSuperInfrastructureRoute: AuthenticatedSuperInfrastructureRoute,
   AuthenticatedSuperIntegrationsRoute: AuthenticatedSuperIntegrationsRoute,
   AuthenticatedSuperOrganizationsRoute: AuthenticatedSuperOrganizationsRoute,
+  AuthenticatedSuperPartnersRoute: AuthenticatedSuperPartnersRoute,
   AuthenticatedSuperPricingRoute: AuthenticatedSuperPricingRoute,
   AuthenticatedSuperRbacRoute: AuthenticatedSuperRbacRoute,
+  AuthenticatedSuperSecurityRoute: AuthenticatedSuperSecurityRoute,
   AuthenticatedSuperIndexRoute: AuthenticatedSuperIndexRoute,
 }
 
