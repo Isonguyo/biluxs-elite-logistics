@@ -29,8 +29,10 @@ import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedDriverRouteImport } from './routes/_authenticated/driver'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedSuperIndexRouteImport } from './routes/_authenticated/super/index'
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedSuperOrganizationsRouteImport } from './routes/_authenticated/super/organizations'
 import { Route as AuthenticatedPortalWalletRouteImport } from './routes/_authenticated/portal/wallet'
 import { Route as AuthenticatedPortalToursRouteImport } from './routes/_authenticated/portal/tours'
 import { Route as AuthenticatedPortalSupportRouteImport } from './routes/_authenticated/portal/support'
@@ -169,6 +171,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSuperIndexRoute = AuthenticatedSuperIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedSuperRoute,
+} as any)
 const AuthenticatedPortalIndexRoute =
   AuthenticatedPortalIndexRouteImport.update({
     id: '/',
@@ -180,6 +187,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedSuperOrganizationsRoute =
+  AuthenticatedSuperOrganizationsRouteImport.update({
+    id: '/organizations',
+    path: '/organizations',
+    getParentRoute: () => AuthenticatedSuperRoute,
+  } as any)
 const AuthenticatedPortalWalletRoute =
   AuthenticatedPortalWalletRouteImport.update({
     id: '/wallet',
@@ -424,7 +437,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driver': typeof AuthenticatedDriverRoute
   '/portal': typeof AuthenticatedPortalRouteWithChildren
-  '/super': typeof AuthenticatedSuperRoute
+  '/super': typeof AuthenticatedSuperRouteWithChildren
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/cargo': typeof AuthenticatedAdminCargoRoute
@@ -459,8 +472,10 @@ export interface FileRoutesByFullPath {
   '/portal/support': typeof AuthenticatedPortalSupportRoute
   '/portal/tours': typeof AuthenticatedPortalToursRoute
   '/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/super/organizations': typeof AuthenticatedSuperOrganizationsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/portal/': typeof AuthenticatedPortalIndexRoute
+  '/super/': typeof AuthenticatedSuperIndexRoute
   '/admin/bookings/$id': typeof AuthenticatedAdminBookingsIdRoute
   '/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
   '/admin/bookings/': typeof AuthenticatedAdminBookingsIndexRoute
@@ -483,7 +498,6 @@ export interface FileRoutesByTo {
   '/track': typeof TrackRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driver': typeof AuthenticatedDriverRoute
-  '/super': typeof AuthenticatedSuperRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/cargo': typeof AuthenticatedAdminCargoRoute
@@ -518,8 +532,10 @@ export interface FileRoutesByTo {
   '/portal/support': typeof AuthenticatedPortalSupportRoute
   '/portal/tours': typeof AuthenticatedPortalToursRoute
   '/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/super/organizations': typeof AuthenticatedSuperOrganizationsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/portal': typeof AuthenticatedPortalIndexRoute
+  '/super': typeof AuthenticatedSuperIndexRoute
   '/admin/bookings/$id': typeof AuthenticatedAdminBookingsIdRoute
   '/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
   '/admin/bookings': typeof AuthenticatedAdminBookingsIndexRoute
@@ -546,7 +562,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/driver': typeof AuthenticatedDriverRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRouteWithChildren
-  '/_authenticated/super': typeof AuthenticatedSuperRoute
+  '/_authenticated/super': typeof AuthenticatedSuperRouteWithChildren
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/cargo': typeof AuthenticatedAdminCargoRoute
@@ -581,8 +597,10 @@ export interface FileRoutesById {
   '/_authenticated/portal/support': typeof AuthenticatedPortalSupportRoute
   '/_authenticated/portal/tours': typeof AuthenticatedPortalToursRoute
   '/_authenticated/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/_authenticated/super/organizations': typeof AuthenticatedSuperOrganizationsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
+  '/_authenticated/super/': typeof AuthenticatedSuperIndexRoute
   '/_authenticated/admin/bookings/$id': typeof AuthenticatedAdminBookingsIdRoute
   '/_authenticated/portal/trips/$id': typeof AuthenticatedPortalTripsIdRoute
   '/_authenticated/admin/bookings/': typeof AuthenticatedAdminBookingsIndexRoute
@@ -644,8 +662,10 @@ export interface FileRouteTypes {
     | '/portal/support'
     | '/portal/tours'
     | '/portal/wallet'
+    | '/super/organizations'
     | '/admin/'
     | '/portal/'
+    | '/super/'
     | '/admin/bookings/$id'
     | '/portal/trips/$id'
     | '/admin/bookings/'
@@ -668,7 +688,6 @@ export interface FileRouteTypes {
     | '/track'
     | '/dashboard'
     | '/driver'
-    | '/super'
     | '/admin/analytics'
     | '/admin/audit'
     | '/admin/cargo'
@@ -703,8 +722,10 @@ export interface FileRouteTypes {
     | '/portal/support'
     | '/portal/tours'
     | '/portal/wallet'
+    | '/super/organizations'
     | '/admin'
     | '/portal'
+    | '/super'
     | '/admin/bookings/$id'
     | '/portal/trips/$id'
     | '/admin/bookings'
@@ -765,8 +786,10 @@ export interface FileRouteTypes {
     | '/_authenticated/portal/support'
     | '/_authenticated/portal/tours'
     | '/_authenticated/portal/wallet'
+    | '/_authenticated/super/organizations'
     | '/_authenticated/admin/'
     | '/_authenticated/portal/'
+    | '/_authenticated/super/'
     | '/_authenticated/admin/bookings/$id'
     | '/_authenticated/portal/trips/$id'
     | '/_authenticated/admin/bookings/'
@@ -933,6 +956,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/super/': {
+      id: '/_authenticated/super/'
+      path: '/'
+      fullPath: '/super/'
+      preLoaderRoute: typeof AuthenticatedSuperIndexRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
     '/_authenticated/portal/': {
       id: '/_authenticated/portal/'
       path: '/'
@@ -946,6 +976,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/super/organizations': {
+      id: '/_authenticated/super/organizations'
+      path: '/organizations'
+      fullPath: '/super/organizations'
+      preLoaderRoute: typeof AuthenticatedSuperOrganizationsRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
     }
     '/_authenticated/portal/wallet': {
       id: '/_authenticated/portal/wallet'
@@ -1314,12 +1351,25 @@ const AuthenticatedPortalRouteChildren: AuthenticatedPortalRouteChildren = {
 const AuthenticatedPortalRouteWithChildren =
   AuthenticatedPortalRoute._addFileChildren(AuthenticatedPortalRouteChildren)
 
+interface AuthenticatedSuperRouteChildren {
+  AuthenticatedSuperOrganizationsRoute: typeof AuthenticatedSuperOrganizationsRoute
+  AuthenticatedSuperIndexRoute: typeof AuthenticatedSuperIndexRoute
+}
+
+const AuthenticatedSuperRouteChildren: AuthenticatedSuperRouteChildren = {
+  AuthenticatedSuperOrganizationsRoute: AuthenticatedSuperOrganizationsRoute,
+  AuthenticatedSuperIndexRoute: AuthenticatedSuperIndexRoute,
+}
+
+const AuthenticatedSuperRouteWithChildren =
+  AuthenticatedSuperRoute._addFileChildren(AuthenticatedSuperRouteChildren)
+
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDriverRoute: typeof AuthenticatedDriverRoute
   AuthenticatedPortalRoute: typeof AuthenticatedPortalRouteWithChildren
-  AuthenticatedSuperRoute: typeof AuthenticatedSuperRoute
+  AuthenticatedSuperRoute: typeof AuthenticatedSuperRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -1327,7 +1377,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDriverRoute: AuthenticatedDriverRoute,
   AuthenticatedPortalRoute: AuthenticatedPortalRouteWithChildren,
-  AuthenticatedSuperRoute: AuthenticatedSuperRoute,
+  AuthenticatedSuperRoute: AuthenticatedSuperRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
