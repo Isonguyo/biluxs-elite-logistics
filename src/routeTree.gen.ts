@@ -33,6 +33,7 @@ import { Route as AuthenticatedSuperIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedSuperOrganizationsRouteImport } from './routes/_authenticated/super/organizations'
+import { Route as AuthenticatedSuperAdminsRouteImport } from './routes/_authenticated/super/admins'
 import { Route as AuthenticatedPortalWalletRouteImport } from './routes/_authenticated/portal/wallet'
 import { Route as AuthenticatedPortalToursRouteImport } from './routes/_authenticated/portal/tours'
 import { Route as AuthenticatedPortalSupportRouteImport } from './routes/_authenticated/portal/support'
@@ -191,6 +192,12 @@ const AuthenticatedSuperOrganizationsRoute =
   AuthenticatedSuperOrganizationsRouteImport.update({
     id: '/organizations',
     path: '/organizations',
+    getParentRoute: () => AuthenticatedSuperRoute,
+  } as any)
+const AuthenticatedSuperAdminsRoute =
+  AuthenticatedSuperAdminsRouteImport.update({
+    id: '/admins',
+    path: '/admins',
     getParentRoute: () => AuthenticatedSuperRoute,
   } as any)
 const AuthenticatedPortalWalletRoute =
@@ -472,6 +479,7 @@ export interface FileRoutesByFullPath {
   '/portal/support': typeof AuthenticatedPortalSupportRoute
   '/portal/tours': typeof AuthenticatedPortalToursRoute
   '/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/super/admins': typeof AuthenticatedSuperAdminsRoute
   '/super/organizations': typeof AuthenticatedSuperOrganizationsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/portal/': typeof AuthenticatedPortalIndexRoute
@@ -532,6 +540,7 @@ export interface FileRoutesByTo {
   '/portal/support': typeof AuthenticatedPortalSupportRoute
   '/portal/tours': typeof AuthenticatedPortalToursRoute
   '/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/super/admins': typeof AuthenticatedSuperAdminsRoute
   '/super/organizations': typeof AuthenticatedSuperOrganizationsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/portal': typeof AuthenticatedPortalIndexRoute
@@ -597,6 +606,7 @@ export interface FileRoutesById {
   '/_authenticated/portal/support': typeof AuthenticatedPortalSupportRoute
   '/_authenticated/portal/tours': typeof AuthenticatedPortalToursRoute
   '/_authenticated/portal/wallet': typeof AuthenticatedPortalWalletRoute
+  '/_authenticated/super/admins': typeof AuthenticatedSuperAdminsRoute
   '/_authenticated/super/organizations': typeof AuthenticatedSuperOrganizationsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
@@ -662,6 +672,7 @@ export interface FileRouteTypes {
     | '/portal/support'
     | '/portal/tours'
     | '/portal/wallet'
+    | '/super/admins'
     | '/super/organizations'
     | '/admin/'
     | '/portal/'
@@ -722,6 +733,7 @@ export interface FileRouteTypes {
     | '/portal/support'
     | '/portal/tours'
     | '/portal/wallet'
+    | '/super/admins'
     | '/super/organizations'
     | '/admin'
     | '/portal'
@@ -786,6 +798,7 @@ export interface FileRouteTypes {
     | '/_authenticated/portal/support'
     | '/_authenticated/portal/tours'
     | '/_authenticated/portal/wallet'
+    | '/_authenticated/super/admins'
     | '/_authenticated/super/organizations'
     | '/_authenticated/admin/'
     | '/_authenticated/portal/'
@@ -982,6 +995,13 @@ declare module '@tanstack/react-router' {
       path: '/organizations'
       fullPath: '/super/organizations'
       preLoaderRoute: typeof AuthenticatedSuperOrganizationsRouteImport
+      parentRoute: typeof AuthenticatedSuperRoute
+    }
+    '/_authenticated/super/admins': {
+      id: '/_authenticated/super/admins'
+      path: '/admins'
+      fullPath: '/super/admins'
+      preLoaderRoute: typeof AuthenticatedSuperAdminsRouteImport
       parentRoute: typeof AuthenticatedSuperRoute
     }
     '/_authenticated/portal/wallet': {
@@ -1352,11 +1372,13 @@ const AuthenticatedPortalRouteWithChildren =
   AuthenticatedPortalRoute._addFileChildren(AuthenticatedPortalRouteChildren)
 
 interface AuthenticatedSuperRouteChildren {
+  AuthenticatedSuperAdminsRoute: typeof AuthenticatedSuperAdminsRoute
   AuthenticatedSuperOrganizationsRoute: typeof AuthenticatedSuperOrganizationsRoute
   AuthenticatedSuperIndexRoute: typeof AuthenticatedSuperIndexRoute
 }
 
 const AuthenticatedSuperRouteChildren: AuthenticatedSuperRouteChildren = {
+  AuthenticatedSuperAdminsRoute: AuthenticatedSuperAdminsRoute,
   AuthenticatedSuperOrganizationsRoute: AuthenticatedSuperOrganizationsRoute,
   AuthenticatedSuperIndexRoute: AuthenticatedSuperIndexRoute,
 }

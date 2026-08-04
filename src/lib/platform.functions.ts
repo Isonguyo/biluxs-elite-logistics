@@ -1,11 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertSuperUser } from "@/lib/platform.server";
 
-async function assertSuperUser(supabase: any, userId: string) {
-  const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "super_user").maybeSingle();
-  if (!data) throw new Error("Forbidden: platform owner access required");
-}
 
 /** Staff account directory enriched with auth metadata (last sign-in, email). */
 export const listStaffAccounts = createServerFn({ method: "GET" })
