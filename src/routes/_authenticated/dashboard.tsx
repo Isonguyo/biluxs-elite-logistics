@@ -42,6 +42,7 @@ function Page() {
     if (isSuperUser) navigate({ to: "/super" });
     else if (isAdmin) navigate({ to: "/admin" });
     else if (isDriver) navigate({ to: "/driver" });
+    else navigate({ to: "/portal" });
   }, [isAdmin, isDriver, isSuperUser, navigate]);
 
   const active = bookings.find((b) => b.payment_status === "paid" && b.qr_status === "valid" && ["confirmed", "pending"].includes(b.status));
