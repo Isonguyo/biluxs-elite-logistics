@@ -86,7 +86,7 @@ function Page() {
               <YAxis stroke="rgba(255,255,255,0.4)" fontSize={11} />
               <Tooltip
                 contentStyle={{ background: "#0b1220", border: "1px solid rgba(255,255,255,0.12)", fontSize: 12 }}
-                formatter={(v: number, n: string) => (n === "spend" ? ngn(v) : v)}
+                formatter={(v, n) => (n === "spend" ? ngn(Number(v)) : String(v))}
               />
               <Bar dataKey="spend" fill="var(--gold, #c8a15a)" name="spend" />
               <Bar dataKey="trips" fill="rgba(220,38,38,0.7)" name="trips" />
