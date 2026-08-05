@@ -14,7 +14,8 @@ function Page() {
     trips.set(b.user_id, (trips.get(b.user_id) ?? 0) + 1);
     if (b.payment_status === "paid") spend.set(b.user_id, (spend.get(b.user_id) ?? 0) + Number(b.total_price || 0));
   });
-  const list = profiles.map((p: Row) => ({ ...p, spend: spend.get(p.id) ?? 0, trips: trips.get(p.id) ?? 0 }))
+  const list: (Row & { spend: number; trips: number })[] = profiles
+    .map((p: Row) => ({ ...p, spend: spend.get(p.id) ?? 0, trips: trips.get(p.id) ?? 0 }))
     .sort((a, b) => b.spend - a.spend);
   const vip = list.filter((c) => c.spend >= 500000);
 
