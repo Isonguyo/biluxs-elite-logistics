@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Search, MapPin, Clock, Truck, Smartphone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
 import { RadarPulse } from "@/components/biluxs/anim";
 import { motion } from "framer-motion";

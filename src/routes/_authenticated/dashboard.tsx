@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import QRCode from "react-qr-code";
 import { Plus, MapPin, Receipt, Calendar, Crown, QrCode, ShieldCheck, X, ScanLine } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
 import { useAuth } from "@/hooks/useAuth";
 

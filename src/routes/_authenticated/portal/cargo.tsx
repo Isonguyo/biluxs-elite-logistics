@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { useAuth } from "@/hooks/useAuth";
 import { PortalLayout, SectionTitle } from "@/components/portal/PortalLayout";
 import { RequestForm, RequestList, StatusPill } from "@/components/portal/RequestForm";

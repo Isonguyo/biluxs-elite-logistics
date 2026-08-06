@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Car } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
 import herofleetImg from "@/assets/hero-fleet.jpg";
 import { TiltCard, ParallaxY } from "@/components/biluxs/anim";

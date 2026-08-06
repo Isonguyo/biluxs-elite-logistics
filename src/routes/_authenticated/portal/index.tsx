@@ -5,6 +5,7 @@ import {
   Bell, Crown, ArrowRight, ShieldAlert,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { useAuth } from "@/hooks/useAuth";
 import { PortalLayout, Card, Stat, SectionTitle, Empty } from "@/components/portal/PortalLayout";
 import { ngn, dt, useWallet, useNotifications, useProfile, tierOf } from "@/lib/portal";

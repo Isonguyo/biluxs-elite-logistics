@@ -8,6 +8,7 @@ import {
   MessageCircle, Siren, LayoutDashboard, Route as RouteIcon, TrendingUp,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { PageShell } from "@/components/biluxs/PageShell";
 import { useAuth } from "@/hooks/useAuth";
 import { Panel, Stat, Btn } from "@/components/driver/DriverKit";

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { useAuth } from "@/hooks/useAuth";
 import { PortalLayout, Card, Empty } from "@/components/portal/PortalLayout";
 import { ngn, dt, EVENT_LABEL, progressFor } from "@/lib/portal";
