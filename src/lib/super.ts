@@ -71,7 +71,7 @@ export function usePlatformHealth() {
       const latency = Math.round(performance.now() - t0);
       if (!alive) return;
       setHealth((h) => ({ ...h, api: error ? "degraded" : "operational", db: error ? "degraded" : "operational", latency }));
-      const ch = supabase.channel("cp-health");
+      const ch = supabase.channel(rtTopic("cp-health");
       ch.subscribe((status) => {
         if (!alive) return;
         setHealth((h) => ({ ...h, realtime: status === "SUBSCRIBED" ? "operational" : status === "CHANNEL_ERROR" ? "degraded" : h.realtime }));

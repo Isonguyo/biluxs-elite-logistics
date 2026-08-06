@@ -33,7 +33,7 @@ function Page() {
       setRows(data ?? []);
     };
     void load();
-    const ch = supabase.channel("trips-" + user.id)
+    const ch = supabase.channel(rtTopic("trips-" + user.id))
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `user_id=eq.${user.id}` }, () => void load())
       .subscribe();
     return () => { void supabase.removeChannel(ch); };

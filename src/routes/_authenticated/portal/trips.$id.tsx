@@ -51,7 +51,7 @@ function Page() {
       }
     };
     void load();
-    const ch = supabase.channel("trip-" + id)
+    const ch = supabase.channel(rtTopic("trip-" + id))
       .on("postgres_changes", { event: "*", schema: "public", table: "trip_events", filter: `booking_id=eq.${id}` }, () => void load())
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "bookings", filter: `id=eq.${id}` }, () => void load())
       .subscribe();

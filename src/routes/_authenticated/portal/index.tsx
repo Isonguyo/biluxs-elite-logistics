@@ -54,7 +54,7 @@ function Page() {
       setBookings(data ?? []);
     };
     void load();
-    const ch = supabase.channel("portal-bookings-" + user.id)
+    const ch = supabase.channel(rtTopic("portal-bookings-" + user.id))
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `user_id=eq.${user.id}` }, () => void load())
       .subscribe();
     return () => { void supabase.removeChannel(ch); };

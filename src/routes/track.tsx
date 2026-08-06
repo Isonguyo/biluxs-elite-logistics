@@ -44,7 +44,7 @@ function Page() {
 
   useEffect(() => {
     if (!booking) return;
-    const ch = supabase.channel(`track-${booking.id}`)
+    const ch = supabase.channel(rtTopic(`track-${booking.id}`))
       .on("postgres_changes", { event: "*", schema: "public", table: "tracking_logs", filter: `booking_id=eq.${booking.id}` },
         () => {
           supabase.from("tracking_logs").select("*").eq("booking_id", booking.id)

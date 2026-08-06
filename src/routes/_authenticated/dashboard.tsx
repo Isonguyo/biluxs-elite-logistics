@@ -32,7 +32,7 @@ function Page() {
     const load = () => supabase.from("bookings").select("*").eq("user_id", user.id)
       .order("created_at", { ascending: false }).then(({ data }) => setBookings((data as Booking[]) || []));
     load();
-    const ch = supabase.channel("dash-bookings")
+    const ch = supabase.channel(rtTopic("dash-bookings"))
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `user_id=eq.${user.id}` }, load)
       .subscribe();
     return () => { supabase.removeChannel(ch); };

@@ -33,7 +33,7 @@ function Page() {
   useEffect(() => {
     supabase.from("vehicles").select("*").order("base_rate")
       .then(({ data }) => setVehicles((data as Vehicle[]) || []));
-    const ch = supabase.channel("fleet-realtime")
+    const ch = supabase.channel(rtTopic("fleet-realtime"))
       .on("postgres_changes", { event: "*", schema: "public", table: "vehicles" }, () => {
         supabase.from("vehicles").select("*").order("base_rate")
           .then(({ data }) => setVehicles((data as Vehicle[]) || []));

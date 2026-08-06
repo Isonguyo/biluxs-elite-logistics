@@ -25,7 +25,7 @@ export function useTable(
     void load();
     if (!realtime) return;
     const ch = supabase
-      .channel(`ops-${table}`)
+      .channel(rtTopic(`ops-${table}`))
       .on("postgres_changes", { event: "*", schema: "public", table }, () => void load())
       .subscribe();
     return () => {

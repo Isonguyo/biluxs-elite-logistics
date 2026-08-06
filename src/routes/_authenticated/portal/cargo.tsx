@@ -27,7 +27,7 @@ function Page() {
   useEffect(() => {
     void load();
     if (!user) return;
-    const ch = supabase.channel("cargo-" + user.id)
+    const ch = supabase.channel(rtTopic("cargo-" + user.id))
       .on("postgres_changes", { event: "*", schema: "public", table: "cargo_shipments", filter: `user_id=eq.${user.id}` }, () => void load())
       .subscribe();
     return () => { void supabase.removeChannel(ch); };

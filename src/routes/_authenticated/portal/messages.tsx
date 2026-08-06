@@ -56,7 +56,7 @@ function Page() {
   useEffect(() => {
     if (!activeId) { setMsgs([]); return; }
     void loadMsgs(activeId);
-    const ch = supabase.channel("portal-msgs-" + activeId)
+    const ch = supabase.channel(rtTopic("portal-msgs-" + activeId))
       .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `conversation_id=eq.${activeId}` },
         () => void loadMsgs(activeId))
       .subscribe();

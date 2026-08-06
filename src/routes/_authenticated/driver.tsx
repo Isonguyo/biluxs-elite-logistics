@@ -126,7 +126,7 @@ function Page() {
 
   useEffect(() => {
     if (!driverId) return;
-    const ch = supabase.channel("driver-ops")
+    const ch = supabase.channel(rtTopic("driver-ops"))
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `driver_id=eq.${driverId}` }, () => { loadTrips(); toast("Assignment board updated"); })
       .subscribe();
     return () => { supabase.removeChannel(ch); };
@@ -142,7 +142,7 @@ function Page() {
     const load = () => supabase.from("trip_events").select("*").eq("booking_id", active.id)
       .order("created_at").then(({ data }) => setEvents((data as TripEvent[]) || []));
     load();
-    const ch = supabase.channel(`trip-events-${active.id}`)
+    const ch = supabase.channel(rtTopic(`trip-events-${active.id}`))
       .on("postgres_changes", { event: "*", schema: "public", table: "trip_events", filter: `booking_id=eq.${active.id}` }, load)
       .subscribe();
     return () => { supabase.removeChannel(ch); };
