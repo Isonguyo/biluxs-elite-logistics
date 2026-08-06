@@ -41,6 +41,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
 
+  useEffect(() => {
+    // A stale cached document referencing deleted asset hashes: reload once.
+    if (isChunkLoadError(error)) window.location.reload();
+  }, [error]);
+
+
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
