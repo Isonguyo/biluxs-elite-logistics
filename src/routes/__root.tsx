@@ -10,6 +10,8 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 import { LoaderProvider } from "@/components/biluxs/GlobalLoader";
 import { OfflineOverlay } from "@/components/biluxs/OfflineOverlay";
+import { installChunkRecovery, isChunkLoadError } from "@/lib/chunk-recovery";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 
