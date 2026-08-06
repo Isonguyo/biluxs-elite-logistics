@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { useAuth } from "@/hooks/useAuth";
 
 export const ngn = (n: number | null | undefined) =>
@@ -87,7 +88,7 @@ export function useWallet() {
     void load();
     if (!user) return;
     const ch = supabase
-      .channel("wallet-" + user.id)
+      .channel(rtTopic("wallet-" + user.id))
       .on("postgres_changes", { event: "*", schema: "public", table: "wallet_transactions", filter: `user_id=eq.${user.id}` }, () => void load())
       .subscribe();
     return () => { void supabase.removeChannel(ch); };
@@ -116,7 +117,7 @@ export function useNotifications() {
     void load();
     if (!user) return;
     const ch = supabase
-      .channel("notif-" + user.id)
+      .channel(rtTopic("notif-" + user.id))
       .on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => void load())
       .subscribe();
     return () => { void supabase.removeChannel(ch); };

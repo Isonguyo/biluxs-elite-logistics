@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import QRCode from "react-qr-code";
 import { Plus, MapPin, Receipt, Calendar, Crown, QrCode, ShieldCheck, X, ScanLine } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -32,7 +33,7 @@ function Page() {
     const load = () => supabase.from("bookings").select("*").eq("user_id", user.id)
       .order("created_at", { ascending: false }).then(({ data }) => setBookings((data as Booking[]) || []));
     load();
-    const ch = supabase.channel("dash-bookings")
+    const ch = supabase.channel(rtTopic("dash-bookings"))
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `user_id=eq.${user.id}` }, load)
       .subscribe();
     return () => { supabase.removeChannel(ch); };

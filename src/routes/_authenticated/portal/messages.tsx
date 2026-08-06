@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Send, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { useAuth } from "@/hooks/useAuth";
 import { PortalLayout, Card, Empty } from "@/components/portal/PortalLayout";
 import { dt } from "@/lib/portal";
@@ -56,7 +57,7 @@ function Page() {
   useEffect(() => {
     if (!activeId) { setMsgs([]); return; }
     void loadMsgs(activeId);
-    const ch = supabase.channel("portal-msgs-" + activeId)
+    const ch = supabase.channel(rtTopic("portal-msgs-" + activeId))
       .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `conversation_id=eq.${activeId}` },
         () => void loadMsgs(activeId))
       .subscribe();

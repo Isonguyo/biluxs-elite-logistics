@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Car } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { PageShell, PageHero } from "@/components/biluxs/PageShell";
 import herofleetImg from "@/assets/hero-fleet.jpg";
 import { TiltCard, ParallaxY } from "@/components/biluxs/anim";
@@ -33,7 +34,7 @@ function Page() {
   useEffect(() => {
     supabase.from("vehicles").select("*").order("base_rate")
       .then(({ data }) => setVehicles((data as Vehicle[]) || []));
-    const ch = supabase.channel("fleet-realtime")
+    const ch = supabase.channel(rtTopic("fleet-realtime"))
       .on("postgres_changes", { event: "*", schema: "public", table: "vehicles" }, () => {
         supabase.from("vehicles").select("*").order("base_rate")
           .then(({ data }) => setVehicles((data as Vehicle[]) || []));

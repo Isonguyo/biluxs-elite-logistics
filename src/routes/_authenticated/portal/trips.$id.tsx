@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { useAuth } from "@/hooks/useAuth";
 import { PortalLayout, Card, Empty } from "@/components/portal/PortalLayout";
 import { ngn, dt, EVENT_LABEL, progressFor } from "@/lib/portal";
@@ -51,7 +52,7 @@ function Page() {
       }
     };
     void load();
-    const ch = supabase.channel("trip-" + id)
+    const ch = supabase.channel(rtTopic("trip-" + id))
       .on("postgres_changes", { event: "*", schema: "public", table: "trip_events", filter: `booking_id=eq.${id}` }, () => void load())
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "bookings", filter: `id=eq.${id}` }, () => void load())
       .subscribe();

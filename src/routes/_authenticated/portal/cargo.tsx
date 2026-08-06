@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { useAuth } from "@/hooks/useAuth";
 import { PortalLayout, SectionTitle } from "@/components/portal/PortalLayout";
 import { RequestForm, RequestList, StatusPill } from "@/components/portal/RequestForm";
@@ -27,7 +28,7 @@ function Page() {
   useEffect(() => {
     void load();
     if (!user) return;
-    const ch = supabase.channel("cargo-" + user.id)
+    const ch = supabase.channel(rtTopic("cargo-" + user.id))
       .on("postgres_changes", { event: "*", schema: "public", table: "cargo_shipments", filter: `user_id=eq.${user.id}` }, () => void load())
       .subscribe();
     return () => { void supabase.removeChannel(ch); };

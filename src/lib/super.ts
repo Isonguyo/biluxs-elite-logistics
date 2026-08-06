@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { logAudit, type Row } from "@/lib/admin";
 
 /** Generic control-plane table reader (no created_at assumption). */
@@ -71,7 +72,7 @@ export function usePlatformHealth() {
       const latency = Math.round(performance.now() - t0);
       if (!alive) return;
       setHealth((h) => ({ ...h, api: error ? "degraded" : "operational", db: error ? "degraded" : "operational", latency }));
-      const ch = supabase.channel("cp-health");
+      const ch = supabase.channel(rtTopic("cp-health"));
       ch.subscribe((status) => {
         if (!alive) return;
         setHealth((h) => ({ ...h, realtime: status === "SUBSCRIBED" ? "operational" : status === "CHANNEL_ERROR" ? "degraded" : h.realtime }));

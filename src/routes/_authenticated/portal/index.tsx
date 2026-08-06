@@ -5,6 +5,7 @@ import {
   Bell, Crown, ArrowRight, ShieldAlert,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 import { useAuth } from "@/hooks/useAuth";
 import { PortalLayout, Card, Stat, SectionTitle, Empty } from "@/components/portal/PortalLayout";
 import { ngn, dt, useWallet, useNotifications, useProfile, tierOf } from "@/lib/portal";
@@ -54,7 +55,7 @@ function Page() {
       setBookings(data ?? []);
     };
     void load();
-    const ch = supabase.channel("portal-bookings-" + user.id)
+    const ch = supabase.channel(rtTopic("portal-bookings-" + user.id))
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `user_id=eq.${user.id}` }, () => void load())
       .subscribe();
     return () => { void supabase.removeChannel(ch); };

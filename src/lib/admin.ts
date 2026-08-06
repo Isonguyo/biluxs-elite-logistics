@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { rtTopic } from "@/lib/realtime";
 
 /** Loose row type — admin modules read across many tables. */
 export type Row = Record<string, any>;
@@ -25,7 +26,7 @@ export function useTable(
     void load();
     if (!realtime) return;
     const ch = supabase
-      .channel(`ops-${table}`)
+      .channel(rtTopic(`ops-${table}`))
       .on("postgres_changes", { event: "*", schema: "public", table }, () => void load())
       .subscribe();
     return () => {
