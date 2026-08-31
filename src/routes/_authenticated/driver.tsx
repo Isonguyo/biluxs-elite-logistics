@@ -2,7 +2,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { Html5Qrcode } from "html5-qrcode";
 import {
   Radar, MapPin, ScanLine, Power, CheckCircle2, XCircle, Navigation, ShieldCheck,
   Phone, User, Camera, Wallet, Wrench, AlertTriangle, Clock, Star, Gauge, Car,
@@ -88,8 +87,7 @@ function Page() {
   const [passenger, setPassenger] = useState<PassengerInfo | null>(null);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const scannerRef = useRef<Html5Qrcode | null>(null);
-  const readerId = useRef(`driver-qr-reader-${Math.random().toString(36).slice(2)}`);
+  const scannerRef = useRef<any>(null);
   const watchRef = useRef<number | null>(null);
 
   const driverId = driver?.id ?? null;
@@ -236,97 +234,45 @@ function Page() {
   };
 
   /* ---------------- scanner ---------------- */
-  const stopScannerSafe = useCallback(async () => {
-    const scanner = scannerRef.current;
-    if (!scanner) return;
-
-    try {
-      await scanner.stop();
-    } catch {
-      // Scanner may already be stopped.
-    }
-
-    try {
-      scanner.clear();
-    } catch {
-      // The reader may already be empty.
-    }
-
+  async function stopScannerSafe() {
+    const s = scannerRef.current;
+    if (!s) return;
+    try { await s.stop(); } catch { /* already stopped */ }
+    try { s.clear(); } catch { /* noop */ }
     scannerRef.current = null;
-  }, []);
+  }
 
   const startScanner = async () => {
-    setCameraError(null);
-    setLastScan(null);
-    setPassenger(null);
-
-    if (scannerRef.current) {
-      await stopScannerSafe();
-    }
-
+    setCameraError(null); setLastScan(null); setPassenger(null);
     if (typeof window === "undefined" || !navigator.mediaDevices?.getUserMedia) {
-      setCameraError("Camera is not supported in this browser.");
-      setScanning(false);
-      return;
+      setCameraError("Camera not supported in this browser."); return;
     }
-
     setScanning(true);
-
     try {
-      // The working implementation uses Html5Qrcode itself to request,
-      // open, and render the device camera. Do not pre-open another stream.
-      const scanner = new Html5Qrcode(readerId.current, { verbose: false });
+      const { Html5Qrcode } = await import("html5-qrcode");
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        stream.getTracks().forEach((t) => t.stop());
+      } catch (permErr: any) {
+        setCameraError(permErr?.name === "NotAllowedError"
+          ? "Camera permission denied. Enable it in browser settings and try again."
+          : "Could not access camera.");
+        setScanning(false); return;
+      }
+      await new Promise((r) => setTimeout(r, 60));
+      const scanner = new Html5Qrcode("qr-reader", { verbose: false } as any);
       scannerRef.current = scanner;
-
-      const config = {
-        fps: 10,
-        qrbox: 260,
+      const config = { fps: 12, qrbox: { width: 260, height: 260 }, aspectRatio: 1 };
+      const onDecode = async (decoded: string) => {
+        await handleScan(decoded);
+        await stopScannerSafe();
+        setScanning(false);
       };
-
-      let handled = false;
-
-      await scanner.start(
-        { facingMode: "environment" },
-        config,
-        async (decodedText) => {
-          if (handled) return;
-          handled = true;
-
-          try {
-            await scanner.stop();
-          } catch {
-            // Already stopped.
-          }
-
-          try {
-            scanner.clear();
-          } catch {
-            // Ignore cleanup errors.
-          }
-
-          scannerRef.current = null;
-          setScanning(false);
-
-          await handleScan(decodedText);
-        },
-        () => {
-          // Normal state while no QR code is detected.
-        },
-      );
-    } catch (error: any) {
-      await stopScannerSafe();
+      await scanner.start({ facingMode: { exact: "environment" } as any }, config as any, onDecode, () => {})
+        .catch(() => scanner.start({ facingMode: "environment" } as any, config as any, onDecode, () => {}));
+    } catch (e: any) {
+      setCameraError(e?.message || "Could not start camera.");
       setScanning(false);
-
-      const name = error?.name;
-      setCameraError(
-        name === "NotAllowedError"
-          ? "Camera permission was denied. Allow camera access and try again."
-          : name === "NotFoundError"
-            ? "No camera was found on this device."
-            : name === "NotReadableError"
-              ? "The camera is already being used by another application."
-              : error?.message || "Camera could not be started.",
-      );
     }
   };
 
@@ -534,127 +480,32 @@ function Page() {
                 </Panel>
 
                 {/* Scanner */}
-                <Panel
-                  title="Identity scanner"
-                  icon={<Camera className="h-3 w-3" />}
-                  right={
-                    scanning ? (
-                      <Btn
-                        tone="crimson"
-                        className="h-9"
-                        onClick={async () => {
-                          await stopScannerSafe();
-                          setScanning(false);
-                        }}
-                      >
-                        <Power className="h-3.5 w-3.5" /> Stop
-                      </Btn>
-                    ) : (
-                      <Btn
-                        tone="gold"
-                        className="h-9"
-                        onClick={startScanner}
-                        disabled={!active}
-                      >
-                        <Camera className="h-3.5 w-3.5" /> Open camera
-                      </Btn>
-                    )
-                  }
-                >
-                  <div className="relative w-full max-w-lg mx-auto overflow-hidden rounded-lg border border-border bg-black aspect-[4/3]">
-                    {/* REAL CAMERA / QR READER
-                        Html5Qrcode inserts its live <video> here. */}
-                    <div
-                      id={readerId.current}
-                      className="
-                        absolute inset-0 w-full h-full overflow-hidden
-                        [&>div]:!border-0
-                        [&>div]:!w-full
-                        [&>div]:!h-full
-                        [&_video]:!block
-                        [&_video]:!w-full
-                        [&_video]:!h-full
-                        [&_video]:!max-w-none
-                        [&_video]:!object-cover
-                        [&_video]:!rounded-none
-                        [&_img]:!hidden
-                        [&_canvas]:!hidden
-                      "
-                    />
-
+                <Panel title="Identity scanner" icon={<Camera className="h-3 w-3" />}
+                  right={scanning
+                    ? <Btn tone="crimson" className="h-9" onClick={async () => { await stopScannerSafe(); setScanning(false); }}><Power className="h-3.5 w-3.5" /> Stop</Btn>
+                    : <Btn tone="gold" className="h-9" onClick={startScanner}><ScanLine className="h-3.5 w-3.5" /> Start</Btn>}>
+                  <div className="relative aspect-square max-w-sm mx-auto bg-black grid place-items-center overflow-hidden">
+                    <div id="qr-reader" className="absolute inset-0 [&_video]:object-cover [&_video]:w-full [&_video]:h-full [&>div]:!border-0" />
                     {!scanning && (
-                      <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#05070f]">
-                        <div className="text-center px-6">
-                          <Camera className="h-14 w-14 mx-auto text-gold/40" />
-                          <div className="mt-3 text-sm text-white">
-                            {cameraError ? "Camera unavailable" : "Camera idle"}
-                          </div>
-                          <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
-                            {cameraError
-                              ? "Check camera permissions and try again"
-                              : "Open camera to scan passenger QR"}
-                          </div>
-                          {cameraError && (
-                            <div className="mt-3 max-w-sm mx-auto text-[11px] leading-relaxed text-red-400">
-                              {cameraError}
-                            </div>
-                          )}
-                        </div>
+                      <div className="text-center z-10 px-6">
+                        <Camera className="h-14 w-14 mx-auto text-gold opacity-40" />
+                        <div className="mt-3 text-xs text-muted-foreground">Camera idle</div>
+                        {cameraError && <div className="mt-3 text-[11px] text-red-400 leading-relaxed">{cameraError}</div>}
                       </div>
                     )}
-
                     {scanning && (
-                      <div className="pointer-events-none absolute inset-0 z-10">
-                        <div className="absolute inset-0 bg-black/10" />
-
-                        <div className="absolute left-1/2 top-1/2 w-[260px] h-[260px] -translate-x-1/2 -translate-y-1/2">
-                          <div className="absolute top-0 left-0 w-11 h-11 border-l-2 border-t-2 border-gold" />
-                          <div className="absolute top-0 right-0 w-11 h-11 border-r-2 border-t-2 border-gold" />
-                          <div className="absolute bottom-0 left-0 w-11 h-11 border-l-2 border-b-2 border-gold" />
-                          <div className="absolute bottom-0 right-0 w-11 h-11 border-r-2 border-b-2 border-gold" />
-
-                          <motion.div
-                            className="absolute left-2 right-2 h-0.5 bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.9)]"
-                            animate={{ top: ["5%", "95%", "5%"] }}
-                            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-                          />
-                        </div>
-
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-                          <div className="px-4 py-2 rounded-full bg-black/70 border border-white/10 backdrop-blur-sm flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                            <span className="text-[10px] uppercase tracking-widest text-white/85 whitespace-nowrap">
-                              Camera active · Scanning
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+                      <>
+                        <div className="pointer-events-none absolute inset-8 border-2 border-gold z-10" />
+                        <motion.div className="pointer-events-none absolute left-8 right-8 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent z-10"
+                          animate={{ top: ["12%", "88%", "12%"] }} transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }} />
+                      </>
                     )}
                   </div>
-
-                  <div className="mt-3 text-center text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {scanning
-                      ? "Point the camera at the passenger QR code"
-                      : "The live camera appears here when you start scanning"}
-                  </div>
-
                   <AnimatePresence>
                     {lastScan && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        className={`mt-4 p-3 border flex items-center gap-3 ${
-                          lastScan.ok
-                            ? "border-emerald-400 bg-emerald-500/10 text-emerald-300"
-                            : "border-red-400 bg-red-500/10 text-red-300"
-                        }`}
-                      >
-                        {lastScan.ok ? (
-                          <CheckCircle2 className="h-5 w-5" />
-                        ) : (
-                          <XCircle className="h-5 w-5" />
-                        )}
+                      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                        className={`mt-4 p-3 border flex items-center gap-3 ${lastScan.ok ? "border-emerald-400 bg-emerald-500/10 text-emerald-300" : "border-red-400 bg-red-500/10 text-red-300"}`}>
+                        {lastScan.ok ? <CheckCircle2 className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
                         <div className="text-sm">{lastScan.msg}</div>
                       </motion.div>
                     )}
