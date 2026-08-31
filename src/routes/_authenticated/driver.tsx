@@ -2,6 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { Html5Qrcode } from "html5-qrcode";
 import {
   Radar, MapPin, ScanLine, Power, CheckCircle2, XCircle, Navigation, ShieldCheck,
   Phone, User, Camera, Wallet, Wrench, AlertTriangle, Clock, Star, Gauge, Car,
@@ -87,7 +88,7 @@ function Page() {
   const [passenger, setPassenger] = useState<PassengerInfo | null>(null);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const scannerRef = useRef<any>(null);
+  const scannerRef = useRef<Html5Qrcode | null>(null);
   const readerId = useRef(`driver-qr-reader-${Math.random().toString(36).slice(2)}`);
   const watchRef = useRef<number | null>(null);
 
@@ -235,39 +236,36 @@ function Page() {
   };
 
   /* ---------------- scanner ---------------- */
-  async function stopScannerSafe() {
-    const s = scannerRef.current;
-    if (!s) return;
+  const stopScannerSafe = useCallback(async () => {
+    const scanner = scannerRef.current;
+    if (!scanner) return;
 
     try {
-      await s.stop();
+      await scanner.stop();
     } catch {
-      // Already stopped or never started.
+      // Scanner may already be stopped.
     }
 
     try {
-      s.clear();
+      scanner.clear();
     } catch {
-      // Container may already be empty.
+      // The reader may already be empty.
     }
 
     scannerRef.current = null;
-  }
+  }, []);
 
   const startScanner = async () => {
     setCameraError(null);
     setLastScan(null);
     setPassenger(null);
 
-    // Prevent duplicate scanner instances.
     if (scannerRef.current) {
-      try { await scannerRef.current.stop(); } catch {}
-      try { scannerRef.current.clear(); } catch {}
-      scannerRef.current = null;
+      await stopScannerSafe();
     }
 
     if (typeof window === "undefined" || !navigator.mediaDevices?.getUserMedia) {
-      setCameraError("Camera is not supported by this browser.");
+      setCameraError("Camera is not supported in this browser.");
       setScanning(false);
       return;
     }
@@ -275,90 +273,60 @@ function Page() {
     setScanning(true);
 
     try {
-      // Let React render the scanner container before html5-qrcode mounts into it.
-      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-
-      const { Html5Qrcode } = await import("html5-qrcode");
-
-      const reader = document.getElementById(readerId.current);
-      if (!reader) {
-        throw new Error("Camera scanner could not be initialized.");
-      }
-
-      const scanner = new Html5Qrcode(readerId.current, {
-        verbose: false,
-      } as any);
-
+      // The working implementation uses Html5Qrcode itself to request,
+      // open, and render the device camera. Do not pre-open another stream.
+      const scanner = new Html5Qrcode(readerId.current, { verbose: false });
       scannerRef.current = scanner;
 
       const config = {
         fps: 10,
-        qrbox: { width: 260, height: 260 },
-        aspectRatio: 1,
-        disableFlip: false,
+        qrbox: 260,
       };
 
       let handled = false;
 
-      const onDecode = async (decoded: string) => {
-        if (handled || !decoded?.trim()) return;
+      await scanner.start(
+        { facingMode: "environment" },
+        config,
+        async (decodedText) => {
+          if (handled) return;
+          handled = true;
 
-        handled = true;
-
-        // Match the working implementation: stop the camera as soon as a QR is read,
-        // then validate it through the existing Supabase flow.
-        try {
-          await scanner.stop();
-        } catch {
-          // Ignore if it already stopped.
-        }
-
-        try {
-          scanner.clear();
-        } catch {
-          // Ignore cleanup errors.
-        }
-
-        scannerRef.current = null;
-        setScanning(false);
-
-        await handleScan(decoded);
-      };
-
-      try {
-        // Same camera-start pattern as the working project.
-        await scanner.start(
-          { facingMode: "environment" },
-          config as any,
-          onDecode,
-          () => {
-            // html5-qrcode calls this while no QR is detected yet.
+          try {
+            await scanner.stop();
+          } catch {
+            // Already stopped.
           }
-        );
-      } catch (firstError) {
-        // Some browsers are happier when the camera configuration is less strict.
-        await scanner.start(
-          { facingMode: { ideal: "environment" } } as any,
-          config as any,
-          onDecode,
-          () => {}
-        );
-      }
-    } catch (e: any) {
-      await stopScannerSafe();
 
-      const name = e?.name;
-      const message =
+          try {
+            scanner.clear();
+          } catch {
+            // Ignore cleanup errors.
+          }
+
+          scannerRef.current = null;
+          setScanning(false);
+
+          await handleScan(decodedText);
+        },
+        () => {
+          // Normal state while no QR code is detected.
+        },
+      );
+    } catch (error: any) {
+      await stopScannerSafe();
+      setScanning(false);
+
+      const name = error?.name;
+      setCameraError(
         name === "NotAllowedError"
-          ? "Camera permission denied. Enable camera access in your browser settings and try again."
+          ? "Camera permission was denied. Allow camera access and try again."
           : name === "NotFoundError"
             ? "No camera was found on this device."
             : name === "NotReadableError"
               ? "The camera is already being used by another application."
-              : e?.message || "Camera could not be started.";
-
-      setCameraError(message);
-      setScanning(false);
+              : error?.message || "Camera could not be started.",
+      );
     }
   };
 
@@ -387,7 +355,6 @@ function Page() {
     await logEvent("identity_confirmed", `QR verified · ${res.waybill}`);
     toast.success(`Passenger verified · ${res.waybill}`);
   };
-
 
   const toggleTracking = () => {
     if (tracking) {
@@ -567,40 +534,68 @@ function Page() {
                 </Panel>
 
                 {/* Scanner */}
-                <Panel title="Identity scanner" icon={<Camera className="h-3 w-3" />}
-                  right={scanning
-                    ? <Btn tone="crimson" className="h-9" onClick={async () => { await stopScannerSafe(); setScanning(false); }}><Power className="h-3.5 w-3.5" /> Stop</Btn>
-                    : <Btn tone="gold" className="h-9" onClick={startScanner}><ScanLine className="h-3.5 w-3.5" /> Start</Btn>}>
-                  <div className="relative aspect-[4/3] max-w-lg mx-auto bg-black overflow-hidden border border-border">
-                    {/* html5-qrcode mounts the REAL live camera feed here */}
+                <Panel
+                  title="Identity scanner"
+                  icon={<Camera className="h-3 w-3" />}
+                  right={
+                    scanning ? (
+                      <Btn
+                        tone="crimson"
+                        className="h-9"
+                        onClick={async () => {
+                          await stopScannerSafe();
+                          setScanning(false);
+                        }}
+                      >
+                        <Power className="h-3.5 w-3.5" /> Stop
+                      </Btn>
+                    ) : (
+                      <Btn
+                        tone="gold"
+                        className="h-9"
+                        onClick={startScanner}
+                        disabled={!active}
+                      >
+                        <Camera className="h-3.5 w-3.5" /> Open camera
+                      </Btn>
+                    )
+                  }
+                >
+                  <div className="relative w-full max-w-lg mx-auto overflow-hidden rounded-lg border border-border bg-black aspect-[4/3]">
+                    {/* REAL CAMERA / QR READER
+                        Html5Qrcode inserts its live <video> here. */}
                     <div
                       id={readerId.current}
                       className="
-                        absolute inset-0 overflow-hidden
+                        absolute inset-0 w-full h-full overflow-hidden
                         [&>div]:!border-0
-                        [&_video]:!absolute
-                        [&_video]:!inset-0
+                        [&>div]:!w-full
+                        [&>div]:!h-full
+                        [&_video]:!block
                         [&_video]:!w-full
                         [&_video]:!h-full
-                        [&_video]:!object-cover
                         [&_video]:!max-w-none
+                        [&_video]:!object-cover
                         [&_video]:!rounded-none
+                        [&_img]:!hidden
+                        [&_canvas]:!hidden
                       "
                     />
 
-                    {/* Camera idle / error state */}
                     {!scanning && (
                       <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#05070f]">
-                        <div className="text-center z-10 px-6">
-                          <Camera className="h-14 w-14 mx-auto text-gold opacity-40" />
-                          <div className="mt-3 text-xs text-white">
+                        <div className="text-center px-6">
+                          <Camera className="h-14 w-14 mx-auto text-gold/40" />
+                          <div className="mt-3 text-sm text-white">
                             {cameraError ? "Camera unavailable" : "Camera idle"}
                           </div>
                           <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
-                            {cameraError ? "Check camera permissions and try again" : "Start camera to scan passenger QR"}
+                            {cameraError
+                              ? "Check camera permissions and try again"
+                              : "Open camera to scan passenger QR"}
                           </div>
                           {cameraError && (
-                            <div className="mt-3 max-w-xs text-[11px] text-red-400 leading-relaxed">
+                            <div className="mt-3 max-w-sm mx-auto text-[11px] leading-relaxed text-red-400">
                               {cameraError}
                             </div>
                           )}
@@ -608,40 +603,58 @@ function Page() {
                       </div>
                     )}
 
-                    {/* Scanner overlay sits ON TOP of the real camera */}
                     {scanning && (
-                      <>
-                        <div className="pointer-events-none absolute inset-0 z-10 bg-black/10" />
+                      <div className="pointer-events-none absolute inset-0 z-10">
+                        <div className="absolute inset-0 bg-black/10" />
 
-                        <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] z-20">
-                          <div className="absolute top-0 left-0 w-12 h-12 border-l-2 border-t-2 border-gold" />
-                          <div className="absolute top-0 right-0 w-12 h-12 border-r-2 border-t-2 border-gold" />
-                          <div className="absolute bottom-0 left-0 w-12 h-12 border-l-2 border-b-2 border-gold" />
-                          <div className="absolute bottom-0 right-0 w-12 h-12 border-r-2 border-b-2 border-gold" />
+                        <div className="absolute left-1/2 top-1/2 w-[260px] h-[260px] -translate-x-1/2 -translate-y-1/2">
+                          <div className="absolute top-0 left-0 w-11 h-11 border-l-2 border-t-2 border-gold" />
+                          <div className="absolute top-0 right-0 w-11 h-11 border-r-2 border-t-2 border-gold" />
+                          <div className="absolute bottom-0 left-0 w-11 h-11 border-l-2 border-b-2 border-gold" />
+                          <div className="absolute bottom-0 right-0 w-11 h-11 border-r-2 border-b-2 border-gold" />
 
                           <motion.div
-                            className="absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_12px_rgba(52,211,153,0.8)]"
+                            className="absolute left-2 right-2 h-0.5 bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.9)]"
                             animate={{ top: ["5%", "95%", "5%"] }}
                             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
                           />
                         </div>
 
-                        <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
-                          <div className="px-3 py-2 bg-black/70 border border-white/10 backdrop-blur-sm flex items-center gap-2">
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                          <div className="px-4 py-2 rounded-full bg-black/70 border border-white/10 backdrop-blur-sm flex items-center gap-2">
                             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                            <span className="text-[10px] uppercase tracking-widest text-white/80">
+                            <span className="text-[10px] uppercase tracking-widest text-white/85 whitespace-nowrap">
                               Camera active · Scanning
                             </span>
                           </div>
                         </div>
-                      </>
+                      </div>
                     )}
                   </div>
+
+                  <div className="mt-3 text-center text-[10px] uppercase tracking-widest text-muted-foreground">
+                    {scanning
+                      ? "Point the camera at the passenger QR code"
+                      : "The live camera appears here when you start scanning"}
+                  </div>
+
                   <AnimatePresence>
                     {lastScan && (
-                      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                        className={`mt-4 p-3 border flex items-center gap-3 ${lastScan.ok ? "border-emerald-400 bg-emerald-500/10 text-emerald-300" : "border-red-400 bg-red-500/10 text-red-300"}`}>
-                        {lastScan.ok ? <CheckCircle2 className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className={`mt-4 p-3 border flex items-center gap-3 ${
+                          lastScan.ok
+                            ? "border-emerald-400 bg-emerald-500/10 text-emerald-300"
+                            : "border-red-400 bg-red-500/10 text-red-300"
+                        }`}
+                      >
+                        {lastScan.ok ? (
+                          <CheckCircle2 className="h-5 w-5" />
+                        ) : (
+                          <XCircle className="h-5 w-5" />
+                        )}
                         <div className="text-sm">{lastScan.msg}</div>
                       </motion.div>
                     )}
