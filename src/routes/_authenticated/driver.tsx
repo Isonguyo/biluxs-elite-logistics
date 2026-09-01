@@ -1,12 +1,11 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { Html5Qrcode } from "html5-qrcode";
 import {
   Radar, MapPin, ScanLine, Power, CheckCircle2, XCircle, Navigation, ShieldCheck,
   Phone, User, Camera, Wallet, Wrench, AlertTriangle, Clock, Star, Gauge, Car,
-  MessageCircle, Siren, LayoutDashboard, Route as RouteIcon, TrendingUp,
+  MessageCircle, Siren, LayoutDashboard, Route as RouteIcon, TrendingUp, Home, RefreshCcw,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { rtTopic } from "@/lib/realtime";
@@ -88,8 +87,7 @@ function Page() {
   const [passenger, setPassenger] = useState<PassengerInfo | null>(null);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const scannerRef = useRef<Html5Qrcode | null>(null);
-  const readerId = useRef(`driver-qr-reader-${Math.random().toString(36).slice(2)}`);
+  const scannerRef = useRef<any>(null);
   const watchRef = useRef<number | null>(null);
 
   const driverId = driver?.id ?? null;
@@ -236,97 +234,79 @@ function Page() {
   };
 
   /* ---------------- scanner ---------------- */
-  const stopScannerSafe = useCallback(async () => {
-    const scanner = scannerRef.current;
-    if (!scanner) return;
-
-    try {
-      await scanner.stop();
-    } catch {
-      // Scanner may already be stopped.
-    }
-
-    try {
-      scanner.clear();
-    } catch {
-      // The reader may already be empty.
-    }
-
+  async function stopScannerSafe() {
+    const s = scannerRef.current;
+    if (!s) return;
+    try { await s.stop(); } catch { /* already stopped */ }
+    try { s.clear(); } catch { /* noop */ }
     scannerRef.current = null;
-  }, []);
+  }
 
   const startScanner = async () => {
     setCameraError(null);
     setLastScan(null);
     setPassenger(null);
 
-    if (scannerRef.current) {
-      await stopScannerSafe();
-    }
-
     if (typeof window === "undefined" || !navigator.mediaDevices?.getUserMedia) {
       setCameraError("Camera is not supported in this browser.");
-      setScanning(false);
       return;
+    }
+
+    if (scannerRef.current) {
+      await stopScannerSafe();
     }
 
     setScanning(true);
 
     try {
-      // The working implementation uses Html5Qrcode itself to request,
-      // open, and render the device camera. Do not pre-open another stream.
-      const scanner = new Html5Qrcode(readerId.current, { verbose: false });
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+
+      const { Html5Qrcode } = await import("html5-qrcode");
+      const scanner = new Html5Qrcode("qr-reader", { verbose: false } as any);
       scannerRef.current = scanner;
 
       const config = {
         fps: 10,
-        qrbox: 260,
+        qrbox: { width: 260, height: 260 },
+        aspectRatio: 1,
       };
 
-      let handled = false;
+      const onDecode = async (decoded: string) => {
+        // Lock this scanner immediately so the same QR cannot fire repeatedly.
+        if (!scannerRef.current) return;
+        scannerRef.current = null;
+
+        try {
+          await scanner.stop();
+        } catch { /* already stopped */ }
+        try {
+          scanner.clear();
+        } catch { /* noop */ }
+
+        setScanning(false);
+        await handleScan(decoded);
+      };
 
       await scanner.start(
         { facingMode: "environment" },
-        config,
-        async (decodedText) => {
-          if (handled) return;
-          handled = true;
-
-          try {
-            await scanner.stop();
-          } catch {
-            // Already stopped.
-          }
-
-          try {
-            scanner.clear();
-          } catch {
-            // Ignore cleanup errors.
-          }
-
-          scannerRef.current = null;
-          setScanning(false);
-
-          await handleScan(decodedText);
-        },
-        () => {
-          // Normal state while no QR code is detected.
-        },
+        config as any,
+        onDecode,
+        () => {}
       );
-    } catch (error: any) {
-      await stopScannerSafe();
-      setScanning(false);
+    } catch (e: any) {
+      try {
+        await stopScannerSafe();
+      } catch { /* noop */ }
 
-      const name = error?.name;
+      const name = e?.name;
       setCameraError(
         name === "NotAllowedError"
           ? "Camera permission was denied. Allow camera access and try again."
           : name === "NotFoundError"
             ? "No camera was found on this device."
-            : name === "NotReadableError"
-              ? "The camera is already being used by another application."
-              : error?.message || "Camera could not be started.",
+            : e?.message || "Could not start camera."
       );
+      setScanning(false);
     }
   };
 
@@ -413,6 +393,9 @@ function Page() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Link to="/" className="h-9 px-3 border border-border text-muted-foreground hover:text-white hover:border-gold inline-flex items-center gap-2 text-[10px] uppercase tracking-widest">
+                <Home className="h-3.5 w-3.5" /> Home
+              </Link>
               <Btn tone={shift ? "outline" : "emerald"} onClick={toggleShift}>
                 <Clock className="h-3.5 w-3.5" /> {shift ? "End shift" : "Start shift"}
               </Btn>
@@ -533,166 +516,125 @@ function Page() {
                   </div>
                 </Panel>
 
-                {/* Scanner */}
+                {/* Identity / passenger handshake */}
                 <Panel
-                  title="Identity scanner"
-                  icon={<Camera className="h-3 w-3" />}
+                  title={passenger ? "Passenger verified" : "Identity scanner"}
+                  icon={passenger ? <CheckCircle2 className="h-3 w-3" /> : <Camera className="h-3 w-3" />}
                   right={
-                    scanning ? (
-                      <Btn
-                        tone="crimson"
-                        className="h-9"
-                        onClick={async () => {
-                          await stopScannerSafe();
-                          setScanning(false);
-                        }}
-                      >
+                    passenger ? (
+                      <Btn tone="outline" className="h-9" onClick={() => { setPassenger(null); setLastScan(null); }}>
+                        <RefreshCcw className="h-3.5 w-3.5" /> Scan another
+                      </Btn>
+                    ) : scanning ? (
+                      <Btn tone="crimson" className="h-9" onClick={async () => { await stopScannerSafe(); setScanning(false); }}>
                         <Power className="h-3.5 w-3.5" /> Stop
                       </Btn>
                     ) : (
-                      <Btn
-                        tone="gold"
-                        className="h-9"
-                        onClick={startScanner}
-                        disabled={!active}
-                      >
-                        <Camera className="h-3.5 w-3.5" /> Open camera
+                      <Btn tone="gold" className="h-9" onClick={startScanner}>
+                        <Camera className="h-3.5 w-3.5" /> Start camera
                       </Btn>
                     )
                   }
                 >
-                  <div className="relative w-full max-w-lg mx-auto overflow-hidden rounded-lg border border-border bg-black aspect-[4/3]">
-                    {/* REAL CAMERA / QR READER
-                        Html5Qrcode inserts its live <video> here. */}
-                    <div
-                      id={readerId.current}
-                      className="
-                        absolute inset-0 w-full h-full overflow-hidden
-                        [&>div]:!border-0
-                        [&>div]:!w-full
-                        [&>div]:!h-full
-                        [&_video]:!block
-                        [&_video]:!w-full
-                        [&_video]:!h-full
-                        [&_video]:!max-w-none
-                        [&_video]:!object-cover
-                        [&_video]:!rounded-none
-                        [&_img]:!hidden
-                        [&_canvas]:!hidden
-                      "
-                    />
-
-                    {!scanning && (
-                      <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#05070f]">
-                        <div className="text-center px-6">
-                          <Camera className="h-14 w-14 mx-auto text-gold/40" />
-                          <div className="mt-3 text-sm text-white">
-                            {cameraError ? "Camera unavailable" : "Camera idle"}
-                          </div>
-                          <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
-                            {cameraError
-                              ? "Check camera permissions and try again"
-                              : "Open camera to scan passenger QR"}
-                          </div>
-                          {cameraError && (
-                            <div className="mt-3 max-w-sm mx-auto text-[11px] leading-relaxed text-red-400">
-                              {cameraError}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {scanning && (
-                      <div className="pointer-events-none absolute inset-0 z-10">
-                        <div className="absolute inset-0 bg-black/10" />
-
-                        <div className="absolute left-1/2 top-1/2 w-[260px] h-[260px] -translate-x-1/2 -translate-y-1/2">
-                          <div className="absolute top-0 left-0 w-11 h-11 border-l-2 border-t-2 border-gold" />
-                          <div className="absolute top-0 right-0 w-11 h-11 border-r-2 border-t-2 border-gold" />
-                          <div className="absolute bottom-0 left-0 w-11 h-11 border-l-2 border-b-2 border-gold" />
-                          <div className="absolute bottom-0 right-0 w-11 h-11 border-r-2 border-b-2 border-gold" />
-
-                          <motion.div
-                            className="absolute left-2 right-2 h-0.5 bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.9)]"
-                            animate={{ top: ["5%", "95%", "5%"] }}
-                            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-                          />
-                        </div>
-
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-                          <div className="px-4 py-2 rounded-full bg-black/70 border border-white/10 backdrop-blur-sm flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                            <span className="text-[10px] uppercase tracking-widest text-white/85 whitespace-nowrap">
-                              Camera active · Scanning
-                            </span>
+                  {passenger ? (
+                    <div className="space-y-5">
+                      <div className="border border-emerald-500/30 bg-emerald-500/10 p-5">
+                        <div className="flex items-start gap-3">
+                          <CheckCircle2 className="h-6 w-6 text-emerald-400 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="text-[10px] uppercase tracking-[0.3em] text-emerald-400">Identity confirmed</div>
+                            <div className="font-display text-2xl tracking-widest mt-1">{passenger.passenger_name}</div>
+                            <div className="text-[11px] text-muted-foreground mt-1">Waybill {passenger.waybill}</div>
                           </div>
                         </div>
                       </div>
-                    )}
-                  </div>
 
-                  <div className="mt-3 text-center text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {scanning
-                      ? "Point the camera at the passenger QR code"
-                      : "The live camera appears here when you start scanning"}
-                  </div>
-
-                  <AnimatePresence>
-                    {lastScan && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        className={`mt-4 p-3 border flex items-center gap-3 ${
-                          lastScan.ok
-                            ? "border-emerald-400 bg-emerald-500/10 text-emerald-300"
-                            : "border-red-400 bg-red-500/10 text-red-300"
-                        }`}
-                      >
-                        {lastScan.ok ? (
-                          <CheckCircle2 className="h-5 w-5" />
-                        ) : (
-                          <XCircle className="h-5 w-5" />
-                        )}
-                        <div className="text-sm">{lastScan.msg}</div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </Panel>
-
-                {/* Passenger */}
-                {passenger && (
-                  <Panel title="Passenger dossier" icon={<User className="h-3 w-3" />}>
-                    <div className="flex flex-wrap items-center gap-4 justify-between">
-                      <div>
-                        <div className="font-display text-2xl tracking-widest">{passenger.waybill}</div>
-                        <div className="text-sm text-white mt-1">{passenger.passenger_name}</div>
-                        <div className="text-[11px] text-muted-foreground mt-1">{passenger.pickup} → {passenger.dropoff}</div>
-                        {passenger.luxury && <div className="mt-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-gold"><ShieldCheck className="h-3 w-3" /> Luxury protocol</div>}
+                      <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                        <Field label="Pickup" value={passenger.pickup || "—"} />
+                        <Field label="Drop-off" value={passenger.dropoff || "—"} />
+                        <Field label="Fare" value={ngn(passenger.total)} />
+                        <Field label="Pickup time" value={passenger.pickup_time ? dt(passenger.pickup_time) : "—"} />
                       </div>
-                      <div className="text-right">
-                        <div className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground">Fare</div>
-                        <div className="font-display text-xl text-gold">{ngn(passenger.total)}</div>
-                      </div>
+
+                      {passenger.luxury && (
+                        <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gold">
+                          <ShieldCheck className="h-3 w-3" /> Luxury protocol
+                        </div>
+                      )}
+
+                      {passenger.passenger_phone && (
+                        <div className="grid sm:grid-cols-2 gap-2">
+                          <a href={`tel:${passenger.passenger_phone}`} className="h-11 border border-emerald-500/40 bg-emerald-500/5 hover:bg-emerald-500/10 text-[10px] uppercase tracking-widest inline-flex items-center justify-center gap-2">
+                            <Phone className="h-3.5 w-3.5 text-emerald-400" /> Call passenger
+                          </a>
+                          <a href={`https://wa.me/${passenger.passenger_phone.replace(/[^0-9]/g, "")}`} target="_blank" rel="noreferrer" className="h-11 border border-border hover:border-gold text-[10px] uppercase tracking-widest inline-flex items-center justify-center gap-2">
+                            <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
+                          </a>
+                        </div>
+                      )}
+
+                      <Btn tone="emerald" className="w-full" onClick={() => advance("passenger_onboard")} disabled={!active}>
+                        Confirm passenger onboard
+                      </Btn>
                     </div>
-                    {passenger.passenger_phone && (
-                      <div className="mt-4 grid sm:grid-cols-3 gap-2">
-                        <a href={`tel:${passenger.passenger_phone}`} className="h-11 border border-emerald-500/40 bg-emerald-500/5 hover:bg-emerald-500/10 text-[10px] uppercase tracking-widest inline-flex items-center justify-center gap-2">
-                          <Phone className="h-3.5 w-3.5 text-emerald-400" /> Call
-                        </a>
-                        <a href={`https://wa.me/${passenger.passenger_phone.replace(/[^0-9]/g, "")}`} target="_blank" rel="noreferrer"
-                          className="h-11 border border-border hover:border-gold text-[10px] uppercase tracking-widest inline-flex items-center justify-center gap-2">
-                          <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
-                        </a>
-                        <button onClick={notifyArrival} className="h-11 border border-border hover:border-gold text-[10px] uppercase tracking-widest inline-flex items-center justify-center gap-2">
-                          <MapPin className="h-3.5 w-3.5" /> Notify arrival
-                        </button>
+                  ) : (
+                    <>
+                      <div className="relative aspect-[4/3] max-w-lg mx-auto bg-black overflow-hidden border border-border">
+                        <div
+                          id="qr-reader"
+                          className="absolute inset-0 overflow-hidden [&_video]:!w-full [&_video]:!h-full [&_video]:!object-cover [&_video]:!rounded-none [&_video]:!block [&_img]:!hidden [&_canvas]:!hidden [&>div]:!border-0"
+                        />
+
+                        {!scanning && (
+                          <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#05070f]">
+                            <div className="text-center px-6">
+                              <div className="h-16 w-16 mx-auto border border-gold/30 bg-gold/5 flex items-center justify-center">
+                                <Camera className="h-8 w-8 text-gold/60" />
+                              </div>
+                              <div className="mt-4 text-sm">Camera ready</div>
+                              <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">Start camera to scan passenger QR</div>
+                              {cameraError && <div className="mt-4 text-[11px] text-red-400 leading-relaxed max-w-xs">{cameraError}</div>}
+                            </div>
+                          </div>
+                        )}
+
+                        {scanning && (
+                          <div className="pointer-events-none absolute inset-0 z-10">
+                            <div className="absolute inset-0 bg-black/20" />
+                            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px]">
+                              <div className="absolute top-0 left-0 w-11 h-11 border-l-2 border-t-2 border-gold" />
+                              <div className="absolute top-0 right-0 w-11 h-11 border-r-2 border-t-2 border-gold" />
+                              <div className="absolute bottom-0 left-0 w-11 h-11 border-l-2 border-b-2 border-gold" />
+                              <div className="absolute bottom-0 right-0 w-11 h-11 border-r-2 border-b-2 border-gold" />
+                              <motion.div
+                                className="absolute left-2 right-2 h-0.5 bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.9)]"
+                                animate={{ top: ["6%", "94%", "6%"] }}
+                                transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+                              />
+                            </div>
+                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/70 border border-white/10 text-[10px] uppercase tracking-widest whitespace-nowrap">
+                              Camera active · scanning
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                    <button onClick={() => setPassenger(null)} className="mt-4 w-full h-10 border border-border text-[10px] uppercase tracking-widest hover:border-gold">Dismiss</button>
-                  </Panel>
-                )}
+
+                      <div className="mt-3 text-center text-[10px] uppercase tracking-widest text-muted-foreground">
+                        {scanning ? "Hold the passenger QR inside the frame" : "The camera will start only when you press Start camera"}
+                      </div>
+
+                      <AnimatePresence>
+                        {lastScan && (
+                          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                            className={`mt-4 p-3 border flex items-center gap-3 ${lastScan.ok ? "border-emerald-400 bg-emerald-500/10 text-emerald-300" : "border-red-400 bg-red-500/10 text-red-300"}`}>
+                            {lastScan.ok ? <CheckCircle2 className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
+                            <div className="text-sm">{lastScan.msg}</div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  )}
+                </Panel>
 
                 {/* Timeline */}
                 <Panel title="Journey timeline" icon={<Clock className="h-3 w-3" />}>
