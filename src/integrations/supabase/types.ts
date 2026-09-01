@@ -690,6 +690,7 @@ export type Database = {
           id: string
           rating: number
           reviewer_id: string
+          status: string
         }
         Insert: {
           booking_id?: string | null
@@ -699,6 +700,7 @@ export type Database = {
           id?: string
           rating: number
           reviewer_id: string
+          status?: string
         }
         Update: {
           booking_id?: string | null
@@ -708,6 +710,7 @@ export type Database = {
           id?: string
           rating?: number
           reviewer_id?: string
+          status?: string
         }
         Relationships: [
           {
@@ -935,7 +938,9 @@ export type Database = {
       }
       notifications: {
         Row: {
+          actor_id: string | null
           body: string | null
+          booking_id: string | null
           created_at: string
           id: string
           kind: string
@@ -945,7 +950,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          actor_id?: string | null
           body?: string | null
+          booking_id?: string | null
           created_at?: string
           id?: string
           kind?: string
@@ -955,7 +962,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          actor_id?: string | null
           body?: string | null
+          booking_id?: string | null
           created_at?: string
           id?: string
           kind?: string
@@ -964,7 +973,15 @@ export type Database = {
           title?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notifications_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       organizations: {
         Row: {
