@@ -177,24 +177,61 @@ export function PortalLayout({ children, title, subtitle, actions }: {
 
       {/* Main */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="sticky top-0 z-40 h-16 lg:h-20 px-4 md:px-8 flex items-center gap-3 border-b border-border bg-[var(--navy-deep)]/90 backdrop-blur-md">
-          <button className="lg:hidden" onClick={() => setOpen(true)}><Menu className="h-5 w-5" /></button>
-          <Link to="/" className="hidden md:inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-muted-foreground hover:text-gold">
-            <ChevronLeft className="h-3 w-3" /> Site
+        <header className="sticky top-0 z-40 h-16 lg:h-20 px-3 md:px-8 flex items-center gap-2 md:gap-3 border-b border-border bg-[var(--navy-deep)]/90 backdrop-blur-md">
+          <button aria-label="Open menu" className="lg:hidden h-10 w-10 grid place-items-center" onClick={() => setOpen(true)}>
+            <Menu className="h-5 w-5" />
+          </button>
+          <Link to="/" aria-label="Back to BiLUXS home"
+            className="h-10 px-2 md:px-3 grid place-items-center border border-border hover:border-gold text-muted-foreground hover:text-gold transition-colors">
+            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest">
+              <Home className="h-4 w-4" /> <span className="hidden md:inline">Home</span>
+            </span>
           </Link>
           <div className="min-w-0 flex-1">
-            <div className="text-[9px] uppercase tracking-[0.35em] text-gold">{greeting()}, {(profile?.full_name || "Guest").split(" ")[0]}</div>
-            <div className="font-display text-lg md:text-xl truncate">{title}</div>
+            <div className="text-[9px] uppercase tracking-[0.35em] text-gold truncate">{greeting()}, {(profile?.full_name || "Guest").split(" ")[0]}</div>
+            <div className="font-display text-base md:text-xl truncate">{title}</div>
           </div>
-          {actions}
-          <Link to="/portal/notifications" className="relative h-10 w-10 grid place-items-center border border-border hover:border-gold transition-colors">
-            <Bell className="h-4 w-4" />
-            {!!unread && <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 grid place-items-center rounded-full bg-crimson text-white text-[9px]">{unread > 9 ? "9+" : unread}</span>}
-          </Link>
-          <Link to="/portal/profile" className="h-10 w-10 grid place-items-center border border-gold text-gold text-[11px] tracking-widest overflow-hidden">
-            {profile?.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" /> : initials}
+          <div className="hidden sm:contents">{actions}</div>
+
+          <div ref={bellRef} className="relative">
+            <button aria-label="Notifications" onClick={() => setBell((v) => !v)}
+              className="relative h-10 w-10 grid place-items-center border border-border hover:border-gold transition-colors">
+              <Bell className="h-4 w-4" />
+              {!!unread && <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 grid place-items-center rounded-full bg-crimson text-white text-[9px]">{unread > 9 ? "9+" : unread}</span>}
+            </button>
+            <AnimatePresence>
+              {bell && (
+                <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
+                  className="absolute right-0 mt-2 w-[min(20rem,calc(100vw-1.5rem))] bg-[var(--navy-deep)] border border-border shadow-2xl z-50">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                    <span className="text-[10px] uppercase tracking-widest text-gold">Notifications</span>
+                    {!!unread && <button onClick={() => void markAll()} className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-gold">Mark all read</button>}
+                  </div>
+                  <div className="max-h-80 overflow-y-auto divide-y divide-border">
+                    {items.length === 0 && <div className="p-5 text-xs text-muted-foreground">You have no notifications yet.</div>}
+                    {items.slice(0, 8).map((n) => (
+                      <Link key={n.id} to={n.link ?? "/portal/notifications"} onClick={() => setBell(false)}
+                        className={`block p-3 hover:bg-white/[0.04] ${n.read ? "opacity-60" : ""}`}>
+                        <div className="text-[13px] leading-snug">{n.title}</div>
+                        {n.body && <div className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">{n.body}</div>}
+                        <div className="text-[10px] text-muted-foreground/70 mt-1">{dt(n.created_at)}</div>
+                      </Link>
+                    ))}
+                  </div>
+                  <Link to="/portal/notifications" onClick={() => setBell(false)}
+                    className="block text-center py-3 border-t border-border text-[10px] uppercase tracking-widest text-gold">
+                    View all
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <Link to="/portal/profile" aria-label="My profile" className="shrink-0">
+            <Avatar value={profile?.avatar_url} name={profile?.full_name || user?.email} size={40} rounded={false} />
           </Link>
         </header>
+
 
         <main className="flex-1 p-4 md:p-8">
           {subtitle && <p className="text-xs text-muted-foreground mb-6 max-w-2xl">{subtitle}</p>}
