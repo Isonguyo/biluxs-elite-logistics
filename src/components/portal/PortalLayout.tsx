@@ -191,7 +191,7 @@ export function PortalLayout({ children, title, subtitle, actions }: {
             <div className="text-[9px] uppercase tracking-[0.35em] text-gold truncate">{greeting()}, {(profile?.full_name || "Guest").split(" ")[0]}</div>
             <div className="font-display text-base md:text-xl truncate">{title}</div>
           </div>
-          <div className="hidden sm:contents">{actions}</div>
+          {actions}
 
           <div ref={bellRef} className="relative">
             <button aria-label="Notifications" onClick={() => setBell((v) => !v)}
