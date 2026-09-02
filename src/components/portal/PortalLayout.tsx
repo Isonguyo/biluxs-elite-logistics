@@ -1,14 +1,15 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutGrid, Car, Route as RouteIcon, Plane, Hotel, Package, Palmtree, ShoppingBag,
   MessageSquare, CreditCard, Wallet, Bell, LifeBuoy, User, Settings, Crown, Sparkles,
-  MapPin, FileText, BarChart3, Menu, X, Search, ChevronLeft,
+  MapPin, FileText, BarChart3, Menu, X, Search, Home,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useNotifications, useProfile, greeting } from "@/lib/portal";
+import { useNotifications, useProfile, greeting, dt } from "@/lib/portal";
 import { Logo } from "@/components/biluxs/Logo";
+import { Avatar } from "@/components/portal/Avatar";
 
 type Item = { to: string; label: string; icon: typeof LayoutGrid; badge?: number };
 
@@ -17,19 +18,32 @@ export function PortalLayout({ children, title, subtitle, actions }: {
 }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
-  const { unread } = useNotifications();
+  const [bell, setBell] = useState(false);
+  const bellRef = useRef<HTMLDivElement>(null);
+  const { unread, items, markAll } = useNotifications();
   const { profile } = useProfile();
   const { user, isAdmin, isDriver, isSuperUser } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
+  useEffect(() => {
+    if (!bell) return;
+    const onDown = (e: MouseEvent) => {
+      if (bellRef.current && !bellRef.current.contains(e.target as Node)) setBell(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [bell]);
+
   const groups: { heading: string; items: Item[] }[] = [
     {
-      heading: "Journey",
+      heading: "Essentials",
       items: [
-        { to: "/portal", label: "Overview", icon: LayoutGrid },
-        { to: "/portal/trips", label: "My Trips", icon: RouteIcon },
+        { to: "/portal", label: "My Dashboard", icon: LayoutGrid },
+        { to: "/portal/trips", label: "My Rides", icon: RouteIcon },
         { to: "/fleet", label: "Book a Ride", icon: Car },
-        { to: "/portal/places", label: "Saved Places", icon: MapPin },
+        { to: "/portal/notifications", label: "Notifications", icon: Bell, badge: unread },
+        { to: "/portal/messages", label: "Messages", icon: MessageSquare },
+        { to: "/portal/profile", label: "My Profile", icon: User },
       ],
     },
     {
@@ -41,6 +55,7 @@ export function PortalLayout({ children, title, subtitle, actions }: {
         { to: "/portal/tours", label: "Tour Packages", icon: Palmtree },
         { to: "/portal/shopping", label: "Luxury Shopping", icon: ShoppingBag },
         { to: "/portal/concierge", label: "Concierge", icon: Sparkles },
+        { to: "/portal/places", label: "Saved Places", icon: MapPin },
       ],
     },
     {
@@ -55,17 +70,14 @@ export function PortalLayout({ children, title, subtitle, actions }: {
     {
       heading: "Account",
       items: [
-        { to: "/portal/messages", label: "Messages", icon: MessageSquare },
-        { to: "/portal/notifications", label: "Notifications", icon: Bell, badge: unread },
         { to: "/portal/analytics", label: "My Analytics", icon: BarChart3 },
         { to: "/portal/support", label: "Support", icon: LifeBuoy },
-        { to: "/portal/profile", label: "Profile", icon: User },
         { to: "/portal/settings", label: "Settings", icon: Settings },
       ],
     },
   ];
 
-  const initials = (profile?.full_name || user?.email || "B").slice(0, 2).toUpperCase();
+
 
   const Nav = (
     <nav className="flex flex-col gap-6 pb-10">
