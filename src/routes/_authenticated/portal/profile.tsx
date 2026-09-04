@@ -4,10 +4,13 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { PortalLayout, Card, SectionTitle } from "@/components/portal/PortalLayout";
-import { useProfile, tierOf } from "@/lib/portal";
+import { AvatarUpload } from "@/components/portal/AvatarUpload";
+import { useProfile } from "@/lib/portal";
+import { rideTier } from "@/lib/ride";
 
 export const Route = createFileRoute("/_authenticated/portal/profile")({
   head: () => ({ meta: [
+
     { title: "Profile — BiLUXS Member Portal" },
     { name: "description", content: "Your personal details, travel documents and contact preferences." },
     { property: "og:title", content: "Profile — BiLUXS" },
