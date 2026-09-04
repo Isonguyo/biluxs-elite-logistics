@@ -4,10 +4,13 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { PortalLayout, Card, SectionTitle } from "@/components/portal/PortalLayout";
-import { useProfile, tierOf } from "@/lib/portal";
+import { AvatarUpload } from "@/components/portal/AvatarUpload";
+import { useProfile } from "@/lib/portal";
+import { rideTier } from "@/lib/ride";
 
 export const Route = createFileRoute("/_authenticated/portal/profile")({
   head: () => ({ meta: [
+
     { title: "Profile — BiLUXS Member Portal" },
     { name: "description", content: "Your personal details, travel documents and contact preferences." },
     { property: "og:title", content: "Profile — BiLUXS" },
@@ -60,20 +63,33 @@ function Page() {
     void reload();
   };
 
-  const tier = tierOf(profile?.loyalty_points ?? 0);
-  const initials = (form.full_name || user?.email || "B").slice(0, 2).toUpperCase();
+  const [rides, setRides] = useState(0);
+  useEffect(() => {
+    if (!user) return;
+    void supabase.from("bookings").select("id", { count: "exact", head: true })
+      .eq("user_id", user.id).eq("status", "completed")
+      .then(({ count }) => setRides(count ?? 0));
+  }, [user]);
+
+  const savePhoto = async (next: string | null) => {
+    if (!user) return;
+    const { error } = await supabase.from("profiles").update({ avatar_url: next }).eq("id", user.id);
+    if (error) { toast.error("We couldn't save your photo."); return; }
+    setForm((f) => ({ ...f, avatar_url: next ?? "" }));
+    void reload();
+  };
+
+  const tier = rideTier(rides);
 
   return (
-    <PortalLayout title="Profile" subtitle="Your personal details, travel documents and contact preferences.">
-      <Card className="flex flex-wrap items-center gap-5">
-        <div className="h-20 w-20 border border-gold text-gold grid place-items-center overflow-hidden font-display text-2xl">
-          {form.avatar_url ? <img src={form.avatar_url} alt="Member avatar" className="h-full w-full object-cover" /> : initials}
-        </div>
-        <div className="min-w-0">
-          <div className="font-display text-2xl">{form.full_name || "BiLUXS Member"}</div>
+    <PortalLayout title="My Profile" subtitle="Your photo, personal details and travel preferences.">
+      <Card>
+        <AvatarUpload value={form.avatar_url || null} name={form.full_name || user?.email} onChange={savePhoto} />
+        <div className="mt-5 pt-5 border-t border-border">
+          <div className="font-display text-xl">{form.full_name || "BiLUXS Member"}</div>
           <div className="text-xs text-muted-foreground">{user?.email}</div>
-          <div className="mt-2 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gold">
-            {tier.current.label} Member · {profile?.loyalty_points ?? 0} pts
+          <div className="mt-2 text-[10px] uppercase tracking-[0.3em] text-gold">
+            {tier.current.label} member · {rides} completed ride{rides === 1 ? "" : "s"}
           </div>
         </div>
       </Card>
@@ -83,9 +99,9 @@ function Page() {
         <Card className="grid sm:grid-cols-2 gap-4">
           <Field label="Full name" value={form.full_name} onChange={set("full_name")} />
           <Field label="Phone" value={form.phone} onChange={set("phone")} />
-          <Field label="Avatar image URL" value={form.avatar_url} onChange={set("avatar_url")} />
           <Field label="Nationality" value={form.nationality} onChange={set("nationality")} />
           <Field label="Passport number" value={form.passport_no} onChange={set("passport_no")} />
+
           <label className="block">
             <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Language</span>
             <select value={form.language} onChange={set("language")}
