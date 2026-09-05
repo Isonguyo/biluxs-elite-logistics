@@ -8,6 +8,13 @@
       "when": 1788282337449,
       "tag": "0000_member_experience_v4",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788604684171,
+      "tag": "0001_driver_ops_chat_notifications",
+      "breakpoints": true
     }
   ]
 }
