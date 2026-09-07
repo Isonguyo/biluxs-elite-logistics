@@ -64,6 +64,13 @@ export type Database = {
             foreignKeyName: "alerts_driver_id_fkey"
             columns: ["driver_id"]
             isOneToOne: false
+            referencedRelation: "driver_trust"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "alerts_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
             referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
@@ -282,6 +289,13 @@ export type Database = {
             columns: ["driver_id"]
             isOneToOne: false
             referencedRelation: "driver_stats"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "bookings_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "driver_trust"
             referencedColumns: ["driver_id"]
           },
           {
@@ -676,6 +690,13 @@ export type Database = {
             foreignKeyName: "driver_incidents_driver_id_fkey"
             columns: ["driver_id"]
             isOneToOne: false
+            referencedRelation: "driver_trust"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "driver_incidents_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
             referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
@@ -731,6 +752,13 @@ export type Database = {
             foreignKeyName: "driver_reviews_driver_id_fkey"
             columns: ["driver_id"]
             isOneToOne: false
+            referencedRelation: "driver_trust"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "driver_reviews_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
             referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
@@ -767,6 +795,13 @@ export type Database = {
             columns: ["driver_id"]
             isOneToOne: false
             referencedRelation: "driver_stats"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "driver_shifts_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "driver_trust"
             referencedColumns: ["driver_id"]
           },
           {
@@ -1718,6 +1753,13 @@ export type Database = {
             foreignKeyName: "vehicle_inspections_driver_id_fkey"
             columns: ["driver_id"]
             isOneToOne: false
+            referencedRelation: "driver_trust"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "vehicle_inspections_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
             referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
@@ -1858,6 +1900,13 @@ export type Database = {
             foreignKeyName: "bookings_driver_id_fkey"
             columns: ["driver_id"]
             isOneToOne: false
+            referencedRelation: "driver_trust"
+            referencedColumns: ["driver_id"]
+          },
+          {
+            foreignKeyName: "bookings_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
             referencedRelation: "drivers"
             referencedColumns: ["id"]
           },
@@ -1877,8 +1926,35 @@ export type Database = {
         }
         Relationships: []
       }
+      driver_trust: {
+        Row: {
+          avg_rating: number | null
+          cancelled_rides: number | null
+          completed_rides: number | null
+          driver_id: string | null
+          full_name: string | null
+          open_incidents: number | null
+          review_count: number | null
+          total_incidents: number | null
+          trust_score: number | null
+          verified_rides: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      admin_assign_driver: {
+        Args: { _booking_id: string; _driver_id: string }
+        Returns: Json
+      }
+      admin_set_vehicle: {
+        Args: { _booking_id: string; _vehicle_id: string }
+        Returns: Json
+      }
+      booking_window: {
+        Args: { _distance: number; _pickup: string }
+        Returns: unknown
+      }
       get_booking_driver: {
         Args: { _booking_id: string }
         Returns: {
@@ -1908,6 +1984,16 @@ export type Database = {
         Returns: boolean
       }
       is_self_driver: { Args: { _driver_id: string }; Returns: boolean }
+      notify_ops: {
+        Args: {
+          _body: string
+          _booking: string
+          _kind: string
+          _link: string
+          _title: string
+        }
+        Returns: undefined
+      }
       scan_booking_qr: { Args: { _qr_token: string }; Returns: Json }
       wallet_topup: {
         Args: { _amount: number; _description?: string; _reference?: string }
