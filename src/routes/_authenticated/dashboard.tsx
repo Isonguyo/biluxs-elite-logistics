@@ -9,15 +9,18 @@ import { PageShell } from "@/components/biluxs/PageShell";
 import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — BiLUXS" }] }),
-   links: [
-      { rel: "canonical", href: "/" },
+  head: () => ({ meta: [{ title: "Dashboard — BiLUXS" }],
+               links: [
+      { rel: "canonical",
+       href: "/" },
       {
         rel: "icon",
         type: "image/png",
         href: "https://res.cloudinary.com/dbozz4sgv/image/upload/v1783969651/bilux_whvihe.png",
       },
     ],
+               }),
+   
   component: Page,
 });
 
