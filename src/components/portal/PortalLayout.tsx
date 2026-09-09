@@ -227,9 +227,24 @@ export function PortalLayout({ children, title, subtitle, actions }: {
             </AnimatePresence>
           </div>
 
-          <Link to="/portal/profile" aria-label="My profile" className="shrink-0">
-            <Avatar value={profile?.avatar_url} name={profile?.full_name || user?.email} size={40} rounded={false} />
-          </Link>
+         
+          <div className="relative">
+            <button onClick={() => setMenu((v) => !v)} className="flex items-center gap-2" aria-label="Account">
+              <Avatar value={me?.avatar_url} name={me?.full_name ?? user?.email} size={36} />
+            </button>
+            {menu && (
+              <div onMouseLeave={() => setMenu(false)}
+                className="absolute right-0 mt-2 w-56 border border-gold/25 bg-[var(--navy-deep)] z-50 shadow-2xl">
+                <div className="p-3 border-b border-border">
+                  <div className="text-xs text-white/90 truncate">{me?.full_name ?? "Administrator"}</div>
+                  <div className="text-[10px] text-muted-foreground truncate">{user?.email}</div>
+                </div>
+                <Link to="/portal/profile" onClick={() => setMenu(false)} className="block px-3 py-2 text-[12px] text-white/75 hover:bg-white/[0.05]">My profile</Link>
+                <Link to="/" onClick={() => setMenu(false)} className="block px-3 py-2 text-[12px] text-white/75 hover:bg-white/[0.05]">Public site</Link>
+                <button onClick={() => void logout()} className="w-full text-left px-3 py-2 text-[12px] text-crimson hover:bg-white/[0.05] inline-flex items-center gap-2">
+                  <LogOut className="h-3.5 w-3.5" /> Sign out
+                </button>
+              </div>
         </header>
 
 
