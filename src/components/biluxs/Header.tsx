@@ -103,7 +103,7 @@ export function Header() {
           </Link>
           {user ? (
             <>
-              <Link to="/dashboard" className="hidden md:inline-flex h-10 w-10 items-center justify-center border border-border hover:border-gold transition-colors" title="Dashboard">
+              <Link to="/portal" className="hidden md:inline-flex h-10 w-10 items-center justify-center border border-border hover:border-gold transition-colors" title="Dashboard">
                 <LayoutDashboard className="h-4 w-4" />
               </Link>
               {isDriver && (
