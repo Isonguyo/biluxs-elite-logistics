@@ -163,7 +163,7 @@ export function Header() {
           <div className="border-t border-white/10 my-2 pt-3 flex flex-col gap-4">
             {user ? (
               <>
-                <Link to="/dashboard" onClick={() => setOpen(false)} className="hover:text-gold">Dashboard</Link>
+                <Link to="/portal" onClick={() => setOpen(false)} className="hover:text-gold">Dashboard</Link>
                 {isDriver && <Link to="/driver" onClick={() => setOpen(false)} className="text-emerald-400">Driver Ops</Link>}
                 {isAdmin && <Link to="/admin" onClick={() => setOpen(false)} className="text-gold">Command Center</Link>}
                 {isSuperUser && <Link to="/super" onClick={() => setOpen(false)} className="text-crimson">Super User</Link>}
