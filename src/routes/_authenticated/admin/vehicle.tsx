@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Car, ShieldCheck, Wrench, Users, Calendar, Search, Plus } from "lucide-react";
+import { Car, ShieldCheck, Wrench, Users, Calendar, Search, Plus, X, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 export function AdminVehicles() {
@@ -9,6 +10,21 @@ export function AdminVehicles() {
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+
+  // Modal & Form State
+  const [isAdding, setIsAdding] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "Business Sedan",
+    capacity: 4,
+    base_rate: 150000,
+    per_km_rate: 5000,
+    status: "available",
+    image_url: "",
+    description: "",
+    features: "", 
+  });
 
   useEffect(() => {
     async function loadFleet() {
@@ -25,11 +41,10 @@ export function AdminVehicles() {
     }
     loadFleet();
 
-    // Set up realtime subscription for vehicles
     const subscription = supabase
       .channel("vehicles-admin-channel")
       .on("postgres_changes", { event: "*", schema: "public", table: "vehicles" }, () => {
-        loadFleet(); // Reload on any changes
+        loadFleet();
       })
       .subscribe();
 
@@ -37,6 +52,43 @@ export function AdminVehicles() {
       supabase.removeChannel(subscription);
     };
   }, []);
+
+  const handleAddVehicle = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      // Convert comma-separated features into a JSON array
+      const featuresArray = formData.features
+        .split(",")
+        .map((f) => f.trim())
+        .filter(Boolean);
+
+      const { error } = await supabase.from("vehicles").insert({
+        name: formData.name,
+        category: formData.category,
+        capacity: Number(formData.capacity),
+        base_rate: Number(formData.base_rate),
+        per_km_rate: Number(formData.per_km_rate),
+        status: formData.status,
+        image_url: formData.image_url || null,
+        description: formData.description || null,
+        features: featuresArray,
+      });
+
+      if (error) throw error;
+
+      toast.success("Vehicle added to fleet");
+      setIsAdding(false);
+      setFormData({
+        name: "", category: "Business Sedan", capacity: 4, base_rate: 150000, per_km_rate: 5000, status: "available", image_url: "", description: "", features: ""
+      });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to add vehicle");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const filteredVehicles = vehicles.filter((v) => {
     const matchesFilter = filter === "all" || v.status === filter;
@@ -99,7 +151,10 @@ export function AdminVehicles() {
           </div>
         </div>
 
-        <button className="h-9 px-4 bg-gold text-black font-semibold text-xs tracking-wider uppercase flex items-center gap-2 hover:bg-gold/90 transition-colors">
+        <button 
+          onClick={() => setIsAdding(true)}
+          className="h-9 px-4 bg-gold text-black font-semibold text-xs tracking-wider uppercase flex items-center gap-2 hover:bg-gold/90 transition-colors"
+        >
           <Plus className="w-4 h-4" /> Add Vehicle
         </button>
       </div>
@@ -107,7 +162,6 @@ export function AdminVehicles() {
       {/* Fleet Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {filteredVehicles.map((vehicle) => {
-          // Calculate real usage data based on bookings table
           const activeBooking = bookings.find((b) => b.vehicle_id === vehicle.id && ["in_progress", "confirmed"].includes(b.status));
           const assignedDriver = activeBooking?.driver_id ? drivers.find((d) => d.id === activeBooking.driver_id) : null;
           const tripsCompleted = bookings.filter((b) => b.vehicle_id === vehicle.id && b.status === "completed").length;
@@ -167,6 +221,86 @@ export function AdminVehicles() {
           </div>
         )}
       </div>
+
+      {/* Add Vehicle Modal */}
+      {isAdding && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-white">Add New Vehicle</h2>
+              <button onClick={() => setIsAdding(false)} className="text-muted-foreground hover:text-white transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddVehicle} className="p-4 overflow-y-auto space-y-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Vehicle Name *</label>
+                  <input required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="e.g. Mercedes S-Class 2024" className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+                </div>
+                
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Category *</label>
+                  <select required value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold">
+                    <option value="First Class">First Class</option>
+                    <option value="Business Sedan">Business Sedan</option>
+                    <option value="Luxury SUV">Luxury SUV</option>
+                    <option value="Sprinter Van">Sprinter Van</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Base Rate (NGN) *</label>
+                  <input required type="number" min="0" value={formData.base_rate} onChange={(e) => setFormData({...formData, base_rate: Number(e.target.value)})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Per KM Rate (NGN) *</label>
+                  <input required type="number" min="0" value={formData.per_km_rate} onChange={(e) => setFormData({...formData, per_km_rate: Number(e.target.value)})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Passenger Capacity *</label>
+                  <input required type="number" min="1" max="50" value={formData.capacity} onChange={(e) => setFormData({...formData, capacity: Number(e.target.value)})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Status</label>
+                  <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold">
+                    <option value="available">Available</option>
+                    <option value="maintenance">Maintenance</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Image URL</label>
+                <input type="url" value={formData.image_url} onChange={(e) => setFormData({...formData, image_url: e.target.value})} placeholder="https://..." className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Features (Comma separated)</label>
+                <input value={formData.features} onChange={(e) => setFormData({...formData, features: e.target.value})} placeholder="WiFi, Massage Seats, Champagne Cooler" className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Description</label>
+                <textarea rows={3} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} placeholder="Internal notes or vehicle description..." className="w-full p-3 bg-input border border-border text-xs text-white outline-none focus:border-gold resize-none" />
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3 border-t border-border">
+                <button type="button" onClick={() => setIsAdding(false)} className="h-9 px-4 text-xs font-medium text-muted-foreground hover:text-white transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" disabled={isSubmitting} className="h-9 px-6 bg-gold text-black font-semibold text-xs tracking-wider uppercase flex items-center justify-center min-w-[120px] hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Unit"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
