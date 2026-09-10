@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutGrid, Car, Route as RouteIcon, Plane, Hotel, Package, Palmtree, ShoppingBag,
   MessageSquare, CreditCard, Wallet, Bell, LifeBuoy, User, Settings, Crown, Sparkles,
-  MapPin, FileText, BarChart3, Menu, X, Search, Home,
+  MapPin, FileText, BarChart3, Menu, X, Search, Home, LogOut,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotifications, useProfile, greeting, dt } from "@/lib/portal";
@@ -17,12 +17,13 @@ export function PortalLayout({ children, title, subtitle, actions }: {
   children: React.ReactNode; title: string; subtitle?: string; actions?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const [menu, setMenu] = useState(false);
   const [q, setQ] = useState("");
   const [bell, setBell] = useState(false);
   const bellRef = useRef<HTMLDivElement>(null);
   const { unread, items, markAll } = useNotifications();
   const { profile } = useProfile();
-  const { user, isAdmin, isDriver, isSuperUser } = useAuth();
+  const { user, isAdmin, isDriver, isSuperUser, logout } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
@@ -76,8 +77,6 @@ export function PortalLayout({ children, title, subtitle, actions }: {
       ],
     },
   ];
-
-
 
   const Nav = (
     <nav className="flex flex-col gap-6 pb-10">
@@ -227,16 +226,15 @@ export function PortalLayout({ children, title, subtitle, actions }: {
             </AnimatePresence>
           </div>
 
-         
           <div className="relative">
             <button onClick={() => setMenu((v) => !v)} className="flex items-center gap-2" aria-label="Account">
-              <Avatar value={me?.avatar_url} name={me?.full_name ?? user?.email} size={36} />
+              <Avatar value={profile?.avatar_url} name={profile?.full_name ?? user?.email} size={36} />
             </button>
             {menu && (
               <div onMouseLeave={() => setMenu(false)}
                 className="absolute right-0 mt-2 w-56 border border-gold/25 bg-[var(--navy-deep)] z-50 shadow-2xl">
                 <div className="p-3 border-b border-border">
-                  <div className="text-xs text-white/90 truncate">{me?.full_name ?? "Administrator"}</div>
+                  <div className="text-xs text-white/90 truncate">{profile?.full_name ?? "Administrator"}</div>
                   <div className="text-[10px] text-muted-foreground truncate">{user?.email}</div>
                 </div>
                 <Link to="/portal/profile" onClick={() => setMenu(false)} className="block px-3 py-2 text-[12px] text-white/75 hover:bg-white/[0.05]">My profile</Link>
@@ -245,8 +243,9 @@ export function PortalLayout({ children, title, subtitle, actions }: {
                   <LogOut className="h-3.5 w-3.5" /> Sign out
                 </button>
               </div>
+            )}
+          </div>
         </header>
-
 
         <main className="flex-1 p-4 md:p-8">
           {subtitle && <p className="text-xs text-muted-foreground mb-6 max-w-2xl">{subtitle}</p>}
