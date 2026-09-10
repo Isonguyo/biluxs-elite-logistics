@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import QRCode from "react-qr-code";
-import { ChevronLeft, Send, AlertCircle } from "lucide-react";
+import { ChevronLeft, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminLayout, Panel, Pill, Empty } from "@/components/admin/AdminLayout";
 import { useTable, logAudit, naira, type Row } from "@/lib/admin";
@@ -107,7 +107,7 @@ function Page() {
                 }
                 update({ driver_id: e.target.value || null }, e.target.value ? "Chauffeur assigned" : "Chauffeur unassigned");
               }}
-                className={`h-9 px-3 bg-input border text-[10px] uppercase outline-none focus:border-gold ${booking.driver_id ? "border-gold text-gold" : "border-border"}`)}
+                className={`h-9 px-3 bg-input border text-[10px] uppercase outline-none focus:border-gold ${booking.driver_id ? "border-gold text-gold" : "border-border"}`}
                 disabled={booking.status === "completed" || booking.status === "cancelled"}
               >
                 <option value="">— Chauffeur —</option>
