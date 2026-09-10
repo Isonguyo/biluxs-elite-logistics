@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { toast } from "sonner";
 import QRCode from "react-qr-code";
-import { ChevronLeft, Send } from "lucide-react";
+import { ChevronLeft, Send, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminLayout, Panel, Pill, Empty } from "@/components/admin/AdminLayout";
 import { useTable, logAudit, naira, type Row } from "@/lib/admin";
@@ -17,6 +17,7 @@ function Page() {
   const [notes, setNotes] = useState<Row[]>([]);
   const [note, setNote] = useState("");
   const { rows: drivers } = useTable("drivers", { order: "full_name", ascending: true, realtime: false });
+  const { rows: bookings } = useTable("bookings", { realtime: false });
 
   const load = async () => {
     const { data: b } = await (supabase as any).from("bookings").select("*").eq("id", id).maybeSingle();
@@ -59,6 +60,15 @@ function Page() {
   }
 
   const driver = drivers.find((d) => d.id === booking.driver_id);
+  
+  // Conflict detection for driver assignment
+  const getDriverConflict = (driverId: string): string | null => {
+    const driverBookings = bookings.filter((b) => b.driver_id === driverId && b.status === "in_progress");
+    if (driverBookings.length > 0) {
+      return `Driver already on trip: ${driverBookings[0].waybill_code}`;
+    }
+    return null;
+  };
 
   return (
     <AdminLayout
@@ -89,10 +99,22 @@ function Page() {
                 className="h-9 px-3 bg-input border border-border text-[10px] uppercase outline-none focus:border-gold">
                 {["pending", "confirmed", "in_progress", "completed", "cancelled"].map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
-              <select value={booking.driver_id ?? ""} onChange={(e) => update({ driver_id: e.target.value || null }, e.target.value ? "Chauffeur assigned" : "Chauffeur unassigned")}
-                className={`h-9 px-3 bg-input border text-[10px] uppercase outline-none focus:border-gold ${booking.driver_id ? "border-gold text-gold" : "border-border"}`}>
+              <select value={booking.driver_id ?? ""} onChange={(e) => {
+                const conflict = e.target.value && getDriverConflict(e.target.value);
+                if (conflict) {
+                  toast.error(conflict);
+                  return;
+                }
+                update({ driver_id: e.target.value || null }, e.target.value ? "Chauffeur assigned" : "Chauffeur unassigned");
+              }}
+                className={`h-9 px-3 bg-input border text-[10px] uppercase outline-none focus:border-gold ${booking.driver_id ? "border-gold text-gold" : "border-border"}`)}
+                disabled={booking.status === "completed" || booking.status === "cancelled"}
+              >
                 <option value="">— Chauffeur —</option>
-                {drivers.map((d) => <option key={d.id} value={d.id}>{d.full_name}</option>)}
+                {drivers.map((d) => {
+                  const conflict = getDriverConflict(d.id);
+                  return <option key={d.id} value={d.id} disabled={!!conflict}>{d.full_name}{conflict ? " ⚠" : ""}</option>;
+                })}
               </select>
               <select value={booking.payment_status ?? "pending"} onChange={(e) => update({ payment_status: e.target.value }, `Payment → ${e.target.value}`)}
                 className="h-9 px-3 bg-input border border-border text-[10px] uppercase outline-none focus:border-gold">
@@ -119,7 +141,7 @@ function Page() {
             <div className="p-3 flex gap-2">
               <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Add an operator note (staff only)…"
                 className="flex-1 h-9 px-3 bg-input border border-border text-xs outline-none focus:border-gold" />
-              <button onClick={addNote} className="h-9 px-4 inline-flex items-center gap-2 border border-gold text-gold text-[10px] uppercase tracking-widest hover:bg-gold hover:text-[var(--navy-deep)]">
+              <button onClick={addNote} className="h-9 px-4 inline-flex items-center gap-2 border border-gold text-gold text-[10px] uppercase tracking-widest hover:bg-gold hover:text-black transition-colors">
                 <Send className="h-3 w-3" /> Post
               </button>
             </div>
@@ -152,6 +174,9 @@ function Page() {
               <Field label="Name" value={driver?.full_name ?? "Unassigned"} />
               <Field label="Phone" value={driver?.phone ?? "—"} />
               <Field label="Status" value={driver?.availability ?? driver?.status ?? "—"} />
+              {booking.driver_id && driver && (
+                <a href={`tel:${driver.phone}`} className="mt-2 h-9 px-3 inline-flex items-center border border-gold text-gold text-[10px] uppercase tracking-widest">Call chauffeur</a>
+              )}
             </div>
           </Panel>
 
