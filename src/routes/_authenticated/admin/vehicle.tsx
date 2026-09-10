@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Car, ShieldCheck, Wrench, Users, Calendar, Search, Plus, X, Loader2, Settings2, Trash2, Edit3 } from "lucide-react";
+import { Car, ShieldCheck, Wrench, Users, Calendar, Search, Plus, X, Loader2, Settings2, Trash2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -14,6 +14,7 @@ export function AdminVehicles() {
   // Modal States
   const [isAdding, setIsAdding] = useState(false);
   const [managingVehicle, setManagingVehicle] = useState<any | null>(null);
+  const [vehicleToDelete, setVehicleToDelete] = useState<any | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Add Form State
@@ -122,15 +123,19 @@ export function AdminVehicles() {
     }
   };
 
-  const handleDeleteVehicle = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this vehicle unit?")) return;
+  const confirmDeleteVehicle = async () => {
+    if (!vehicleToDelete) return;
+    setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("vehicles").delete().eq("id", id);
+      const { error } = await supabase.from("vehicles").delete().eq("id", vehicleToDelete.id);
       if (error) throw error;
       toast.success("Vehicle removed from fleet");
+      setVehicleToDelete(null);
       setManagingVehicle(null);
     } catch (error: any) {
       toast.error(error.message || "Failed to delete vehicle");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -432,7 +437,7 @@ export function AdminVehicles() {
               <div className="pt-4 flex justify-between items-center border-t border-border">
                 <button 
                   type="button" 
-                  onClick={() => handleDeleteVehicle(managingVehicle.id)}
+                  onClick={() => setVehicleToDelete(managingVehicle)}
                   className="h-9 px-4 text-xs font-medium text-crimson hover:text-crimson/80 flex items-center gap-1.5 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" /> Delete Unit
@@ -447,6 +452,42 @@ export function AdminVehicles() {
                 </div>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* App-Styled Delete Confirmation Dialog */}
+      {vehicleToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border w-full max-w-md shadow-2xl p-6 space-y-4">
+            <div className="flex items-center gap-3 text-crimson">
+              <div className="p-2.5 bg-crimson/10 border border-crimson/20">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white">Delete Vehicle Unit</h3>
+            </div>
+            
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Are you sure you want to delete <strong className="text-white">{vehicleToDelete.name}</strong> from the fleet? This action cannot be undone and will clear all association histories.
+            </p>
+
+            <div className="pt-2 flex justify-end gap-3">
+              <button 
+                type="button" 
+                onClick={() => setVehicleToDelete(null)} 
+                className="h-9 px-4 text-xs font-medium text-muted-foreground hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                disabled={isSubmitting} 
+                onClick={confirmDeleteVehicle} 
+                className="h-9 px-5 bg-crimson text-white font-semibold text-xs tracking-wider uppercase flex items-center justify-center min-w-[100px] hover:bg-crimson/90 transition-colors disabled:opacity-50"
+              >
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete Unit"}
+              </button>
+            </div>
           </div>
         </div>
       )}
