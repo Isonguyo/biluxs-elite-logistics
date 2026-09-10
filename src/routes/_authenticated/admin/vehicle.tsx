@@ -16,7 +16,7 @@ export function AdminVehicles() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    category: "Business Sedan",
+    category: "sedan",
     capacity: 4,
     base_rate: 150000,
     per_km_rate: 5000,
@@ -58,7 +58,6 @@ export function AdminVehicles() {
     setIsSubmitting(true);
     
     try {
-      // Convert comma-separated features into a JSON array
       const featuresArray = formData.features
         .split(",")
         .map((f) => f.trim())
@@ -81,7 +80,7 @@ export function AdminVehicles() {
       toast.success("Vehicle added to fleet");
       setIsAdding(false);
       setFormData({
-        name: "", category: "Business Sedan", capacity: 4, base_rate: 150000, per_km_rate: 5000, status: "available", image_url: "", description: "", features: ""
+        name: "", category: "sedan", capacity: 4, base_rate: 150000, per_km_rate: 5000, status: "available", image_url: "", description: "", features: ""
       });
     } catch (error: any) {
       toast.error(error.message || "Failed to add vehicle");
@@ -126,7 +125,6 @@ export function AdminVehicles() {
 
   return (
     <div className="space-y-6">
-      {/* Top Action Bar */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
@@ -159,7 +157,6 @@ export function AdminVehicles() {
         </button>
       </div>
 
-      {/* Fleet Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {filteredVehicles.map((vehicle) => {
           const activeBooking = bookings.find((b) => b.vehicle_id === vehicle.id && ["in_progress", "confirmed"].includes(b.status));
@@ -180,7 +177,7 @@ export function AdminVehicles() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <h3 className="font-display text-base text-white">{vehicle.name}</h3>
-                      <p className="text-[11px] text-muted-foreground">{vehicle.category}</p>
+                      <p className="text-[11px] text-muted-foreground capitalize">{vehicle.category}</p>
                     </div>
                     {getStatusBadge(vehicle.status)}
                   </div>
@@ -222,7 +219,6 @@ export function AdminVehicles() {
         )}
       </div>
 
-      {/* Add Vehicle Modal */}
       {isAdding && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-card border border-border w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -242,11 +238,11 @@ export function AdminVehicles() {
                 
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Category *</label>
-                  <select required value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold">
-                    <option value="First Class">First Class</option>
-                    <option value="Business Sedan">Business Sedan</option>
-                    <option value="Luxury SUV">Luxury SUV</option>
-                    <option value="Sprinter Van">Sprinter Van</option>
+                  <select required value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold capitalize">
+                    <option value="sedan">Sedan</option>
+                    <option value="suv">SUV</option>
+                    <option value="bus">Bus</option>
+                    <option value="coach">Coach</option>
                   </select>
                 </div>
 
@@ -267,8 +263,9 @@ export function AdminVehicles() {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Status</label>
-                  <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold">
+                  <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold capitalize">
                     <option value="available">Available</option>
+                    <option value="in_use">In Use</option>
                     <option value="maintenance">Maintenance</option>
                   </select>
                 </div>
