@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Car, ShieldCheck, Wrench, Users, Calendar, Search, Plus, X, Loader2 } from "lucide-react";
+import { Car, ShieldCheck, Wrench, Users, Calendar, Search, Plus, X, Loader2, Settings2, Trash2, Edit3 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -11,9 +11,12 @@ export function AdminVehicles() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Modal & Form State
+  // Modal States
   const [isAdding, setIsAdding] = useState(false);
+  const [managingVehicle, setManagingVehicle] = useState<any | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Add Form State
   const [formData, setFormData] = useState({
     name: "",
     category: "sedan",
@@ -25,6 +28,9 @@ export function AdminVehicles() {
     description: "",
     features: "", 
   });
+
+  // Edit/Manage Form State
+  const [editData, setEditData] = useState<any>({});
 
   useEffect(() => {
     async function loadFleet() {
@@ -56,13 +62,8 @@ export function AdminVehicles() {
   const handleAddVehicle = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
     try {
-      const featuresArray = formData.features
-        .split(",")
-        .map((f) => f.trim())
-        .filter(Boolean);
-
+      const featuresArray = formData.features.split(",").map((f) => f.trim()).filter(Boolean);
       const { error } = await supabase.from("vehicles").insert({
         name: formData.name,
         category: formData.category,
@@ -76,17 +77,69 @@ export function AdminVehicles() {
       });
 
       if (error) throw error;
-
       toast.success("Vehicle added to fleet");
       setIsAdding(false);
-      setFormData({
-        name: "", category: "sedan", capacity: 4, base_rate: 150000, per_km_rate: 5000, status: "available", image_url: "", description: "", features: ""
-      });
+      setFormData({ name: "", category: "sedan", capacity: 4, base_rate: 150000, per_km_rate: 5000, status: "available", image_url: "", description: "", features: "" });
     } catch (error: any) {
       toast.error(error.message || "Failed to add vehicle");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleUpdateVehicle = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!managingVehicle) return;
+    setIsSubmitting(true);
+
+    try {
+      const featuresArray = typeof editData.features === "string" 
+        ? editData.features.split(",").map((f: string) => f.trim()).filter(Boolean)
+        : editData.features;
+
+      const { error } = await supabase
+        .from("vehicles")
+        .update({
+          name: editData.name,
+          category: editData.category,
+          capacity: Number(editData.capacity),
+          base_rate: Number(editData.base_rate),
+          per_km_rate: Number(editData.per_km_rate),
+          status: editData.status,
+          image_url: editData.image_url,
+          description: editData.description,
+          features: featuresArray,
+        })
+        .eq("id", managingVehicle.id);
+
+      if (error) throw error;
+      toast.success("Vehicle updated successfully");
+      setManagingVehicle(null);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update vehicle");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteVehicle = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this vehicle unit?")) return;
+    try {
+      const { error } = await supabase.from("vehicles").delete().eq("id", id);
+      if (error) throw error;
+      toast.success("Vehicle removed from fleet");
+      setManagingVehicle(null);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete vehicle");
+    }
+  };
+
+  const openManageModal = (vehicle: any) => {
+    setManagingVehicle(vehicle);
+    setEditData({
+      ...vehicle,
+      features: Array.isArray(vehicle.features) ? vehicle.features.join(", ") : vehicle.features || ""
+    });
   };
 
   const filteredVehicles = vehicles.filter((v) => {
@@ -206,7 +259,12 @@ export function AdminVehicles() {
 
                 <div className="flex justify-between items-center pt-1">
                   <span className="text-[10px] text-muted-foreground">{tripsCompleted} total trips</span>
-                  <button className="text-[11px] text-gold hover:underline uppercase tracking-wider">Manage Unit →</button>
+                  <button 
+                    onClick={() => openManageModal(vehicle)}
+                    className="text-[11px] text-gold hover:underline uppercase tracking-wider flex items-center gap-1"
+                  >
+                    <Settings2 className="w-3 h-3" /> Manage Unit →
+                  </button>
                 </div>
               </div>
             </div>
@@ -219,6 +277,7 @@ export function AdminVehicles() {
         )}
       </div>
 
+      {/* Add Vehicle Modal */}
       {isAdding && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-card border border-border w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -286,13 +345,106 @@ export function AdminVehicles() {
                 <textarea rows={3} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} placeholder="Internal notes or vehicle description..." className="w-full p-3 bg-input border border-border text-xs text-white outline-none focus:border-gold resize-none" />
               </div>
 
-              <div className="pt-4 flex justify-end gap-3 border-t border-border">
+              <div className="pt-4 flex justify-between items-center border-t border-border">
                 <button type="button" onClick={() => setIsAdding(false)} className="h-9 px-4 text-xs font-medium text-muted-foreground hover:text-white transition-colors">
                   Cancel
                 </button>
-                <button type="submit" disabled={isSubmitting} className="h-9 px-6 bg-gold text-black font-semibold text-xs tracking-wider uppercase flex items-center justify-center min-w-[120px] hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <button type="submit" disabled={isSubmitting} className="h-9 px-6 bg-gold text-black font-semibold text-xs tracking-wider uppercase flex items-center justify-center min-w-[120px] hover:bg-gold/90 transition-colors disabled:opacity-50">
                   {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Unit"}
                 </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Manage Unit Modal */}
+      {managingVehicle && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-card border border-border w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <div className="flex items-center gap-2">
+                <Settings2 className="w-4 h-4 text-gold" />
+                <h2 className="text-sm font-semibold uppercase tracking-widest text-white">Manage Unit: {managingVehicle.name}</h2>
+              </div>
+              <button onClick={() => setManagingVehicle(null)} className="text-muted-foreground hover:text-white transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleUpdateVehicle} className="p-4 overflow-y-auto space-y-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Vehicle Name *</label>
+                  <input required value={editData.name || ""} onChange={(e) => setEditData({...editData, name: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+                </div>
+                
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Category *</label>
+                  <select required value={editData.category || "sedan"} onChange={(e) => setEditData({...editData, category: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold capitalize">
+                    <option value="sedan">Sedan</option>
+                    <option value="suv">SUV</option>
+                    <option value="bus">Bus</option>
+                    <option value="coach">Coach</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Base Rate (NGN) *</label>
+                  <input required type="number" min="0" value={editData.base_rate || 0} onChange={(e) => setEditData({...editData, base_rate: Number(e.target.value)})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Per KM Rate (NGN) *</label>
+                  <input required type="number" min="0" value={editData.per_km_rate || 0} onChange={(e) => setEditData({...editData, per_km_rate: Number(e.target.value)})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Passenger Capacity *</label>
+                  <input required type="number" min="1" max="50" value={editData.capacity || 4} onChange={(e) => setEditData({...editData, capacity: Number(e.target.value)})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Status *</label>
+                  <select value={editData.status || "available"} onChange={(e) => setEditData({...editData, status: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold capitalize">
+                    <option value="available">Available</option>
+                    <option value="in_use">In Use</option>
+                    <option value="maintenance">Maintenance</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Image URL</label>
+                <input type="url" value={editData.image_url || ""} onChange={(e) => setEditData({...editData, image_url: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Features (Comma separated)</label>
+                <input value={editData.features || ""} onChange={(e) => setEditData({...editData, features: e.target.value})} className="w-full h-9 px-3 bg-input border border-border text-xs text-white outline-none focus:border-gold" />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Description</label>
+                <textarea rows={3} value={editData.description || ""} onChange={(e) => setEditData({...editData, description: e.target.value})} className="w-full p-3 bg-input border border-border text-xs text-white outline-none focus:border-gold resize-none" />
+              </div>
+
+              <div className="pt-4 flex justify-between items-center border-t border-border">
+                <button 
+                  type="button" 
+                  onClick={() => handleDeleteVehicle(managingVehicle.id)}
+                  className="h-9 px-4 text-xs font-medium text-crimson hover:text-crimson/80 flex items-center gap-1.5 transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Delete Unit
+                </button>
+                <div className="flex gap-3">
+                  <button type="button" onClick={() => setManagingVehicle(null)} className="h-9 px-4 text-xs font-medium text-muted-foreground hover:text-white transition-colors">
+                    Cancel
+                  </button>
+                  <button type="submit" disabled={isSubmitting} className="h-9 px-6 bg-gold text-black font-semibold text-xs tracking-wider uppercase flex items-center justify-center min-w-[120px] hover:bg-gold/90 transition-colors disabled:opacity-50">
+                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Changes"}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
