@@ -33,7 +33,7 @@ async function getRoleHome(userId: string) {
   if (roles.includes("super_user")) return "/super";
   if (roles.includes("admin")) return "/admin";
   if (roles.includes("driver")) return "/driver";
-  return "/dashboard";
+  return "/portal";
 }
 
 function Page() {
