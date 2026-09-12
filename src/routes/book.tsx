@@ -100,7 +100,7 @@ function Page() {
     setPayOpen(false);
     if (error || !data) { toast.error("Payment recorded but confirmation failed."); return; }
     toast.success(`Paid — ${(data as { waybill_code: string }).waybill_code}. Boarding QR ready.`);
-    navigate({ to: "/dashboard" });
+    navigate({ to: "/portal" });
   };
 
   if (loading) return <PageShell><div className="py-32 text-center text-muted-foreground">Loading…</div></PageShell>;
